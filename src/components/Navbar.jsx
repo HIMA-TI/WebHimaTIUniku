@@ -6,6 +6,7 @@ const navItems = [
   { to: '/', label: 'Beranda' },
   { to: '/tentang', label: 'Tentang' },
   { to: '/kepengurusan', label: 'Kepengurusan' },
+  { to: '/produk', label: 'Produk' },
   { to: '/kontak', label: 'Kontak' },
 ];
 
