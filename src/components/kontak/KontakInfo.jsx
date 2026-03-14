@@ -112,7 +112,12 @@ export default function KontakInfo() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Terima kasih! Pesan Anda telah terkirim.');
+    const { nama, email, pesan } = formData;
+    const subject = encodeURIComponent(`Pesan dari ${nama}`);
+    const body = encodeURIComponent(`Nama: ${nama}\nEmail: ${email}\n\nPesan:\n${pesan}`);
+    window.location.href = `mailto:hima.ti@uniku.ac.id?subject=${subject}&body=${body}`;
+    
+    // Clear form after attempting to send
     setFormData({ nama: '', email: '', pesan: '' });
   };
 
