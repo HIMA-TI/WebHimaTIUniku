@@ -2,6 +2,7 @@ import { useState } from 'react';
 import usePrograms from '../../hooks/usePrograms';
 import useProducts from '../../hooks/useProducts';
 import useAspirasi from '../../hooks/useAspirasi';
+import usePesan from '../../hooks/usePesan';
 import ProgramForm from './ProgramForm';
 import ProductForm from './ProductForm';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -25,6 +26,10 @@ export default function Dashboard({ onLogout }) {
   const { aspirasi, deleteAspirasi, exportCsv } = useAspirasi();
   const [deleteAspirasiTarget, setDeleteAspirasiTarget] = useState(null);
 
+  // --- PESAN STATES ---
+  const { pesanList, deletePesan } = usePesan();
+  const [deletePesanTarget, setDeletePesanTarget] = useState(null);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
       {/* Header */}
@@ -32,11 +37,11 @@ export default function Dashboard({ onLogout }) {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h1 className="text-xl font-bold text-green-900">Portal Pengurus</h1>
-            <p className="text-green-600 text-sm">HIMA TI - {activeTab === 'program' ? 'Kelola Program' : activeTab === 'produk' ? 'Kelola Produk' : 'Kelola Aspirasi'}</p>
+            <p className="text-green-600 text-sm">HIMA TI - {activeTab === 'program' ? 'Kelola Program' : activeTab === 'produk' ? 'Kelola Produk' : activeTab === 'aspirasi' ? 'Kelola Aspirasi' : 'Kelola Pesan'}</p>
           </div>
 
           <div className="flex bg-green-100/50 p-1 rounded-xl">
-            {['program', 'produk', 'aspirasi'].map(tab => (
+            {['program', 'produk', 'aspirasi', 'pesan'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -221,6 +226,47 @@ export default function Dashboard({ onLogout }) {
             )}
           </>
         )}
+
+        {/* ===================== TAB PESAN ===================== */}
+        {activeTab === 'pesan' && (
+          <>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-bold text-green-900">Daftar Pesan Kontak</h2>
+                <p className="text-green-600/60 text-sm">{pesanList.length} pesan masuk dari halaman kontak</p>
+              </div>
+            </div>
+
+            {pesanList.length === 0 && (
+              <div className="bg-white rounded-2xl border border-green-200/50 shadow-sm p-12 text-center">
+                <p className="text-green-900 font-semibold mb-1">Belum ada pesan</p>
+              </div>
+            )}
+
+            {pesanList.length > 0 && (
+              <div className="space-y-4">
+                {pesanList.map((msg) => (
+                  <div key={msg.id} className="bg-white rounded-xl border border-green-200/50 shadow-sm p-5 relative">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-bold text-green-900 text-lg">{msg.nama}</h3>
+                        <p className="text-sm text-neutral-600 mt-1">
+                          <a href={`mailto:${msg.email}`} className="text-blue-500 hover:underline">{msg.email}</a> &bull; {new Date(msg.createdAt).toLocaleDateString('id-ID')}
+                        </p>
+                      </div>
+                      <button onClick={() => setDeletePesanTarget(msg)} className="p-2 rounded-lg hover:bg-red-50 text-red-500" title="Hapus">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                      </button>
+                    </div>
+                    <div className="bg-neutral-50 p-4 border border-neutral-100 rounded-lg text-sm text-neutral-800 whitespace-pre-wrap">
+                      {msg.pesan}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </main>
 
       {/* MODALS */}
@@ -234,6 +280,7 @@ export default function Dashboard({ onLogout }) {
       
       {deleteAspirasiTarget && <DeleteConfirmModal programName={`Aspirasi: ${deleteAspirasiTarget.judul}`} onConfirm={() => { deleteAspirasi(deleteAspirasiTarget.id); setDeleteAspirasiTarget(null); }} onCancel={() => setDeleteAspirasiTarget(null)} />}
 
+      {deletePesanTarget && <DeleteConfirmModal programName={`Pesan dari ${deletePesanTarget.nama}`} onConfirm={() => { deletePesan(deletePesanTarget.id); setDeletePesanTarget(null); }} onCancel={() => setDeletePesanTarget(null)} />}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { animate } from 'animejs';
+import usePesan from '../../hooks/usePesan';
 
 const kontakItems = [
   {
@@ -57,7 +58,10 @@ const socialLinks = [
 export default function KontakInfo() {
   const headingRef = useRef(null);
   const contentRef = useRef(null);
+  const { addPesan } = usePesan();
   const [formData, setFormData] = useState({ nama: '', email: '', pesan: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(() => {
     const headingObs = new IntersectionObserver(
@@ -110,15 +114,20 @@ export default function KontakInfo() {
     };
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { nama, email, pesan } = formData;
-    const subject = encodeURIComponent(`Pesan dari ${nama}`);
-    const body = encodeURIComponent(`Nama: ${nama}\nEmail: ${email}\n\nPesan:\n${pesan}`);
-    window.location.href = `mailto:hima.ti@uniku.ac.id?subject=${subject}&body=${body}`;
-    
-    // Clear form after attempting to send
-    setFormData({ nama: '', email: '', pesan: '' });
+    setIsSubmitting(true);
+    setSuccessMsg('');
+    try {
+      await addPesan(formData);
+      setSuccessMsg('Terima kasih! Pesan Anda telah berhasil terkirim.');
+      setFormData({ nama: '', email: '', pesan: '' });
+      setTimeout(() => setSuccessMsg(''), 5000);
+    } catch {
+      alert('Terjadi kesalahan, gagal mengirim pesan.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -190,6 +199,15 @@ export default function KontakInfo() {
 
           <h3 className="text-xl font-bold text-green-900 mb-6">Kirim Pesan</h3>
 
+          {successMsg && (
+            <div className="mb-6 p-4 bg-green-50 text-green-800 rounded-xl border border-green-200 flex items-center gap-3">
+              <svg className="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="font-medium text-sm">{successMsg}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-green-900 mb-2">Nama</label>
@@ -226,9 +244,18 @@ export default function KontakInfo() {
             </div>
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 text-green-900 font-bold px-6 py-3.5 rounded-xl text-base shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+              disabled={isSubmitting}
+              className={`w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 text-green-900 font-bold px-6 py-3.5 rounded-xl text-base shadow-md hover:shadow-lg transition-all duration-300 flex justify-center items-center gap-2 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:-translate-y-0.5'}`}
             >
-              Kirim Pesan
+              {isSubmitting ? (
+                 <>
+                   <svg className="animate-spin h-5 w-5 text-green-900" fill="none" viewBox="0 0 24 24">
+                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                   </svg>
+                   Mengirim...
+                 </>
+              ) : 'Kirim Pesan'}
             </button>
           </form>
         </div>
