@@ -1,21 +1,29 @@
 import { useState, useCallback } from 'react';
 
 const AUTH_KEY = 'himati_auth';
-const VALID_USERNAME = 'KabinetPerkasa';
-const VALID_PASSWORD = 'AdminPerkasa26';
 
 export default function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    () => sessionStorage.getItem(AUTH_KEY) === 'true'
+    () => sessionStorage.getItem(AUTH_KEY) !== null
   );
 
-  const login = useCallback((username, password) => {
-    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-      sessionStorage.setItem(AUTH_KEY, 'true');
-      setIsAuthenticated(true);
-      return { success: true };
+  const login = useCallback(async (username, password) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: username, password })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        sessionStorage.setItem(AUTH_KEY, data.data.token || 'true');
+        setIsAuthenticated(true);
+        return { success: true };
+      }
+      return { success: false, error: data.message || 'Username atau password salah' };
+    } catch (error) {
+      return { success: false, error: 'Gagal menghubungi server' };
     }
-    return { success: false, error: 'Username atau password salah' };
   }, []);
 
   const logout = useCallback(() => {

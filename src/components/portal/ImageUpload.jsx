@@ -19,19 +19,17 @@ export default function ImageUpload({ value, onChange }) {
       setWarning('Ukuran file melebihi 2MB. Gambar tetap akan digunakan tetapi dapat memperlambat penyimpanan.');
     }
 
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      onChange(ev.target.result);
-    };
-    reader.readAsDataURL(file);
+    onChange(file);
   };
+
+  const previewUrl = value instanceof File ? URL.createObjectURL(value) : value;
 
   return (
     <div>
       {value ? (
         <div className="relative">
           <img
-            src={value}
+            src={previewUrl}
             alt="Preview"
             className="w-full h-48 object-cover rounded-xl border border-green-200"
           />

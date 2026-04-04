@@ -1,79 +1,107 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
-const STORAGE_KEY = 'himati_programs';
-
-function loadPrograms() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return parsed.sort((a, b) => a.prioritas - b.prioritas);
-  } catch {
-    return [];
-  }
-}
-
-function savePrograms(programs) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(programs));
-}
+const API_BASE = 'http://localhost:3000/api';
 
 export default function usePrograms() {
-  const [programs, setPrograms] = useState(loadPrograms);
+  const [programs, setPrograms] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(() => {
-    setPrograms(loadPrograms());
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE}/activity`);
+      const data = await response.json();
+      if (response.ok) {
+        const formatted = data.map(item => ({
+          ...item,
+          judul: item.name,
+          deskripsi: item.description,
+          gambar: item.image_url,
+          link: item.url || ''
+        }));
+        setPrograms(formatted);
+      }
+    } catch (e) {
+      console.error(e);
+      setPrograms([]);
+    }
+    setLoading(false);
   }, []);
 
-  const addProgram = useCallback((data) => {
-    const current = loadPrograms();
-    const maxPrioritas = current.length > 0
-      ? Math.max(...current.map((p) => p.prioritas))
-      : 0;
-    const newProgram = {
-      id: crypto.randomUUID(),
-      judul: data.judul,
-      deskripsi: data.deskripsi,
-      gambar: data.gambar,
-      link: data.link || '',
-      prioritas: maxPrioritas + 1,
-      createdAt: new Date().toISOString(),
-    };
-    const updated = [...current, newProgram];
-    savePrograms(updated);
-    setPrograms(updated.sort((a, b) => a.prioritas - b.prioritas));
-    return newProgram;
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const addProgram = useCallback(async (data) => {
+    const token = sessionStorage.getItem('himati_auth');
+    const formData = new FormData();
+    formData.append('name', data.judul);
+    formData.append('description', data.deskripsi);
+    formData.append('url', data.link || 'https://example.com');
+    if (data.gambar instanceof File) {
+      formData.append('image', data.gambar);
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/activity`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      const result = await response.json();
+      if (response.ok) {
+        await loadData();
+        return result;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  }, [loadData]);
+
+  const updateProgram = useCallback(async (id, data) => {
+    const token = sessionStorage.getItem('himati_auth');
+    const formData = new FormData();
+    if (data.judul) formData.append('name', data.judul);
+    if (data.deskripsi) formData.append('description', data.deskripsi);
+    if (data.link !== undefined) formData.append('url', data.link);
+    if (data.gambar instanceof File) formData.append('image', data.gambar);
+
+    try {
+      await fetch(`${API_BASE}/activity/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      await loadData();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [loadData]);
+
+  const deleteProgram = useCallback(async (id) => {
+    const token = sessionStorage.getItem('himati_auth');
+    try {
+      await fetch(`${API_BASE}/activity/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      await loadData();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [loadData]);
+
+  const reorderPrograms = useCallback(async (orderedIds) => {
+    // Backend doesn't support reorder natively. 
+    // Fallback or leave as no-op.
   }, []);
 
-  const updateProgram = useCallback((id, data) => {
-    const current = loadPrograms();
-    const updated = current.map((p) =>
-      p.id === id ? { ...p, ...data, id } : p
-    );
-    savePrograms(updated);
-    setPrograms(updated.sort((a, b) => a.prioritas - b.prioritas));
-  }, []);
-
-  const deleteProgram = useCallback((id) => {
-    const current = loadPrograms();
-    const filtered = current.filter((p) => p.id !== id);
-    const reindexed = filtered
-      .sort((a, b) => a.prioritas - b.prioritas)
-      .map((p, idx) => ({ ...p, prioritas: idx + 1 }));
-    savePrograms(reindexed);
-    setPrograms(reindexed);
-  }, []);
-
-  const reorderPrograms = useCallback((orderedIds) => {
-    const current = loadPrograms();
-    const reordered = orderedIds
-      .map((id, idx) => {
-        const prog = current.find((p) => p.id === id);
-        return prog ? { ...prog, prioritas: idx + 1 } : null;
-      })
-      .filter(Boolean);
-    savePrograms(reordered);
-    setPrograms(reordered);
-  }, []);
-
-  return { programs, addProgram, updateProgram, deleteProgram, reorderPrograms, refresh };
+  return { programs, addProgram, updateProgram, deleteProgram, reorderPrograms, refresh: loadData };
 }

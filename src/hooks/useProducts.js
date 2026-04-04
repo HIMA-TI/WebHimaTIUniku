@@ -1,27 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 
-const STORAGE_KEY = 'himati_products';
-
-// Mock API Call - Get Products
-export async function fetchProducts() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return resolve([]);
-        const parsed = JSON.parse(raw);
-        resolve(parsed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-      } catch {
-        resolve([]);
-      }
-    }, 300); // Simulate network delay
-  });
-}
-
-// Mock API Call - Save Products array directly (useful for reorder/internal sync)
-async function saveProducts(products) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-}
+const API_BASE = 'http://localhost:3000/api';
 
 export default function useProducts() {
   const [products, setProducts] = useState([]);
@@ -29,8 +8,25 @@ export default function useProducts() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const data = await fetchProducts();
-    setProducts(data);
+    try {
+      const response = await fetch(`${API_BASE}/product`);
+      const data = await response.json();
+      if (response.ok) {
+        // Map backend fields to frontend fields
+        const formatted = data.map(item => ({
+          ...item,
+          nama: item.name,
+          deskripsi: item.description,
+          gambar: item.image_url,
+          linkOrder: item.url || '',
+          harga: 0 // Optional fallback if missing in DB
+        }));
+        setProducts(formatted);
+      }
+    } catch (e) {
+      console.error(e);
+      setProducts([]);
+    }
     setLoading(false);
   }, []);
 
@@ -38,41 +34,75 @@ export default function useProducts() {
     loadData();
   }, [loadData]);
 
-  // Mock API Call - Add Product
   const addProduct = useCallback(async (data) => {
-    const current = await fetchProducts();
-    const newProduct = {
-      id: crypto.randomUUID(),
-      nama: data.nama,
-      deskripsi: data.deskripsi,
-      harga: data.harga,
-      gambar: data.gambar,
-      linkOrder: data.linkOrder || '',
-      createdAt: new Date().toISOString(),
-    };
-    const updated = [newProduct, ...current];
-    await saveProducts(updated);
-    setProducts(updated);
-    return newProduct;
-  }, []);
+    const token = sessionStorage.getItem('himati_auth');
+    const formData = new FormData();
+    formData.append('name', data.nama);
+    formData.append('description', data.deskripsi);
+    formData.append('category', 'merch'); // default category
+    if (data.linkOrder) {
+      formData.append('url', data.linkOrder);
+    }
+    if (data.gambar instanceof File) {
+      formData.append('image', data.gambar);
+    }
 
-  // Mock API Call - Update Product
+    try {
+      const response = await fetch(`${API_BASE}/product`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      const result = await response.json();
+      if (response.ok) {
+        await loadData();
+        return result;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  }, [loadData]);
+
   const updateProduct = useCallback(async (id, data) => {
-    const current = await fetchProducts();
-    const updated = current.map((p) =>
-      p.id === id ? { ...p, ...data, id } : p
-    );
-    await saveProducts(updated);
-    setProducts(updated.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-  }, []);
+    const token = sessionStorage.getItem('himati_auth');
+    const formData = new FormData();
+    if (data.nama) formData.append('name', data.nama);
+    if (data.deskripsi) formData.append('description', data.deskripsi);
+    formData.append('category', 'merch');
+    if (data.linkOrder !== undefined) formData.append('url', data.linkOrder);
+    if (data.gambar instanceof File) formData.append('image', data.gambar);
 
-  // Mock API Call - Delete Product
+    try {
+      await fetch(`${API_BASE}/product/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      await loadData();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [loadData]);
+
   const deleteProduct = useCallback(async (id) => {
-    const current = await fetchProducts();
-    const filtered = current.filter((p) => p.id !== id);
-    await saveProducts(filtered);
-    setProducts(filtered);
-  }, []);
+    const token = sessionStorage.getItem('himati_auth');
+    try {
+      await fetch(`${API_BASE}/product/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      await loadData();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [loadData]);
 
   return { products, loading, addProduct, updateProduct, deleteProduct, refresh: loadData };
 }
