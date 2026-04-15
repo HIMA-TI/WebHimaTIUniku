@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
+import { API_BASE } from '../config/api';
 
 const AUTH_KEY = 'himati_auth';
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 export default function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(
