@@ -2,6 +2,15 @@ import { useState, useCallback, useEffect } from 'react';
 
 const STORAGE_KEY = 'himati_aspirasi';
 
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Gagal membaca file'));
+    reader.readAsDataURL(file);
+  });
+}
+
 // Mock API Call - Get Aspirations (Admin)
 export async function fetchAspirasi() {
   return new Promise((resolve) => {
@@ -41,6 +50,21 @@ export default function useAspirasi() {
   // Mock API Call - Post Aspirasi (Client)
   const addAspirasi = useCallback(async (data) => {
     const current = await fetchAspirasi();
+
+    let lampiran;
+    if (data.lampiran instanceof File) {
+      try {
+        const dataUrl = await fileToDataUrl(data.lampiran);
+        lampiran = {
+          name: data.lampiran.name,
+          type: data.lampiran.type,
+          size: data.lampiran.size,
+          dataUrl,
+        };
+      } catch {
+        lampiran = undefined;
+      }
+    }
     const newAspirasi = {
       id: crypto.randomUUID(),
       nim: data.nim,
@@ -49,6 +73,7 @@ export default function useAspirasi() {
       kelas: data.kelas,
       judul: data.judul,
       pesan: data.pesan,
+      lampiran,
       status: 'Menunggu', // Default status
       createdAt: new Date().toISOString(),
     };
@@ -72,7 +97,7 @@ export default function useAspirasi() {
     if (current.length === 0) return;
 
     // Build CSV content
-    const header = ['ID', 'NIM', 'Nama', 'Angkatan', 'Kelas', 'Judul', 'Pesan', 'Status', 'Tanggal'];
+    const header = ['ID', 'NIM', 'Nama', 'Angkatan', 'Kelas', 'Judul', 'Pesan', 'Lampiran', 'Status', 'Tanggal'];
     const rows = current.map(item => [
       item.id,
       item.nim,
@@ -81,6 +106,7 @@ export default function useAspirasi() {
       item.kelas || '-',
       item.judul, // Escape commas in string fields if necessary
       item.pesan.replace(/(\r\n|\n|\v)/g, ' ').replace(/,/g, ';'), 
+      item.lampiran?.name || '-',
       item.status,
       new Date(item.createdAt).toLocaleString()
     ]);

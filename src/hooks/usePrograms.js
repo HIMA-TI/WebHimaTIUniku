@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 export default function usePrograms() {
   const [programs, setPrograms] = useState([]);
@@ -98,10 +98,10 @@ export default function usePrograms() {
     }
   }, [loadData]);
 
-  const reorderPrograms = useCallback(async (orderedIds) => {
+  const reorderPrograms = useCallback(async () => {
     // Backend doesn't support reorder natively. 
     // Fallback or leave as no-op.
   }, []);
 
-  return { programs, addProgram, updateProgram, deleteProgram, reorderPrograms, refresh: loadData };
+  return { programs, loading, addProgram, updateProgram, deleteProgram, reorderPrograms, refresh: loadData };
 }

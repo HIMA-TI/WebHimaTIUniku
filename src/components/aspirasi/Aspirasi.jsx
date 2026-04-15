@@ -2,6 +2,7 @@ import { useState } from 'react';
 import useAspirasi from '../../hooks/useAspirasi';
 import Navbar from '../Navbar';
 import Footer from '../Footer';
+import ImageUpload from '../portal/ImageUpload';
 
 export default function Aspirasi() {
   const { addAspirasi } = useAspirasi();
@@ -12,6 +13,7 @@ export default function Aspirasi() {
   const [kelas, setKelas] = useState('');
   const [judul, setJudul] = useState('');
   const [pesan, setPesan] = useState('');
+  const [lampiran, setLampiran] = useState('');
   
   const [errorObj, setErrorObj] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
@@ -50,6 +52,7 @@ export default function Aspirasi() {
         kelas: kelas,
         judul: judul.trim(),
         pesan: pesan.trim(),
+        lampiran,
       });
       setSuccessMsg('Aspirasi Anda berhasil dikirim! Terima kasih atas partisipasi Anda.');
       setNim('');
@@ -58,7 +61,8 @@ export default function Aspirasi() {
       setKelas('');
       setJudul('');
       setPesan('');
-    } catch (err) {
+      setLampiran('');
+    } catch {
       setErrorObj({ type: 'server', message: 'Terjadi kesalahan saat mengirim aspirasi.' });
     } finally {
       setIsSubmitting(false);
@@ -199,6 +203,13 @@ export default function Aspirasi() {
                   placeholder="Sampaikan detail aspirasi Anda di sini..."
                   className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-neutral-50 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all resize-none placeholder:text-neutral-400"
                 ></textarea>
+              </div>
+
+              {/* LAMPIRAN GAMBAR */}
+              <div>
+                <label className="block text-sm font-semibold text-green-900 mb-2">Lampiran Gambar (Opsional)</label>
+                <ImageUpload value={lampiran} onChange={setLampiran} />
+                <p className="mt-1 text-xs text-neutral-500">Opsional. Lampirkan screenshot/foto pendukung (maks 2MB).</p>
               </div>
 
               {/* SERVER ERROR */}

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 
 const AUTH_KEY = 'himati_auth';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 export default function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -9,7 +10,7 @@ export default function useAuth() {
 
   const login = useCallback(async (username, password) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: username, password })
@@ -21,7 +22,7 @@ export default function useAuth() {
         return { success: true };
       }
       return { success: false, error: data.message || 'Username atau password salah' };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Gagal menghubungi server' };
     }
   }, []);

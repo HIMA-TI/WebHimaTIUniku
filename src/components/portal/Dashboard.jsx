@@ -220,6 +220,26 @@ export default function Dashboard({ onLogout }) {
                     <div className="bg-neutral-50 p-4 border border-neutral-100 rounded-lg text-sm text-neutral-800 whitespace-pre-wrap">
                       {asp.pesan}
                     </div>
+
+                    {asp.lampiran?.dataUrl && (
+                      <div className="mt-4">
+                        <p className="text-xs text-neutral-500 mb-2">Lampiran</p>
+                        <a
+                          href={asp.lampiran.dataUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block"
+                          title={asp.lampiran.name || 'Buka lampiran'}
+                        >
+                          <img
+                            src={asp.lampiran.dataUrl}
+                            alt={asp.lampiran.name ? `Lampiran - ${asp.lampiran.name}` : 'Lampiran aspirasi'}
+                            className="w-full max-h-80 object-contain rounded-lg border border-neutral-100 bg-neutral-50"
+                            loading="lazy"
+                          />
+                        </a>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
