@@ -4,17 +4,6 @@ import FlipCard from './FlipCard';
 
 const divisiData = [
   {
-    nama: 'Litbang',
-    namaLengkap: 'Penelitian & Pengembangan',
-    deskripsi: 'Melakukan riset, kajian, dan pengembangan di bidang teknologi informasi untuk kemajuan organisasi dan anggota.',
-    warna: 'from-green-600 to-green-700',
-    ikon: (
-      <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-      </svg>
-    ),
-  },
-  {
     nama: 'Organisasi',
     namaLengkap: 'Divisi Organisasi',
     deskripsi: 'Menjalin komunikasi dan relasi dengan pihak internal maupun eksternal organisasi serta mengelola citra HIMA TI.',
@@ -26,13 +15,13 @@ const divisiData = [
     ),
   },
   {
-    nama: 'Kerohanian',
-    namaLengkap: 'Divisi Kerohanian',
-    deskripsi: 'Membina kehidupan beragama dan spiritual anggota melalui kajian rutin, peringatan hari besar keagamaan, dan kegiatan kerohanian lainnya.',
-    warna: 'from-amber-500 to-amber-600',
+    nama: 'Litbang',
+    namaLengkap: 'Penelitian & Pengembangan',
+    deskripsi: 'Melakukan riset, kajian, dan pengembangan di bidang teknologi informasi untuk kemajuan organisasi dan anggota.',
+    warna: 'from-green-600 to-green-700',
     ikon: (
       <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
       </svg>
     ),
   },
@@ -48,6 +37,17 @@ const divisiData = [
     ),
   },
   {
+    nama: 'Bismit',
+    namaLengkap: 'Bisnis dan Kemitraan',
+    deskripsi: 'Mengembangkan jejaring bisnis dan kemitraan dengan pihak eksternal melalui kerja sama, sponsorship, dan kegiatan kewirausahaan untuk mendukung program HIMA TI.',
+    warna: 'from-teal-500 to-teal-600',
+    ikon: (
+      <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+      </svg>
+    ),
+  },
+  {
     nama: 'Olahraga',
     namaLengkap: 'Divisi Olahraga',
     deskripsi: 'Memfasilitasi kegiatan olahraga dan kebugaran anggota melalui turnamen, latihan rutin, dan event olahraga untuk menjaga kesehatan jasmani.',
@@ -59,13 +59,24 @@ const divisiData = [
     ),
   },
   {
-    nama: 'Bismit',
-    namaLengkap: 'Bisnis dan Kemitraan',
-    deskripsi: 'Mengembangkan jejaring bisnis dan kemitraan dengan pihak eksternal melalui kerja sama, sponsorship, dan kegiatan kewirausahaan untuk mendukung program HIMA TI.',
-    warna: 'from-teal-500 to-teal-600',
+    nama: 'Medinfo',
+    namaLengkap: 'Media & Informasi',
+    deskripsi: 'Mengelola publikasi, dokumentasi, desain visual, dan informasi di berbagai kanal agar komunikasi HIMA TI rapi, cepat, dan menarik.',
+    warna: 'from-sky-500 to-indigo-600',
     ikon: (
       <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 6.75h9m-9 3h9m-9 3h5.25M6 3.75h12A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75z" />
+      </svg>
+    ),
+  },
+  {
+    nama: 'Kerohanian',
+    namaLengkap: 'Divisi Kerohanian',
+    deskripsi: 'Membina kehidupan beragama dan spiritual anggota melalui kajian rutin, peringatan hari besar keagamaan, dan kegiatan kerohanian lainnya.',
+    warna: 'from-amber-500 to-amber-600',
+    ikon: (
+      <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
       </svg>
     ),
   },
@@ -132,7 +143,17 @@ export default function DivisiSection() {
   }, []);
 
   return (
-    <section className="py-20 lg:py-28">
+    <section className="py-20 lg:py-28 relative">
+      {/* Decorative background */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      >
+        <div className="absolute -top-24 -right-20 h-80 w-80 rounded-full bg-green-200/35 blur-3xl" />
+        <div className="absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-yellow-200/35 blur-3xl" />
+        <div className="absolute top-1/3 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-emerald-200/25 blur-3xl" />
+      </div>
+
       {/* Section Header */}
       <div ref={headingRef} className="text-center mb-16 lg:mb-24">
         <p className="text-sm font-semibold tracking-[0.3em] uppercase text-green-600 mb-4">
@@ -143,17 +164,18 @@ export default function DivisiSection() {
         </h2>
         <div className="mt-4 mx-auto w-20 h-1 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full" />
         <p className="mt-6 text-green-800/60 text-sm sm:text-base max-w-2xl mx-auto">
-          Hover atau tap pada kartu untuk melihat deskripsi divisi
+          Hover / tap pada kartu untuk melihat deskripsi divisi
         </p>
       </div>
 
       {/* Flip Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7 justify-items-center">
         {divisiData.map((divisi, idx) => (
           <div
-            key={idx}
+            key={divisi.nama}
             ref={(el) => (cardRefs.current[idx] = el)}
             data-idx={idx}
+            className="w-full max-w-sm"
           >
             <FlipCard divisi={divisi} />
           </div>
