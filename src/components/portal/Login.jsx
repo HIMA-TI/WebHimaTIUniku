@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 export default function Login({ onLogin }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -9,7 +9,7 @@ export default function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    const result = await onLogin(username, password);
+    const result = await onLogin(email, password);
     if (!result.success) {
       setError(result.error);
     }
@@ -31,13 +31,13 @@ export default function Login({ onLogin }) {
         <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] rounded-2xl p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-green-900 mb-2">Username</label>
+              <label className="block text-sm font-semibold text-green-900 mb-2">Email</label>
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 bg-white border border-green-200 rounded-xl text-green-900 placeholder-green-400/50 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all"
-                placeholder="Masukkan username"
+                placeholder="Masukkan email"
                 required
               />
             </div>

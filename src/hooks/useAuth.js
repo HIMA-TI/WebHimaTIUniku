@@ -8,20 +8,35 @@ export default function useAuth() {
     () => sessionStorage.getItem(AUTH_KEY) !== null
   );
 
-  const login = useCallback(async (username, password) => {
+  const login = useCallback(async (email, password) => {
     try {
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: username, password })
+        body: JSON.stringify({ email, password })
       });
+
       const data = await response.json();
+
       if (response.ok) {
-        sessionStorage.setItem(AUTH_KEY, data.data.token || 'true');
+        const token =
+          data?.data?.token ||
+          data?.token ||
+          data?.data?.accessToken ||
+          data?.accessToken ||
+          data?.data?.access_token ||
+          data?.access_token;
+
+        if (!token) {
+          return { success: false, error: 'Login berhasil, tapi token tidak ditemukan' };
+        }
+
+        sessionStorage.setItem(AUTH_KEY, token);
         setIsAuthenticated(true);
         return { success: true };
       }
-      return { success: false, error: data.message || 'Username atau password salah' };
+
+      return { success: false, error: data.message || 'Email atau password salah' };
     } catch {
       return { success: false, error: 'Gagal menghubungi server' };
     }

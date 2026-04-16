@@ -9,10 +9,11 @@ export default function useProducts() {
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE}/product`);
-      const data = await response.json();
+      const json = await response.json();
       if (response.ok) {
+        const items = Array.isArray(json) ? json : Array.isArray(json?.data) ? json.data : [];
         // Map backend fields to frontend fields
-        const formatted = data.map(item => ({
+        const formatted = items.map(item => ({
           ...item,
           nama: item.name,
           deskripsi: item.description,
@@ -21,6 +22,8 @@ export default function useProducts() {
           harga: 0 // Optional fallback if missing in DB
         }));
         setProducts(formatted);
+      } else {
+        setProducts([]);
       }
     } catch (e) {
       console.error(e);

@@ -9,9 +9,10 @@ export default function usePrograms() {
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE}/activity`);
-      const data = await response.json();
+      const json = await response.json();
       if (response.ok) {
-        const formatted = data.map(item => ({
+        const items = Array.isArray(json) ? json : Array.isArray(json?.data) ? json.data : [];
+        const formatted = items.map(item => ({
           ...item,
           judul: item.name,
           deskripsi: item.description,
@@ -19,6 +20,8 @@ export default function usePrograms() {
           link: item.url || ''
         }));
         setPrograms(formatted);
+      } else {
+        setPrograms([]);
       }
     } catch (e) {
       console.error(e);
