@@ -65,12 +65,12 @@ export default function useAspirasi() {
         lampiran = undefined;
       }
     }
+
     const newAspirasi = {
       id: crypto.randomUUID(),
-      nim: data.nim,
       nama: data.nama,
-      angkatan: data.angkatan,
-      kelas: data.kelas,
+      kategori: data.kategori,
+      topik: data.topik,
       judul: data.judul,
       pesan: data.pesan,
       lampiran,
@@ -96,24 +96,28 @@ export default function useAspirasi() {
     const current = await fetchAspirasi();
     if (current.length === 0) return;
 
+    const sanitize = (value) =>
+      String(value ?? '-')
+        .replace(/(\r\n|\n|\v)/g, ' ')
+        .replace(/,/g, ';');
+
     // Build CSV content
-    const header = ['ID', 'NIM', 'Nama', 'Angkatan', 'Kelas', 'Judul', 'Pesan', 'Lampiran', 'Status', 'Tanggal'];
-    const rows = current.map(item => [
-      item.id,
-      item.nim,
-      item.nama,
-      item.angkatan || '-',
-      item.kelas || '-',
-      item.judul, // Escape commas in string fields if necessary
-      item.pesan.replace(/(\r\n|\n|\v)/g, ' ').replace(/,/g, ';'), 
-      item.lampiran?.name || '-',
-      item.status,
-      new Date(item.createdAt).toLocaleString()
+    const header = ['ID', 'Nama', 'Kategori', 'Topik', 'Judul', 'Pesan', 'Lampiran', 'Status', 'Tanggal'];
+    const rows = current.map((item) => [
+      sanitize(item.id),
+      sanitize(item.nama),
+      sanitize(item.kategori),
+      sanitize(item.topik),
+      sanitize(item.judul),
+      sanitize(item.pesan),
+      sanitize(item.lampiran?.name),
+      sanitize(item.status),
+      sanitize(new Date(item.createdAt).toLocaleString()),
     ]);
-    
-    let csvContent = "data:text/csv;charset=utf-8," + header.join(",") + "\n"
-        + rows.map(e => e.join(",")).join("\n");
-        
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," + header.join(",") + "\n" + rows.map((e) => e.join(",")).join("\n");
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);

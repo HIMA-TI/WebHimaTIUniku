@@ -210,7 +210,7 @@ export default function Dashboard({ onLogout }) {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h3 className="font-bold text-green-900 text-lg">{asp.judul}</h3>
-                        <p className="text-sm text-neutral-600 mt-1">Oleh: <span className="font-semibold">{asp.nama}</span> ({asp.nim}) &bull; Angkatan {asp.angkatan} - Kelas {asp.kelas}</p>
+                        <p className="text-sm text-neutral-600 mt-1">Oleh: <span className="font-semibold">{asp.nama}</span> &bull; Kategori: <span className="font-semibold text-green-700">{asp.kategori || '-'}</span> &bull; Topik: <span className="font-semibold">{asp.topik || '-'}</span></p>
                         <p className="text-xs text-neutral-400 mt-1">{new Date(asp.createdAt).toLocaleDateString('id-ID')}</p>
                       </div>
                       <button onClick={() => setDeleteAspirasiTarget(asp)} className="p-2 rounded-lg hover:bg-red-50 text-red-500" title="Hapus">
