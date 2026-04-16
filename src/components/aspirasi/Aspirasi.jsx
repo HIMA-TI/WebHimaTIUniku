@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useAspirasi from '../../hooks/useAspirasi';
-import Navbar from '../Navbar';
 import ImageUpload from '../portal/ImageUpload';
 
 const KATEGORI_ASPIRASI = [
@@ -15,6 +14,9 @@ const KATEGORI_ASPIRASI = [
 export default function Aspirasi() {
   const { addAspirasi } = useAspirasi();
 
+  const [showForm, setShowForm] = useState(false);
+  const formRef = useRef(null);
+
   const [nama, setNama] = useState('');
   const [kategori, setKategori] = useState('');
   const [topik, setTopik] = useState('');
@@ -25,6 +27,19 @@ export default function Aspirasi() {
   const [errorObj, setErrorObj] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!showForm) return;
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [showForm]);
+
+  const openForm = () => {
+    if (showForm) {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    setShowForm(true);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,21 +77,86 @@ export default function Aspirasi() {
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="pt-24 pb-16 min-h-screen bg-green-50/50 flex flex-col items-center">
-        <div className="max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-          <div className="text-center mb-10 text-green-900">
-            <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Kotak Aspirasi</h1>
-            <p className="text-lg opacity-80 max-w-xl mx-auto">
-              Sampaikan keluh kesah, saran, dan masukan Anda untuk kemajuan HIMA TI dan jurusan. Suara Anda sangat berarti!
-            </p>
-          </div>
+    <section className="pt-24 pb-16 min-h-screen bg-green-50/50">
+      <div className="max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div className="text-center mb-10 text-green-900">
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Aspirasi</h1>
+          <p className="text-lg opacity-80 max-w-xl mx-auto">
+            Wadah resmi untuk menyampaikan saran, keluhan, dan masukan. Biar kami bisa evaluasi dan tindak lanjuti dengan lebih terarah.
+          </p>
+        </div>
 
-          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-green-100 relative overflow-hidden">
+        {/* INFO + CTA */}
+        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-green-100 relative overflow-hidden">
+          {/* Dekorasi BG */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 bg-opacity-20 rounded-bl-full -z-10 mix-blend-multiply blur-2xl"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-green-400 bg-opacity-20 rounded-tr-full -z-10 mix-blend-multiply blur-2xl"></div>
+
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-green-900">Apa itu Aspirasi?</h2>
+              <p className="mt-2 text-sm sm:text-base text-neutral-700 leading-relaxed">
+                Aspirasi adalah tempat kamu menyuarakan hal-hal yang perlu diperbaiki atau ditingkatkan. Bisa berupa kritik, saran,
+                atau laporan kendala yang kamu alami di lingkungan kampus/organisasi.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-green-100 bg-green-50/50 p-4">
+                <h3 className="font-bold text-green-900">Untuk apa?</h3>
+                <ul className="mt-2 space-y-2 text-sm text-neutral-700 list-disc pl-5">
+                  <li>Jadi bahan evaluasi dan perbaikan layanan.</li>
+                  <li>Biar masalah kamu cepat masuk ke pihak yang tepat.</li>
+                  <li>Kalau perlu, kamu bisa lampirin bukti (foto/screenshot).</li>
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-yellow-100 bg-yellow-50/50 p-4">
+                <h3 className="font-bold text-green-900">Kategori yang tersedia</h3>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {KATEGORI_ASPIRASI.map((k) => (
+                    <span
+                      key={k}
+                      className="text-xs font-semibold px-3 py-1 rounded-full bg-white/80 border border-neutral-200 text-neutral-700"
+                    >
+                      {k}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+              <p className="text-sm text-neutral-700">
+                <span className="font-bold text-green-900">Catatan:</span> Gunakan bahasa yang sopan dan jelas. Hindari membagikan data sensitif.
+              </p>
+            </div>
+
+            <div className="pt-2 flex justify-center">
+              <button
+                type="button"
+                onClick={openForm}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-green-700 hover:bg-green-800 text-white font-extrabold px-7 py-4 rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                Suarakan Aspirasi mu
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* FORM */}
+        {showForm && (
+          <div ref={formRef} className="mt-8 bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-green-100 relative overflow-hidden">
             {/* Dekorasi BG */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 bg-opacity-20 rounded-bl-full -z-10 mix-blend-multiply blur-2xl"></div>
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-green-400 bg-opacity-20 rounded-tr-full -z-10 mix-blend-multiply blur-2xl"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-green-400 bg-opacity-10 rounded-bl-full -z-10 mix-blend-multiply blur-2xl"></div>
+
+            <div className="mb-6">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-green-900">Form Aspirasi</h2>
+              <p className="text-sm text-neutral-600 mt-1">Isi singkat, jelas, dan pilih kategori yang paling sesuai.</p>
+            </div>
 
             {successMsg && (
               <div className="mb-6 p-4 bg-green-50 text-green-800 rounded-xl border border-green-200 flex items-center gap-3">
@@ -240,8 +320,8 @@ export default function Aspirasi() {
               </button>
             </form>
           </div>
-        </div>
+        )}
       </div>
-    </>
+    </section>
   );
 }

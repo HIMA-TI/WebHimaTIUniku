@@ -86,6 +86,11 @@ export default function Navbar() {
                 {item.label}
               </NavLink>
             ))}
+
+            <NavLink to="/aspirasi" className={mobileNavLinkClass} onClick={closeMobileMenu}>
+              Aspirasi
+            </NavLink>
+
             <Link to="/portal" onClick={closeMobileMenu} className="block w-full text-center mt-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-green-900 font-bold px-4 py-3 rounded-xl text-base shadow-md hover:shadow-lg transition-all">
               Portal Pengurus
             </Link>

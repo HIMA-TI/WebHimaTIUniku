@@ -60,7 +60,7 @@ export default function Footer() {
                 { label: 'Kepengurusan', to: '/kepengurusan' },
                 { label: 'Produk', to: '/produk' },
                 { label: 'Kontak', to: '/kontak' },
-                { label: 'Kotak Aspirasi', to: '/aspirasi' },
+                { label: 'Aspirasi', to: '/aspirasi' },
               ].map((link) => (
                 <li key={link.to}>
                   <Link
