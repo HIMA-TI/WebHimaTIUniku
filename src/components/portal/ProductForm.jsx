@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 import ImageUpload from './ImageUpload';
 
-export default function ProductForm({ product, onSubmit, onCancel }) {
+export default function ProductForm({
+  product,
+  onSubmit,
+  onCancel,
+  submitting = false,
+  submitError = ''
+}) {
   const [formData, setFormData] = useState({
     nama: '',
     deskripsi: '',
@@ -33,10 +39,12 @@ export default function ProductForm({ product, onSubmit, onCancel }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
     if (!validate()) return;
-    onSubmit({
+
+    await onSubmit({
       ...formData,
       harga: parseInt(formData.harga, 10)
     });
@@ -44,7 +52,13 @@ export default function ProductForm({ product, onSubmit, onCancel }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={() => {
+          if (submitting) return;
+          onCancel();
+        }}
+      />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 rounded-t-2xl">
           <h2 className="text-lg font-bold text-gray-900">
@@ -53,12 +67,19 @@ export default function ProductForm({ product, onSubmit, onCancel }) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {submitError && (
+            <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-xl">
+              {submitError}
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Nama Produk</label>
             <input
               type="text"
               value={formData.nama}
               onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
+              disabled={submitting}
               className={`w-full px-4 py-3 border rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all ${
                 errors.nama ? 'border-red-400' : 'border-gray-200'
               }`}
@@ -73,6 +94,7 @@ export default function ProductForm({ product, onSubmit, onCancel }) {
               type="number"
               value={formData.harga}
               onChange={(e) => setFormData({ ...formData, harga: e.target.value })}
+              disabled={submitting}
               className={`w-full px-4 py-3 border rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all ${
                 errors.harga ? 'border-red-400' : 'border-gray-200'
               }`}
@@ -87,6 +109,7 @@ export default function ProductForm({ product, onSubmit, onCancel }) {
               rows={3}
               value={formData.deskripsi}
               onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
+              disabled={submitting}
               className={`w-full px-4 py-3 border rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all resize-none ${
                 errors.deskripsi ? 'border-red-400' : 'border-gray-200'
               }`}
@@ -100,6 +123,7 @@ export default function ProductForm({ product, onSubmit, onCancel }) {
             <ImageUpload
               value={formData.gambar}
               onChange={(val) => setFormData({ ...formData, gambar: val })}
+              disabled={submitting}
             />
             {errors.gambar && <p className="text-red-500 text-xs mt-1">{errors.gambar}</p>}
           </div>
@@ -112,6 +136,7 @@ export default function ProductForm({ product, onSubmit, onCancel }) {
               type="url"
               value={formData.linkOrder}
               onChange={(e) => setFormData({ ...formData, linkOrder: e.target.value })}
+              disabled={submitting}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all"
               placeholder="https://wa.me/..."
             />
@@ -121,15 +146,19 @@ export default function ProductForm({ product, onSubmit, onCancel }) {
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors"
+              disabled={submitting}
+              className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold rounded-xl transition-all shadow-md"
+              disabled={submitting}
+              className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold rounded-xl transition-all shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {product ? 'Simpan Perubahan' : 'Tambah Produk'}
+              {submitting
+                ? (product ? 'Menyimpan...' : 'Mengirim...')
+                : (product ? 'Simpan Perubahan' : 'Tambah Produk')}
             </button>
           </div>
         </form>

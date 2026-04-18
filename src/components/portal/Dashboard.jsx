@@ -21,6 +21,8 @@ export default function Dashboard({ onLogout }) {
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [deleteProductTarget, setDeleteProductTarget] = useState(null);
+  const [productSubmitting, setProductSubmitting] = useState(false);
+  const [productSubmitError, setProductSubmitError] = useState('');
 
   // --- ASPIRASI STATES ---
   const { aspirasi, deleteAspirasi, exportCsv } = useAspirasi();
@@ -29,6 +31,50 @@ export default function Dashboard({ onLogout }) {
   // --- PESAN STATES ---
   const { pesanList, deletePesan } = usePesan();
   const [deletePesanTarget, setDeletePesanTarget] = useState(null);
+
+  const openCreateProductForm = () => {
+    setProductSubmitError('');
+    setShowProductForm(true);
+  };
+
+  const openEditProductForm = (product) => {
+    setProductSubmitError('');
+    setEditingProduct(product);
+  };
+
+  const handleAddProduct = async (data) => {
+    setProductSubmitting(true);
+    setProductSubmitError('');
+
+    const result = await addProduct(data);
+
+    setProductSubmitting(false);
+    if (result?.success) {
+      setShowProductForm(false);
+      return true;
+    }
+
+    setProductSubmitError(result?.error || 'Gagal menambahkan produk');
+    return false;
+  };
+
+  const handleUpdateProduct = async (data) => {
+    if (!editingProduct) return false;
+
+    setProductSubmitting(true);
+    setProductSubmitError('');
+
+    const result = await updateProduct(editingProduct.id, data);
+
+    setProductSubmitting(false);
+    if (result?.success) {
+      setEditingProduct(null);
+      return true;
+    }
+
+    setProductSubmitError(result?.error || 'Gagal memperbarui produk');
+    return false;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
@@ -141,7 +187,7 @@ export default function Dashboard({ onLogout }) {
                 <p className="text-green-600/60 text-sm">{products.length} produk terdaftar</p>
               </div>
               <button
-                onClick={() => setShowProductForm(true)}
+                onClick={openCreateProductForm}
                 className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all text-sm"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
@@ -166,7 +212,7 @@ export default function Dashboard({ onLogout }) {
                       <p className="text-green-600/60 text-xs truncate">{prod.deskripsi}</p>
                     </div>
                     <div className="flex flex-col gap-1 flex-shrink-0">
-                      <button onClick={() => setEditingProduct(prod)} className="p-2 rounded-lg hover:bg-blue-50 text-blue-500">
+                      <button onClick={() => openEditProductForm(prod)} className="p-2 rounded-lg hover:bg-blue-50 text-blue-500">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                       </button>
                       <button onClick={() => setDeleteProductTarget(prod)} className="p-2 rounded-lg hover:bg-red-50 text-red-500">
@@ -294,8 +340,29 @@ export default function Dashboard({ onLogout }) {
       {editingProgram && <ProgramForm program={editingProgram} onSubmit={(data) => { updateProgram(editingProgram.id, data); setEditingProgram(null); }} onCancel={() => setEditingProgram(null)} />}
       {deleteProgramTarget && <DeleteConfirmModal programName={deleteProgramTarget.judul} onConfirm={() => { deleteProgram(deleteProgramTarget.id); setDeleteProgramTarget(null); }} onCancel={() => setDeleteProgramTarget(null)} />}
 
-      {showProductForm && <ProductForm onSubmit={(data) => { addProduct(data); setShowProductForm(false); }} onCancel={() => setShowProductForm(false)} />}
-      {editingProduct && <ProductForm product={editingProduct} onSubmit={(data) => { updateProduct(editingProduct.id, data); setEditingProduct(null); }} onCancel={() => setEditingProduct(null)} />}
+      {showProductForm && (
+        <ProductForm
+          onSubmit={handleAddProduct}
+          onCancel={() => {
+            if (productSubmitting) return;
+            setShowProductForm(false);
+          }}
+          submitting={productSubmitting}
+          submitError={productSubmitError}
+        />
+      )}
+      {editingProduct && (
+        <ProductForm
+          product={editingProduct}
+          onSubmit={handleUpdateProduct}
+          onCancel={() => {
+            if (productSubmitting) return;
+            setEditingProduct(null);
+          }}
+          submitting={productSubmitting}
+          submitError={productSubmitError}
+        />
+      )}
       {deleteProductTarget && <DeleteConfirmModal programName={deleteProductTarget.nama} onConfirm={() => { deleteProduct(deleteProductTarget.id); setDeleteProductTarget(null); }} onCancel={() => setDeleteProductTarget(null)} />}
       
       {deleteAspirasiTarget && <DeleteConfirmModal programName={`Aspirasi: ${deleteAspirasiTarget.judul}`} onConfirm={() => { deleteAspirasi(deleteAspirasiTarget.id); setDeleteAspirasiTarget(null); }} onCancel={() => setDeleteAspirasiTarget(null)} />}
