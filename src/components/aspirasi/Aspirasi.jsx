@@ -27,6 +27,7 @@ export default function Aspirasi() {
 
   const [showForm, setShowForm] = useState(false);
   const formRef = useRef(null);
+  const successAlertRef = useRef(null);
 
   const [nama, setNama] = useState('');
   const [kategori, setKategori] = useState('');
@@ -43,6 +44,23 @@ export default function Aspirasi() {
     if (!showForm) return;
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [showForm]);
+
+  useEffect(() => {
+    if (!successMsg || !successAlertRef.current) return;
+
+    const animation = successAlertRef.current.animate(
+      [
+        { opacity: 0, transform: 'translateY(10px) scale(0.96)' },
+        { opacity: 1, transform: 'translateY(0) scale(1)' },
+      ],
+      {
+        duration: 420,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      }
+    );
+
+    return () => animation.cancel();
+  }, [successMsg]);
 
   const openForm = () => {
     if (showForm) {
@@ -177,16 +195,24 @@ export default function Aspirasi() {
               </div>
 
               {successMsg && (
-                <div className="mb-6 p-4 bg-green-50 text-green-800 rounded-xl border border-green-200 flex items-center gap-3">
-                  <svg className="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span className="font-medium">{successMsg}</span>
+                <div
+                  ref={successAlertRef}
+                  className="mb-6 p-4 bg-green-50 text-green-800 rounded-xl border border-green-200 flex items-center gap-3 shadow-[0_12px_30px_-18px_rgba(22,163,74,0.7)]"
+                >
+                  <div className="relative shrink-0">
+                    <span className="absolute inset-0 rounded-full bg-green-300/60 animate-ping" aria-hidden="true" />
+                    <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white shadow-sm">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2.4}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <span className="font-semibold">{successMsg}</span>
                 </div>
               )}
 
