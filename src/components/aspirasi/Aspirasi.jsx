@@ -221,7 +221,7 @@ export default function Aspirasi() {
                   {/* NAMA (Wajib) */}
                   <div>
                     <label htmlFor="nama" className="block text-sm font-semibold text-green-900 mb-2">
-                      Nama (Wajib)
+                      Nama (Opsional)
                     </label>
                     <input
                       type="text"
