@@ -68,6 +68,7 @@ export default function Aspirasi() {
   const [errorObj, setErrorObj] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedAspirasi, setSelectedAspirasi] = useState(null);
 
   const aspirasiPublik = useMemo(() => {
     const filled = aspirasi
@@ -451,13 +452,19 @@ export default function Aspirasi() {
               <article
                 key={item.id}
                 style={cloudStyle}
-                className="aspirasi-cloud p-4 sm:p-5 min-h-[175px] flex flex-col"
+                onClick={() => setSelectedAspirasi(item)}
+                className="aspirasi-cloud p-4 sm:p-5 min-h-[175px] flex flex-col cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-xl active:scale-95"
               >
-                <p className="text-sm sm:text-base text-neutral-800 leading-relaxed flex-1">
+                <div className="flex justify-between items-start gap-2 mb-2">
+                  <span className="text-xs font-bold text-green-700 bg-green-100/50 px-2 py-1 rounded-md line-clamp-1 max-w-[75%]">
+                    {item.category || item.kategori || '-'}
+                  </span>
+                </div>
+                <p className="text-sm sm:text-base text-neutral-800 leading-relaxed flex-1 mt-1">
                   {truncateText(item.description || item.pesan, 145)}
                 </p>
 
-                <div className="mt-4 pt-3 border-t border-white/70 flex items-center justify-between gap-3 text-xs text-neutral-600">
+                <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between gap-3 text-xs text-neutral-600">
                   <span className="font-semibold text-neutral-700">✍ {maskName(item.name || item.nama || 'Anonim')}</span>
                   <span>{formatAspirasiDate(item.created_at || item.createdAt)}</span>
                 </div>
@@ -470,6 +477,88 @@ export default function Aspirasi() {
           <p className="mt-4 text-xs text-white/80">Memuat aspirasi publik...</p>
         )}
       </div>
+
+      {selectedAspirasi && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 sm:px-12 backdrop-blur-sm bg-black/60 transition-all duration-300">
+          <style>{`
+            @keyframes modalZoomCenter {
+              0% { opacity: 0; transform: scale(0.9) translateY(15px); }
+              100% { opacity: 1; transform: scale(1) translateY(0); }
+            }
+            .animate-modalZoom {
+              animation: modalZoomCenter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+          `}</style>
+          
+          <div 
+            className="absolute inset-0 cursor-pointer" 
+            onClick={() => setSelectedAspirasi(null)} 
+          />
+
+          <div className="relative animate-modalZoom bg-white w-full max-w-2xl rounded-[2rem] shadow-[0_15px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col max-h-[85vh]">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-500 via-yellow-400 to-green-600"></div>
+            
+            <div className="p-6 sm:p-8 flex-1 overflow-y-auto overflow-x-hidden">
+              <div className="flex justify-between items-start gap-4 mb-6">
+                <div>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-green-900 leading-tight">
+                    {selectedAspirasi.topic || selectedAspirasi.judul || 'Aspirasi'}
+                  </h3>
+                  <span className="inline-block mt-3 px-3 py-1.5 bg-green-100/80 text-green-800 text-xs font-bold rounded-xl border border-green-200">
+                    {selectedAspirasi.category || selectedAspirasi.kategori || '-'}
+                  </span>
+                </div>
+                
+                <button 
+                  onClick={() => setSelectedAspirasi(null)}
+                  className="p-2 sm:p-2.5 -mr-2 bg-neutral-100 hover:bg-neutral-200 hover:text-red-500 text-neutral-500 rounded-2xl transition-all duration-300 hover:rotate-90"
+                >
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="prose prose-sm sm:prose-base max-w-none text-neutral-700 whitespace-pre-wrap leading-relaxed">
+                {selectedAspirasi.description || selectedAspirasi.pesan || '-'}
+              </div>
+              
+              {selectedAspirasi.file_url && (
+                <div className="mt-8 rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 p-2 shadow-inner">
+                  <p className="text-xs font-bold text-neutral-400 mb-3 ml-2 uppercase tracking-wider">Lampiran Pendukung</p>
+                  <img 
+                    src={selectedAspirasi.file_url} 
+                    alt="Lampiran" 
+                    className="w-full h-auto rounded-xl object-contain max-h-[40vh]" 
+                    loading="lazy" 
+                  />
+                </div>
+              )}
+            </div>
+            
+            <div className="bg-neutral-50 p-5 sm:p-6 border-t border-neutral-100 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-bold shadow-md text-sm sm:text-base">
+                  {maskName(selectedAspirasi.name || selectedAspirasi.nama || 'Anonim')[0]}
+                </div>
+                <div>
+                  <p className="text-xs text-neutral-400 font-medium">Pengirim</p>
+                  <span className="font-semibold text-neutral-800 text-sm sm:text-base truncate max-w-[120px] sm:max-w-[200px] block">
+                    {maskName(selectedAspirasi.name || selectedAspirasi.nama || 'Anonim')}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="text-right">
+                <p className="text-xs text-neutral-400 font-medium mb-0.5">Tanggal</p>
+                <span className="text-neutral-600 font-semibold text-xs sm:text-sm bg-white px-3 py-1.5 rounded-lg border border-neutral-200 shadow-sm inline-block">
+                  {formatAspirasiDate(selectedAspirasi.created_at || selectedAspirasi.createdAt)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

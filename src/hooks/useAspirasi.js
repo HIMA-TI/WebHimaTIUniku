@@ -3,11 +3,8 @@ import { apiUrl } from '../config/api';
 
 const AUTH_KEY = 'himati_auth';
 const LEGACY_AUTH_KEY = 'himati_token';
-const PUBLIC_STORAGE_KEY = 'himati_public_aspirasi_cache';
-const PUBLIC_CACHE_MAX_ITEMS = 60;
 
 function getAuthToken() {
-  // Prefer active session token; keep localStorage fallback for backward compatibility.
   return sessionStorage.getItem(AUTH_KEY) || localStorage.getItem(LEGACY_AUTH_KEY) || '';
 }
 
@@ -51,37 +48,7 @@ function normalizeAspirasiList(raw) {
   return sortAspirasiNewestFirst(list.map(normalizeAspirasiItem).filter(Boolean));
 }
 
-function readPublicAspirasiCache() {
-  try {
-    const raw = localStorage.getItem(PUBLIC_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return normalizeAspirasiList(parsed);
-  } catch {
-    return [];
-  }
-}
-
-function savePublicAspirasiCache(items) {
-  const trimmed = sortAspirasiNewestFirst(items).slice(0, PUBLIC_CACHE_MAX_ITEMS);
-  localStorage.setItem(PUBLIC_STORAGE_KEY, JSON.stringify(trimmed));
-}
-
-function upsertPublicAspirasiCache(item) {
-  const normalized = normalizeAspirasiItem(item);
-  if (!normalized) return;
-
-  const current = readPublicAspirasiCache();
-  const filtered = current.filter((entry) => entry.id !== normalized.id);
-  savePublicAspirasiCache([normalized, ...filtered]);
-}
-
-function removePublicAspirasiCacheById(id) {
-  const current = readPublicAspirasiCache();
-  savePublicAspirasiCache(current.filter((entry) => entry.id !== id));
-}
-
-// Real API Call - Get Aspirations (Admin)
+// Real API Call - Get Aspirations (Admin & Public)
 export async function fetchAspirasi({ allowPublicRead = false } = {}) {
   const token = getAuthToken();
 
@@ -91,28 +58,19 @@ export async function fetchAspirasi({ allowPublicRead = false } = {}) {
       headers['Authorization'] = `Bearer ${token}`;
     }
     
+    // Fetch directly from the backend
     const res = await fetch(apiUrl('/aspiration'), { headers });
     if (!res.ok) {
-      if (allowPublicRead && !token) {
-        return readPublicAspirasiCache();
-      }
       throw new Error('Failed to fetch aspirasi');
     }
 
     const data = await res.json();
-    const normalized = normalizeAspirasiList(data);
-
-    if (allowPublicRead && normalized.length > 0) {
-      savePublicAspirasiCache(normalized);
-    }
-
-    return normalized;
+    return normalizeAspirasiList(data);
   } catch (error) {
-    // Avoid noisy logs on public page when endpoint is auth-protected.
     if (!allowPublicRead || token) {
       console.error(error);
     }
-    return allowPublicRead ? readPublicAspirasiCache() : [];
+    return [];
   }
 }
 
@@ -191,7 +149,6 @@ export default function useAspirasi(options = {}) {
           const filtered = current.filter((entry) => entry.id !== newAspirasi.id);
           return sortAspirasiNewestFirst([newAspirasi, ...filtered]);
         });
-        upsertPublicAspirasiCache(newAspirasi);
       }
 
       return newAspirasi;
@@ -215,7 +172,6 @@ export default function useAspirasi(options = {}) {
       });
       if (!res.ok) throw new Error('Failed to delete aspirasi');
       setAspirasi((current) => current.filter((p) => p.id !== id));
-      removePublicAspirasiCacheById(id);
     } catch (error) {
       console.error(error);
       throw error;
