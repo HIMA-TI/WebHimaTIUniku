@@ -255,31 +255,31 @@ export default function Dashboard({ onLogout }) {
                   <div key={asp.id} className="bg-white rounded-xl border border-green-200/50 shadow-sm p-5 relative">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="font-bold text-green-900 text-lg">{asp.judul}</h3>
-                        <p className="text-sm text-neutral-600 mt-1">Oleh: <span className="font-semibold">{asp.nama}</span> &bull; Kategori: <span className="font-semibold text-green-700">{asp.kategori || '-'}</span> &bull; Topik: <span className="font-semibold">{asp.topik || '-'}</span></p>
-                        <p className="text-xs text-neutral-400 mt-1">{new Date(asp.createdAt).toLocaleDateString('id-ID')}</p>
+                        <h3 className="font-bold text-green-900 text-lg">{asp.topic || asp.judul}</h3>
+                        <p className="text-sm text-neutral-600 mt-1">Oleh: <span className="font-semibold">{asp.name || asp.nama || 'Anonim'}</span> &bull; Kategori: <span className="font-semibold text-green-700">{asp.category || asp.kategori || '-'}</span></p>
+                        <p className="text-xs text-neutral-400 mt-1">{new Date(asp.created_at || asp.createdAt).toLocaleDateString('id-ID')}</p>
                       </div>
                       <button onClick={() => setDeleteAspirasiTarget(asp)} className="p-2 rounded-lg hover:bg-red-50 text-red-500" title="Hapus">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
                       </button>
                     </div>
                     <div className="bg-neutral-50 p-4 border border-neutral-100 rounded-lg text-sm text-neutral-800 whitespace-pre-wrap">
-                      {asp.pesan}
+                      {asp.description || asp.pesan}
                     </div>
 
-                    {asp.lampiran?.dataUrl && (
+                    {(asp.file_url || asp.lampiran?.dataUrl) && (
                       <div className="mt-4">
                         <p className="text-xs text-neutral-500 mb-2">Lampiran</p>
                         <a
-                          href={asp.lampiran.dataUrl}
+                          href={asp.file_url || asp.lampiran?.dataUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="block"
-                          title={asp.lampiran.name || 'Buka lampiran'}
+                          title={asp.lampiran?.name || 'Buka lampiran'}
                         >
                           <img
-                            src={asp.lampiran.dataUrl}
-                            alt={asp.lampiran.name ? `Lampiran - ${asp.lampiran.name}` : 'Lampiran aspirasi'}
+                            src={asp.file_url || asp.lampiran?.dataUrl}
+                            alt={asp.lampiran?.name ? `Lampiran - ${asp.lampiran.name}` : 'Lampiran aspirasi'}
                             className="w-full max-h-80 object-contain rounded-lg border border-neutral-100 bg-neutral-50"
                             loading="lazy"
                           />
@@ -365,7 +365,7 @@ export default function Dashboard({ onLogout }) {
       )}
       {deleteProductTarget && <DeleteConfirmModal programName={deleteProductTarget.nama} onConfirm={() => { deleteProduct(deleteProductTarget.id); setDeleteProductTarget(null); }} onCancel={() => setDeleteProductTarget(null)} />}
       
-      {deleteAspirasiTarget && <DeleteConfirmModal programName={`Aspirasi: ${deleteAspirasiTarget.judul}`} onConfirm={() => { deleteAspirasi(deleteAspirasiTarget.id); setDeleteAspirasiTarget(null); }} onCancel={() => setDeleteAspirasiTarget(null)} />}
+      {deleteAspirasiTarget && <DeleteConfirmModal programName={`Aspirasi: ${deleteAspirasiTarget.topic || deleteAspirasiTarget.judul || '-'}`} onConfirm={() => { deleteAspirasi(deleteAspirasiTarget.id); setDeleteAspirasiTarget(null); }} onCancel={() => setDeleteAspirasiTarget(null)} />}
 
       {deletePesanTarget && <DeleteConfirmModal programName={`Pesan dari ${deletePesanTarget.nama}`} onConfirm={() => { deletePesan(deletePesanTarget.id); setDeletePesanTarget(null); }} onCancel={() => setDeletePesanTarget(null)} />}
     </div>

@@ -1,35 +1,36 @@
 import { useState, useCallback, useEffect } from 'react';
+import { apiUrl } from '../config/api';
 
-const STORAGE_KEY = 'himati_aspirasi';
+const AUTH_KEY = 'himati_auth';
 
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error('Gagal membaca file'));
-    reader.readAsDataURL(file);
-  });
+function getAuthToken() {
+  // Prefer active session token; keep localStorage fallback for backward compatibility.
+  return sessionStorage.getItem(AUTH_KEY) || localStorage.getItem('himati_token') || '';
 }
 
-// Mock API Call - Get Aspirations (Admin)
+// Real API Call - Get Aspirations (Admin)
 export async function fetchAspirasi() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return resolve([]);
-        const parsed = JSON.parse(raw);
-        resolve(parsed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-      } catch {
-        resolve([]);
-      }
-    }, 400); // Simulate network
-  });
-}
+  try {
+    const token = getAuthToken();
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    const res = await fetch(apiUrl('/aspiration'), { headers });
+    if (!res.ok) throw new Error('Failed to fetch aspirasi');
+    const data = await res.json();
 
-// Mock API Call - Internal Save
-async function saveAspirasi(aspirasiList) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(aspirasiList));
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.data)) return data.data;
+    if (Array.isArray(data?.result)) return data.result;
+    if (Array.isArray(data?.items)) return data.items;
+    if (Array.isArray(data?.data?.items)) return data.data.items;
+    return [];
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
 
 export default function useAspirasi() {
@@ -37,6 +38,12 @@ export default function useAspirasi() {
   const [loading, setLoading] = useState(true);
 
   const loadData = useCallback(async () => {
+    const token = getAuthToken();
+    if (!token) {
+      setAspirasi([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const data = await fetchAspirasi();
     setAspirasi(data);
@@ -47,54 +54,70 @@ export default function useAspirasi() {
     loadData();
   }, [loadData]);
 
-  // Mock API Call - Post Aspirasi (Client)
+  // Real API Call - Post Aspirasi (Client)
   const addAspirasi = useCallback(async (data) => {
-    const current = await fetchAspirasi();
-
-    let lampiran;
-    if (data.lampiran instanceof File) {
-      try {
-        const dataUrl = await fileToDataUrl(data.lampiran);
-        lampiran = {
-          name: data.lampiran.name,
-          type: data.lampiran.type,
-          size: data.lampiran.size,
-          dataUrl,
-        };
-      } catch {
-        lampiran = undefined;
+    try {
+      const formData = new FormData();
+      
+      if (data.nama) formData.append('name', data.nama);
+      
+      // Combine topik and judul into topic since backend only has topic
+      const combinedTopic = data.judul ? `[${data.topik}] ${data.judul}` : data.topik;
+      formData.append('topic', combinedTopic);
+      
+      formData.append('description', data.pesan);
+      formData.append('category', data.kategori);
+      // Hardcode urgency to 2 (medium) since UI doesn't have it
+      formData.append('urgency', '2');
+      
+      if (data.lampiran instanceof File) {
+        formData.append('file', data.lampiran);
       }
+
+      const res = await fetch(apiUrl('/aspiration'), {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to post aspirasi');
+      }
+      
+      // Only reload if we're also displaying the list, 
+      // but usually aspirations are handled nicely
+      const newAspirasi = await res.json();
+      setAspirasi(current => [newAspirasi, ...current]);
+      return newAspirasi;
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
-
-    const newAspirasi = {
-      id: crypto.randomUUID(),
-      nama: data.nama,
-      kategori: data.kategori,
-      topik: data.topik,
-      judul: data.judul,
-      pesan: data.pesan,
-      lampiran,
-      status: 'Menunggu', // Default status
-      createdAt: new Date().toISOString(),
-    };
-    const updated = [newAspirasi, ...current];
-    await saveAspirasi(updated);
-    setAspirasi(updated);
-    return newAspirasi;
   }, []);
 
-  // Mock API Call - Delete Aspirasi (Admin)
+  // Real API Call - Delete Aspirasi (Admin)
   const deleteAspirasi = useCallback(async (id) => {
-    const current = await fetchAspirasi();
-    const filtered = current.filter((p) => p.id !== id);
-    await saveAspirasi(filtered);
-    setAspirasi(filtered);
+    try {
+      const token = getAuthToken();
+      if (!token) throw new Error('Unauthorized: token tidak ditemukan');
+
+      const res = await fetch(apiUrl(`/aspiration/${id}`), {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+      if (!res.ok) throw new Error('Failed to delete aspirasi');
+      setAspirasi((current) => current.filter((p) => p.id !== id));
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }, []);
 
-  // Mock API Call - CSV Export Helper (Admin)
+  // CSV Export Helper (Admin)
   const exportCsv = useCallback(async () => {
     const current = await fetchAspirasi();
-    if (current.length === 0) return;
+    if (!current || current.length === 0) return;
 
     const sanitize = (value) =>
       String(value ?? '-')
@@ -102,17 +125,15 @@ export default function useAspirasi() {
         .replace(/,/g, ';');
 
     // Build CSV content
-    const header = ['ID', 'Nama', 'Kategori', 'Topik', 'Judul', 'Pesan', 'Lampiran', 'Status', 'Tanggal'];
+    const header = ['ID', 'Nama', 'Kategori', 'Topik', 'Pesan', 'Lampiran URL', 'Tanggal'];
     const rows = current.map((item) => [
       sanitize(item.id),
-      sanitize(item.nama),
-      sanitize(item.kategori),
-      sanitize(item.topik),
-      sanitize(item.judul),
-      sanitize(item.pesan),
-      sanitize(item.lampiran?.name),
-      sanitize(item.status),
-      sanitize(new Date(item.createdAt).toLocaleString()),
+      sanitize(item.name || item.nama),
+      sanitize(item.category || item.kategori),
+      sanitize(item.topic || item.topik),
+      sanitize(item.description || item.pesan),
+      sanitize(item.file_url || (item.lampiran?.name)),
+      sanitize(new Date(item.created_at || item.createdAt).toLocaleString()),
     ]);
 
     const csvContent =
