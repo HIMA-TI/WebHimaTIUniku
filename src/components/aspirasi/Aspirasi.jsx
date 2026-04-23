@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import useAspirasi from '../../hooks/useAspirasi';
 import aspirasiBG from '../../assets/aspirasiBG.webp';
 import ImageUpload from '../portal/ImageUpload';
@@ -54,6 +55,7 @@ export default function Aspirasi() {
   const [showForm, setShowForm] = useState(false);
   const formRef = useRef(null);
   const successAlertRef = useRef(null);
+  const recaptchaRef = useRef(null);
 
   const [nama, setNama] = useState('');
   const [kategori, setKategori] = useState('');
@@ -61,6 +63,7 @@ export default function Aspirasi() {
   const [judul, setJudul] = useState('');
   const [pesan, setPesan] = useState('');
   const [lampiran, setLampiran] = useState('');
+  const [captchaToken, setCaptchaToken] = useState(null);
 
   const [errorObj, setErrorObj] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
@@ -119,6 +122,11 @@ export default function Aspirasi() {
       return;
     }
 
+    if (!captchaToken) {
+      setErrorObj({ type: 'form', message: 'Harap verifikasi CAPTCHA terlebih dahulu.' });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -137,7 +145,9 @@ export default function Aspirasi() {
       setJudul('');
       setPesan('');
       setLampiran('');
-    } catch {
+      setCaptchaToken(null);      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }    } catch {
       setErrorObj({ type: 'server', message: 'Terjadi kesalahan saat mengirim aspirasi.' });
     } finally {
       setIsSubmitting(false);
@@ -352,6 +362,15 @@ export default function Aspirasi() {
                   <label className="block text-sm font-semibold text-green-900 mb-2">Lampiran Gambar (Opsional)</label>
                   <ImageUpload value={lampiran} onChange={setLampiran} />
                   <p className="mt-1 text-xs text-neutral-500">Opsional. Lampirkan screenshot/foto pendukung (maks 2MB).</p>
+                </div>
+
+                {/* RECAPTCHA */}
+                <div className="flex justify-center my-4">
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey="6LdnxcUsAAAAAIBCNW5My472YKimxZxj_3zjAVan"
+                    onChange={(token) => setCaptchaToken(token)}
+                  />
                 </div>
 
                 {/* FORM ERROR */}

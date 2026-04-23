@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { animate } from 'animejs';
+import ReCAPTCHA from 'react-google-recaptcha';
 import usePesan from '../../hooks/usePesan';
 
 const kontakItems = [
@@ -58,8 +59,10 @@ const socialLinks = [
 export default function KontakInfo() {
   const headingRef = useRef(null);
   const contentRef = useRef(null);
+  const recaptchaRef = useRef(null);
   const { addPesan } = usePesan();
   const [formData, setFormData] = useState({ nama: '', email: '', pesan: '' });
+  const [captchaToken, setCaptchaToken] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -116,12 +119,22 @@ export default function KontakInfo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSuccessMsg('');
+
+    if (!captchaToken) {
+      alert('Harap verifikasi CAPTCHA terlebih dahulu.');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       await addPesan(formData);
       setSuccessMsg('Terima kasih! Pesan Anda telah berhasil terkirim.');
       setFormData({ nama: '', email: '', pesan: '' });
+      setCaptchaToken(null);
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
       setTimeout(() => setSuccessMsg(''), 5000);
     } catch {
       alert('Terjadi kesalahan, gagal mengirim pesan.');
@@ -242,6 +255,15 @@ export default function KontakInfo() {
                 required
               />
             </div>
+            
+            <div className="flex justify-center my-4">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey="6LdnxcUsAAAAAIBCNW5My472YKimxZxj_3zjAVan"
+                onChange={(token) => setCaptchaToken(token)}
+              />
+            </div>
+
             <button
               type="submit"
               disabled={isSubmitting}
