@@ -10,3 +10,59 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@keyframes aspirasiCloudFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.aspirasi-cloud {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.76));
+  box-shadow: 0 22px 38px -24px rgba(20, 20, 20, 0.45);
+  backdrop-filter: blur(8px);
+  animation: aspirasiCloudFloat var(--cloud-duration, 6.8s) ease-in-out infinite;
+  animation-delay: var(--cloud-delay, 0s);
+}
+
+.aspirasi-cloud::before,
+.aspirasi-cloud::after {
+  content: '';
+  position: absolute;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.aspirasi-cloud::before {
+  width: 86px;
+  height: 34px;
+  top: -14px;
+  left: 22px;
+}
+
+.aspirasi-cloud::after {
+  width: 62px;
+  height: 26px;
+  top: -10px;
+  right: 24px;
+}
+
+.aspirasi-cloud > * {
+  position: relative;
+  z-index: 1;
+}
+
+.aspirasi-cloud--placeholder {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.75);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.58));
+}
