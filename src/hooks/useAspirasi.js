@@ -2,53 +2,140 @@ import { useState, useCallback, useEffect } from 'react';
 import { apiUrl } from '../config/api';
 
 const AUTH_KEY = 'himati_auth';
+const LEGACY_AUTH_KEY = 'himati_token';
+const PUBLIC_STORAGE_KEY = 'himati_public_aspirasi_cache';
+const PUBLIC_CACHE_MAX_ITEMS = 60;
 
 function getAuthToken() {
   // Prefer active session token; keep localStorage fallback for backward compatibility.
-  return sessionStorage.getItem(AUTH_KEY) || localStorage.getItem('himati_token') || '';
+  return sessionStorage.getItem(AUTH_KEY) || localStorage.getItem(LEGACY_AUTH_KEY) || '';
+}
+
+function sortAspirasiNewestFirst(list) {
+  return [...list].sort(
+    (a, b) =>
+      new Date(b.created_at || b.createdAt || 0).getTime() -
+      new Date(a.created_at || a.createdAt || 0).getTime()
+  );
+}
+
+function normalizeAspirasiItem(item) {
+  if (!item || typeof item !== 'object') return null;
+
+  const createdAt = item.created_at || item.createdAt || new Date().toISOString();
+  const topic = item.topic || item.topik || item.judul || '-';
+  const description = item.description || item.pesan || '';
+  const fallbackId = `${createdAt}-${topic}-${description}`;
+
+  return {
+    ...item,
+    id: item.id || item.uuid || fallbackId,
+    name: item.name ?? item.nama ?? null,
+    topic,
+    description,
+    category: item.category || item.kategori || '-',
+    file_url: item.file_url || item.lampiran?.dataUrl || null,
+    created_at: createdAt,
+  };
+}
+
+function normalizeAspirasiList(raw) {
+  let list = [];
+
+  if (Array.isArray(raw)) list = raw;
+  else if (Array.isArray(raw?.data)) list = raw.data;
+  else if (Array.isArray(raw?.result)) list = raw.result;
+  else if (Array.isArray(raw?.items)) list = raw.items;
+  else if (Array.isArray(raw?.data?.items)) list = raw.data.items;
+
+  return sortAspirasiNewestFirst(list.map(normalizeAspirasiItem).filter(Boolean));
+}
+
+function readPublicAspirasiCache() {
+  try {
+    const raw = localStorage.getItem(PUBLIC_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return normalizeAspirasiList(parsed);
+  } catch {
+    return [];
+  }
+}
+
+function savePublicAspirasiCache(items) {
+  const trimmed = sortAspirasiNewestFirst(items).slice(0, PUBLIC_CACHE_MAX_ITEMS);
+  localStorage.setItem(PUBLIC_STORAGE_KEY, JSON.stringify(trimmed));
+}
+
+function upsertPublicAspirasiCache(item) {
+  const normalized = normalizeAspirasiItem(item);
+  if (!normalized) return;
+
+  const current = readPublicAspirasiCache();
+  const filtered = current.filter((entry) => entry.id !== normalized.id);
+  savePublicAspirasiCache([normalized, ...filtered]);
+}
+
+function removePublicAspirasiCacheById(id) {
+  const current = readPublicAspirasiCache();
+  savePublicAspirasiCache(current.filter((entry) => entry.id !== id));
 }
 
 // Real API Call - Get Aspirations (Admin)
-export async function fetchAspirasi() {
+export async function fetchAspirasi({ allowPublicRead = false } = {}) {
+  const token = getAuthToken();
+
   try {
-    const token = getAuthToken();
     const headers = {};
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
     
     const res = await fetch(apiUrl('/aspiration'), { headers });
-    if (!res.ok) throw new Error('Failed to fetch aspirasi');
-    const data = await res.json();
+    if (!res.ok) {
+      if (allowPublicRead && !token) {
+        return readPublicAspirasiCache();
+      }
+      throw new Error('Failed to fetch aspirasi');
+    }
 
-    if (Array.isArray(data)) return data;
-    if (Array.isArray(data?.data)) return data.data;
-    if (Array.isArray(data?.result)) return data.result;
-    if (Array.isArray(data?.items)) return data.items;
-    if (Array.isArray(data?.data?.items)) return data.data.items;
-    return [];
+    const data = await res.json();
+    const normalized = normalizeAspirasiList(data);
+
+    if (allowPublicRead && normalized.length > 0) {
+      savePublicAspirasiCache(normalized);
+    }
+
+    return normalized;
   } catch (error) {
-    console.error(error);
-    return [];
+    // Avoid noisy logs on public page when endpoint is auth-protected.
+    if (!allowPublicRead || token) {
+      console.error(error);
+    }
+    return allowPublicRead ? readPublicAspirasiCache() : [];
   }
 }
 
-export default function useAspirasi() {
+export default function useAspirasi(options = {}) {
+  const { allowPublicRead = false } = options;
+
   const [aspirasi, setAspirasi] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadData = useCallback(async () => {
     const token = getAuthToken();
-    if (!token) {
+
+    if (!token && !allowPublicRead) {
       setAspirasi([]);
       setLoading(false);
       return;
     }
+
     setLoading(true);
-    const data = await fetchAspirasi();
+    const data = await fetchAspirasi({ allowPublicRead });
     setAspirasi(data);
     setLoading(false);
-  }, []);
+  }, [allowPublicRead]);
 
   useEffect(() => {
     loadData();
@@ -82,11 +169,31 @@ export default function useAspirasi() {
       if (!res.ok) {
         throw new Error('Failed to post aspirasi');
       }
-      
-      // Only reload if we're also displaying the list, 
-      // but usually aspirations are handled nicely
-      const newAspirasi = await res.json();
-      setAspirasi(current => [newAspirasi, ...current]);
+
+      let responseData = null;
+      try {
+        responseData = await res.json();
+      } catch {
+        responseData = null;
+      }
+
+      const newAspirasi =
+        normalizeAspirasiItem(responseData) ||
+        normalizeAspirasiItem({
+          name: data.nama || null,
+          topic: combinedTopic,
+          description: data.pesan,
+          category: data.kategori,
+        });
+
+      if (newAspirasi) {
+        setAspirasi((current) => {
+          const filtered = current.filter((entry) => entry.id !== newAspirasi.id);
+          return sortAspirasiNewestFirst([newAspirasi, ...filtered]);
+        });
+        upsertPublicAspirasiCache(newAspirasi);
+      }
+
       return newAspirasi;
     } catch (error) {
       console.error(error);
@@ -108,6 +215,7 @@ export default function useAspirasi() {
       });
       if (!res.ok) throw new Error('Failed to delete aspirasi');
       setAspirasi((current) => current.filter((p) => p.id !== id));
+      removePublicAspirasiCacheById(id);
     } catch (error) {
       console.error(error);
       throw error;

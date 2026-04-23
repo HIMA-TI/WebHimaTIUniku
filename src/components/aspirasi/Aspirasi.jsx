@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import useAspirasi from '../../hooks/useAspirasi';
 import aspirasiBG from '../../assets/aspirasiBG.webp';
 import ImageUpload from '../portal/ImageUpload';
@@ -12,6 +12,32 @@ const KATEGORI_ASPIRASI = [
   'Yang lain',
 ];
 
+const PUBLIC_CARD_LIMIT = 6;
+
+function maskName(rawName) {
+  const value = String(rawName || 'Anonim').trim();
+  if (!value) return 'Anonim';
+  if (value.length === 1) return '*';
+  if (value.length === 2) return `${value[0]}*`;
+  return `${value[0]}${'*'.repeat(value.length - 2)}${value[value.length - 1]}`;
+}
+
+function truncateText(value, maxLength) {
+  const text = String(value || '').trim();
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength).trim()}...`;
+}
+
+function formatAspirasiDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '-';
+  return date.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
 function AspirasiCard({ children, className = '' }) {
   return (
     <div
@@ -23,7 +49,7 @@ function AspirasiCard({ children, className = '' }) {
 }
 
 export default function Aspirasi() {
-  const { addAspirasi } = useAspirasi();
+  const { aspirasi, loading, addAspirasi } = useAspirasi({ allowPublicRead: true });
 
   const [showForm, setShowForm] = useState(false);
   const formRef = useRef(null);
@@ -39,6 +65,19 @@ export default function Aspirasi() {
   const [errorObj, setErrorObj] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const aspirasiPublik = useMemo(() => {
+    const filled = aspirasi
+      .filter((item) => String(item?.description || item?.pesan || '').trim().length > 0)
+      .slice(0, PUBLIC_CARD_LIMIT);
+
+    const placeholders = Array.from({ length: Math.max(0, PUBLIC_CARD_LIMIT - filled.length) }, (_, index) => ({
+      id: `placeholder-${index}`,
+      placeholder: true,
+    }));
+
+    return [...filled, ...placeholders];
+  }, [aspirasi]);
 
   useEffect(() => {
     if (!showForm) return;
@@ -75,7 +114,7 @@ export default function Aspirasi() {
     setErrorObj(null);
     setSuccessMsg('');
 
-    if (!nama.trim() || !kategori || !topik.trim() || !judul.trim() || !pesan.trim()) {
+    if (!kategori || !topik.trim() || !judul.trim() || !pesan.trim()) {
       setErrorObj({ type: 'form', message: 'Harap lengkapi semua field yang wajib diisi.' });
       return;
     }
@@ -84,7 +123,7 @@ export default function Aspirasi() {
 
     try {
       await addAspirasi({
-        nama: nama.trim(),
+          nama: nama.trim() || null,
         kategori,
         topik: topik.trim(),
         judul: judul.trim(),
@@ -218,7 +257,7 @@ export default function Aspirasi() {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* NAMA (Wajib) */}
+                  {/* NAMA (Opsional) */}
                   <div>
                     <label htmlFor="nama" className="block text-sm font-semibold text-green-900 mb-2">
                       Nama (Opsional)
@@ -228,7 +267,6 @@ export default function Aspirasi() {
                       id="nama"
                       value={nama}
                       onChange={(e) => setNama(e.target.value)}
-                      required
                       placeholder="Masukkan nama Anda"
                       className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-neutral-50 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all placeholder:text-neutral-400"
                     />
@@ -366,6 +404,53 @@ export default function Aspirasi() {
             </AspirasiCard>
           </div>
         )}
+
+        <div className="mt-8 sm:mt-10">
+          <AspirasiCard className="bg-white/80">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-extrabold text-green-900">Aspirasi Terkini</h2>
+                <p className="text-sm text-neutral-600 mt-1">
+                  6 aspirasi terbaru ditampilkan secara publik. Nama pengirim otomatis disamarkan.
+                </p>
+              </div>
+              <span className="self-start sm:self-auto text-xs font-bold tracking-wide text-green-800 bg-green-100 px-3 py-1 rounded-full">
+                6 Kartu Publik
+              </span>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {aspirasiPublik.map((item) => (
+                item.placeholder ? (
+                  <div
+                    key={item.id}
+                    className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/70 p-4 sm:p-5 min-h-[180px] flex items-center justify-center"
+                  >
+                    <p className="text-sm text-neutral-500 text-center">Menunggu aspirasi terbaru...</p>
+                  </div>
+                ) : (
+                  <article
+                    key={item.id}
+                    className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-5 shadow-sm min-h-[180px] flex flex-col"
+                  >
+                    <p className="text-sm sm:text-base text-neutral-800 leading-relaxed flex-1">
+                      {truncateText(item.description || item.pesan, 170)}
+                    </p>
+
+                    <div className="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between gap-3 text-xs text-neutral-500">
+                      <span className="font-semibold text-neutral-700">✍ {maskName(item.name || item.nama || 'Anonim')}</span>
+                      <span>{formatAspirasiDate(item.created_at || item.createdAt)}</span>
+                    </div>
+                  </article>
+                )
+              ))}
+            </div>
+
+            {loading && aspirasi.length === 0 && (
+              <p className="mt-4 text-xs text-neutral-500">Memuat aspirasi publik...</p>
+            )}
+          </AspirasiCard>
+        </div>
       </div>
     </section>
   );
