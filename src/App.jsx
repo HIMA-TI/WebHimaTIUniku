@@ -31,9 +31,8 @@ function RouteFallback() {
 
 function App() {
   const location = useLocation()
-  const isPortal = location.pathname.startsWith('/portal')
-  const isKKN = location.pathname.startsWith('/kkn-uniku-2026')
-  const isStandalone = isPortal || isKKN
+  const standardPages = ['/', '/tentang', '/kepengurusan', '/produk', '/kontak', '/aspirasi']
+  const isStandalone = !standardPages.includes(location.pathname)
 
   useEffect(() => {
     const titles = {
