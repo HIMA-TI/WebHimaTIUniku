@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { API_BASE } from '../config/api';
 
 export default function ShortUrlRedirect() {
   const { code } = useParams();
@@ -10,7 +9,7 @@ export default function ShortUrlRedirect() {
   useEffect(() => {
     const fetchAndRedirect = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/api/short-url/redirect/${code}`);
+        const res = await fetch(`${API_BASE}/short-url/redirect/${code}`);
         const data = await res.json();
         
         if (data.success && data.data?.original_url) {
