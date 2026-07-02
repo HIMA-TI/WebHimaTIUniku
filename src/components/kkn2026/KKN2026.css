@@ -1,0 +1,405 @@
+:root {
+  --desktop-padding: max(24px, calc((100vw - 1280px) / 2 + 24px));
+}
+
+/* ─── Lenis Smooth Scroll resets ─── */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis-stopped {
+  overflow: hidden;
+}
+.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Custom class mappings for WonderKids layout remapped to HIMA brand colors */
+.bg-wk-purple-light {
+  background-color: #D1FAE5 !important;
+}
+
+/* Soft HIMA Green pastel */
+
+.bg-wk-purple-primary {
+  background-color: #10B981 !important;
+}
+
+/* HIMA Green */
+
+.bg-wk-purple-dark {
+  background-color: #047857 !important;
+}
+
+/* Dark HIMA Green */
+
+.bg-wk-yellow-light {
+  background-color: #FEF3C7 !important;
+}
+
+/* Soft HIMA Yellow pastel */
+
+.bg-wk-yellow-primary {
+  background-color: #FFC107 !important;
+}
+
+/* HIMA Yellow */
+
+.text-wk-purple-primary {
+  color: #10B981 !important;
+}
+
+.text-wk-purple-dark {
+  color: #047857 !important;
+}
+
+.text-wk-yellow-primary {
+  color: #FFC107 !important;
+}
+
+.text-text-wk-yellow-primary {
+  color: #FFC107 !important;
+}
+
+.text-wk-text-dark {
+  color: #1F2937 !important;
+}
+
+.text-wk-text-light {
+  color: #4B5563 !important;
+}
+
+.border-wk-purple-primary {
+  border-color: #10B981 !important;
+}
+
+.border-wk-yellow-primary {
+  border-color: #FFC107 !important;
+}
+
+.selection\:bg-wk-purple-light::selection {
+  background-color: #D1FAE5 !important;
+}
+
+.selection\:text-wk-purple-primary::selection {
+  color: #10B981 !important;
+}
+
+.font-display {
+  font-family: 'Fredoka One', cursive !important;
+}
+
+/* Utilities for native horizontal scrolling */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.kkn2026-page {
+  font-family: 'Nunito', sans-serif;
+  background-color: #F9FAFB;
+  color: #1F2937;
+  overflow-x: hidden;
+}
+
+/* Handwriting highlight styles */
+.handwriting {
+  font-family: 'Fredoka One', cursive;
+  color: #10B981;
+  position: relative;
+  display: inline-block;
+}
+
+.handwriting::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: #FCD34D;
+  border-radius: 4px;
+  z-index: -1;
+  opacity: 0.6;
+}
+
+.blob-bg {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* GSAP Homepage Style Text Track Layout */
+.home-animate__text-group {
+  align-items: center;
+  display: flex;
+  font-size: max(4.5rem, min(5.5vw + 1.2rem, 7.5rem));
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #1F2937;
+  font-family: 'Fredoka One', cursive, sans-serif;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.home-animate__text {
+  position: relative;
+  display: inline-block;
+}
+
+.home-animate__text:before {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 1rem;
+  content: "";
+  height: 100%;
+  left: 0.5rem;
+  top: 0.5rem;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+.home-animate__text>span {
+  border-radius: 1rem;
+  color: #000000;
+  display: inline-flex;
+  padding: 0.875rem 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.home-animate__text--large {
+  font-size: max(3.5rem, min(4.5vw + 1.5rem, 6rem));
+}
+
+.home-animate__text--green-gradient>span {
+  background: linear-gradient(114.41deg, #10B981 20.74%, #6EE7B7 65.5%);
+}
+
+.home-animate__text--purple-gradient>span {
+  background: linear-gradient(135deg, #C4B5FD 0%, #8B5CF6 100%);
+}
+
+.home-animate__text--orange-gradient>span {
+  background: linear-gradient(111.45deg, #FF8709 19.42%, #F472B6 73.08%);
+}
+
+.home-animate__text--green>span {
+  background: #10B981;
+}
+
+.home-animate__text--pink>span {
+  background: #EC4899;
+}
+
+.home-animate__text--orange>span {
+  background: #FF8709;
+}
+
+.home-animate__text--blue-gradient>span {
+  background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
+}
+
+.home-animate__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-animate__snap {
+  display: inline-grid;
+  margin-left: 0.5rem;
+}
+
+.home-animate__snap span {
+  grid-area: 1/1;
+  color: #3B82F6;
+  font-family: 'Fredoka One', cursive;
+}
+
+.home-animate__snap span:last-child {
+  transform: translateY(4px) translateX(4px);
+  color: rgba(59, 130, 246, 0.2);
+  z-index: -1;
+}
+
+/* Group Specific Overlapping & Collage Layouts */
+
+/* 1. Nice Group */
+.home-animate__text-group--nice {
+  gap: 2rem;
+}
+
+.home-animate__text-group--nice .home-animate__text--purple-gradient {
+  transform: translateY(-1.5rem);
+}
+
+.home-animate__text-group--nice .home-animate__text--orange-gradient {
+  transform: translateY(1.5rem);
+  margin-left: 0.5rem;
+}
+
+.home-animate__text-group--nice .home-animate__text--orange-gradient>span {
+  transform: rotate(6deg);
+}
+
+/* 2. Add Group */
+.home-animate__text-group--add {
+  gap: 1.5rem;
+}
+
+.home-animate__personality-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.home-animate__personality-wrap .home-animate__icon--hand {
+  transform: translateY(-1rem) rotate(-6deg);
+  width: 4rem;
+  height: 4rem;
+}
+
+.home-animate__personality-wrap .home-animate__icon--circle {
+  transform: translateY(1rem) rotate(6deg);
+  width: 4rem;
+  height: 4rem;
+}
+
+/* 3. Super Group */
+.home-animate__text-group--super {
+  gap: 2rem;
+}
+
+.home-animate__text-group--super .home-animate__text--green {
+  transform: translateY(-1.5rem);
+}
+
+.home-animate__text-group--super .home-animate__text--green>span {
+  transform: rotate(5deg);
+}
+
+.home-animate__plug-and-play-wrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.home-animate__plug-and-play-wrap .home-animate__text--pink {
+  transform: translateY(1.5rem);
+}
+
+.home-animate__plug-and-play-wrap .home-animate__text--pink>span {
+  transform: rotate(-5deg);
+}
+
+.home-animate__text-group--super .home-animate__icon--asterisk {
+  transform: translateY(-1rem) rotate(12deg);
+  width: 4rem;
+  height: 4rem;
+}
+
+.home-animate__text-group--super .home-animate__icon--curve {
+  transform: translateY(1rem);
+  width: 7rem;
+  height: 5rem;
+}
+
+/* 4. Choreograph & Eases */
+.home-animate__text-group--eases {
+  gap: 2rem;
+}
+
+.home-animate__text-group--choreograph {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  gap: 1.5rem;
+}
+
+.home-animate__text-group--choreograph .home-animate__text--pink {
+  transform: translateY(-1.5rem);
+}
+
+.home-animate__text-group--choreograph .home-animate__text--green {
+  transform: translateY(1.5rem);
+}
+
+.home-animate__text-group--choreograph .home-animate__text--orange {
+  transform: translateY(0);
+}
+
+/* 5. Snap Group */
+.home-animate__text-group--snap {
+  gap: 2rem;
+}
+
+.home-animate__text-group--snap .home-animate__snap {
+  display: inline-grid;
+  transform-origin: -35%;
+  margin-left: 0.5rem;
+}
+
+.home-animate__text-group--snap .home-animate__snap span {
+  grid-area: 1/1;
+}
+
+.home-animate__text-group--snap .home-animate__snap span:last-child {
+  transform: translateY(4px) translateX(4px);
+  color: rgba(59, 130, 246, 0.2);
+  z-index: -1;
+}
+
+/* Mobile CSS Transition triggered by IntersectionObserver */
+@media (max-width: 767px) {
+  .home-animate__text-group,
+  .home-animate__text-group .home-animate__text,
+  .home-animate__text-group .home-animate__text--large {
+    font-size: clamp(1.1rem, 6.2vw, 1.7rem) !important;
+  }
+
+  .home-animate__text-group {
+    gap: 0.35rem !important;
+    width: max-content !important;
+  }
+
+  .home-animate__text>span {
+    padding: 0.4rem 0.8rem !important;
+    border-radius: 0.6rem !important;
+  }
+
+  /* Reset desktop offsets on mobile for neat inline wrap alignment */
+  .home-animate__text-group--nice .home-animate__text--purple-gradient,
+  .home-animate__text-group--nice .home-animate__text--orange-gradient,
+  .home-animate__text-group--nice .home-animate__text--orange-gradient>span,
+  .home-animate__text-group--choreograph .home-animate__text--pink,
+  .home-animate__text-group--choreograph .home-animate__text--green,
+  .home-animate__text-group--choreograph .home-animate__text--orange {
+    transform: none !important;
+    margin: 0 !important;
+  }
+
+  .home-animate__icon {
+    transform: none !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    margin: 0.2rem 0.4rem !important;
+  }
+}
+
+/* Hide desktop words on initial render to prevent flickering before GSAP ScrollTrigger runs */
+@media (min-width: 768px) {
+  .home-animate__text-group > span {
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+}

@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>WonderKids</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Nunito', 'sans-serif'],
+            'display': ['Fredoka One', 'cursive'],
+          },
+          colors: {
+            'wk-purple-light': '#E8DFFE',
+            'wk-purple-primary': '#7C3AED',
+            'wk-purple-dark': '#6D28D9',
+            'wk-yellow-light': '#FDE68A',
+            'wk-yellow-primary': '#FCD34D',
+            'wk-text-dark': '#1F2937',
+            'wk-text-light': '#6B7280',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-utilities">
+    .handwriting {
+      font-family: 'Fredoka One', cursive;
+      color: #7C3AED;
+      position: relative;
+    }
+    .handwriting::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: #FCD34D;
+      border-radius: 4px;
+      z-index: -1;
+      opacity: 0.6;
+    }
+    .blob-bg {
+      background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path fill="%23E8DFFE" d="M47.7,-57.2C59.9,-46.3,66.6,-28.9,70.5,-10.8C74.4,7.3,75.4,26.1,66.6,40.1C57.8,54.1,39.2,63.3,19.3,67.6C-0.6,71.9,-21.8,71.3,-39.8,63.1C-57.8,54.9,-72.6,39.1,-77.9,19.9C-83.2,0.7,-79,-21.9,-67.2,-39.1C-55.4,-56.3,-36,-68.1,-18.2,-70.6C-0.4,-73.1,17.4,-66.3,35.5,-58.1Z" transform="translate(100 100)" /></svg>');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-wk-text-dark font-sans antialiased selection:bg-wk-purple-light selection:text-wk-purple-primary">
+<!-- BEGIN: Navigation -->
+<nav class="container mx-auto px-6 py-6 flex items-center justify-between pb-12" data-purpose="main-navigation">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-wk-purple-primary rounded-xl rotate-12 flex items-center justify-center">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+<span class="font-display text-xl tracking-wide">WonderKids</span>
+</div>
+<div class="hidden md:flex items-center gap-8 bg-white/50 backdrop-blur-sm px-8 py-3 rounded-full shadow-sm border border-gray-100">
+<a class="font-semibold text-wk-text-dark hover:text-wk-purple-primary transition-colors border-2 border-wk-purple-primary rounded-full px-4 py-1" href="#">Home</a>
+<a class="font-semibold text-wk-text-light hover:text-wk-purple-primary transition-colors" href="#">Shop</a>
+<a class="font-semibold text-wk-text-light hover:text-wk-purple-primary transition-colors" href="#">About Us</a>
+<a class="font-semibold text-wk-text-light hover:text-wk-purple-primary transition-colors" href="#">Contact</a>
+</div>
+<div class="flex items-center gap-6">
+<a class="font-semibold text-wk-text-dark hover:text-wk-purple-primary transition-colors hidden sm:block" href="#">Sign In</a>
+<a class="flex items-center gap-2 border-2 border-wk-purple-primary text-wk-purple-primary font-bold py-2 px-6 rounded-full hover:bg-wk-purple-primary hover:text-white transition-all group" href="#">
+        Contact Us
+        <span class="w-6 h-6 bg-wk-purple-primary text-white rounded-full flex items-center justify-center group-hover:bg-white group-hover:text-wk-purple-primary transition-colors text-sm">↗</span>
+</a>
+</div>
+</nav>
+<!-- END: Navigation -->
+<!-- BEGIN: Hero Section -->
+<header class="container mx-auto px-6 pb-24 relative overflow-hidden pt-4" data-purpose="hero-section">
+<div class="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
+<!-- Decorative Elements -->
+<div class="top-0 left-0 w-32 h-32 opacity-50 -translate-x-1/2 -translate-y-1/2">
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M39.9,-65.7C54.1,-60.5,69.5,-53.8,79.1,-41.8C88.7,-29.8,92.5,-12.5,90.2,4.1C87.9,20.7,79.5,36.5,67.8,49.2C56.1,61.9,41,71.5,24.8,76.5C8.6,81.5,-8.8,81.9,-24.5,76.9C-40.2,71.9,-54.2,61.5,-65.4,48.2C-76.6,34.9,-85,18.7,-85.9,2.2C-86.8,-14.3,-80.2,-31.1,-70.2,-44.6C-60.2,-58.1,-46.8,-68.3,-32.4,-73.2C-18,-78.1,-2.6,-77.7,11.5,-73.7C25.6,-69.7,38.4,-62.1,39.9,-65.7Z" fill="#E8DFFE" transform="translate(100 100)"></path></svg>
+</div>
+<div class="top-10 left-10 md:left-24 animate-bounce" style="animation-duration: 3s;">
+<img alt="Boy holding controller" class="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover blob-bg p-2 bg-wk-purple-light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeKW0PrY0wRl_uTKssWBl9tVn2P5e0eDYIQAdgJdFps0iJp4MDRX5kNsDgy3MP8O377hZ1Hyrg-uSAl5IkM-kDHbW79BrKvqvAO9XoZ8qOOQaFU9Q_uQr7FxxnhABL9CMKE9JcBqH8yDiv4xr5dZIxkZyRm28hUGtZT8DMQhfyAlkFbZRiijXv3OoHHmXpqC5V6-g6YKxRE8RM6VzJwsVtJAl2a27QUjOi9jqJuH4POnZ2CFhBZYKhBkWQ4QrZkaUf70fxL_4wp7A">
+</div>
+<div class="absolute top-20 right-10 md:right-32 animate-bounce" style="animation-duration: 4s; animation-delay: 1s;">
+<div class="w-24 h-24 rounded-full border-2 border-wk-yellow-primary flex items-center justify-center p-2 transform rotate-12">
+<span class="text-xs text-wk-yellow-primary font-bold text-center uppercase tracking-widest" style="writing-mode: vertical-rl; text-orientation: mixed;">WonderKids</span>
+</div>
+</div>
+<div class="absolute bottom-20 right-10 md:right-24">
+<img alt="Boy giving thumbs up" class="w-24 h-24 object-cover blob-bg p-2 bg-wk-purple-light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ0zS8g57jhrRjPMklFwcCpBVepBja_aoYIM5vOqUOsBY_J1g_Wxbb7OnrJ11gslwR2uwD8GI2ut8Nh3bJiPZr3yNdJI61KV92mRtm30GNByLEHznY8Yjq5CXeLzrHbN_LOKzqCOtlnJxja9DbUoz2_CmJqxrqyWk3eg0yXquPQMl3ZKu92OMD-9a-quqgRv2h-R5s1pIf9fIa6WZIcn-bMdeAwY5yaCuq0eOJC6nBgrq2LU2Yvm7FuweCOpVXorlvMFZvwDyCN-I">
+</div>
+<h1 class="text-6xl md:text-8xl font-display font-extrabold text-wk-text-dark leading-tight mb-8">
+        The best place to<br>
+<span class="handwriting inline-block -rotate-2">learn</span> and <span class="text-wk-yellow-primary font-display inline-block rotate-3 relative z-10">play</span><br>
+        for kids
+      </h1>
+<p class="text-lg md:text-xl text-wk-text-light max-w-2xl mx-auto mb-10 font-medium">
+        Discover thousands of fun and interactive learning activities<br>to support your child's growth and learning process.
+      </p>
+<a class="inline-flex items-center gap-3 bg-wk-purple-primary text-white font-bold text-lg py-4 px-8 rounded-full hover:bg-wk-purple-dark hover:scale-105 transition-all shadow-xl shadow-wk-purple-primary/30 group" href="#">
+        Get started
+        <span class="w-8 h-8 bg-white text-wk-purple-primary rounded-full flex items-center justify-center group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform">↗</span>
+</a>
+</div>
+</header>
+<!-- END: Hero Section -->
+<!-- BEGIN: Interactive Features -->
+<section class="container mx-auto px-6 py-16" data-purpose="features">
+<div class="flex flex-col md:flex-row justify-between items-end mb-12">
+<h2 class="text-4xl md:text-5xl font-extrabold text-wk-text-dark max-w-sm leading-tight">
+        Our <span class="text-wk-purple-primary font-display italic">interactive</span> features
+      </h2>
+<div class="flex gap-4 mt-6 md:mt-0">
+<span class="px-4 py-2 bg-wk-purple-light text-wk-purple-primary rounded-full font-bold text-sm">#funny</span>
+<span class="px-4 py-2 bg-wk-yellow-light text-wk-yellow-primary rounded-full font-bold text-sm">#enjoy</span>
+<span class="px-4 py-2 bg-wk-purple-primary text-white rounded-full font-bold text-sm">#happy</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="bg-wk-purple-light rounded-3xl p-8 h-80 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+<div class="absolute top-0 right-0 w-32 h-32 opacity-20 transform translate-x-8 -translate-y-8">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" fill="none" r="40" stroke="#7C3AED" stroke-width="10"></circle><circle cx="50" cy="50" fill="none" r="25" stroke="#7C3AED" stroke-width="10"></circle></svg>
+</div>
+<div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+<span class="text-2xl">🎭</span>
+</div>
+<h3 class="text-2xl font-bold text-wk-text-dark mb-4 mt-auto">Fun<br>Quiz</h3>
+<p class="text-gray-600 font-medium line-clamp-3">Test your understanding with a short but fun quizzes!</p>
+</div>
+<!-- Feature 2 -->
+<div class="bg-wk-purple-primary rounded-3xl p-8 h-80 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+<div class="absolute top-0 right-0 w-32 h-32 opacity-30 transform translate-x-8 -translate-y-4">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M10,50 Q25,25 50,50 T90,50" fill="none" stroke="white" stroke-linecap="round" stroke-width="8"></path><path d="M10,70 Q25,45 50,70 T90,70" fill="none" stroke="white" stroke-linecap="round" stroke-width="8"></path></svg>
+</div>
+<div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm text-white">
+<span class="text-2xl">💡</span>
+</div>
+<h3 class="text-2xl font-bold text-white mb-4 mt-auto">Creative<br>Activities</h3>
+<p class="text-white/80 font-medium line-clamp-3">Discover enjoyable activities such as coloring, crafting, and science.</p>
+</div>
+<!-- Feature 3 -->
+<div class="bg-wk-yellow-primary rounded-3xl p-8 h-80 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+<div class="absolute top-0 right-0 w-32 h-32 opacity-20 transform translate-x-8 -translate-y-4">
+<svg height="100" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" fill="black" r="5"></circle><circle cx="30" cy="10" fill="black" r="5"></circle><circle cx="50" cy="10" fill="black" r="5"></circle><circle cx="70" cy="10" fill="black" r="5"></circle><circle cx="90" cy="10" fill="black" r="5"></circle><circle cx="10" cy="30" fill="black" r="5"></circle><circle cx="30" cy="30" fill="black" r="5"></circle><circle cx="50" cy="30" fill="black" r="5"></circle><circle cx="70" cy="30" fill="black" r="5"></circle><circle cx="90" cy="30" fill="black" r="5"></circle><circle cx="10" cy="50" fill="black" r="5"></circle><circle cx="30" cy="50" fill="black" r="5"></circle><circle cx="50" cy="50" fill="black" r="5"></circle><circle cx="70" cy="50" fill="black" r="5"></circle><circle cx="90" cy="50" fill="black" r="5"></circle></svg>
+</div>
+<div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+<span class="text-2xl">🎮</span>
+</div>
+<h3 class="text-2xl font-bold text-wk-text-dark mb-4 mt-auto">Learn with<br>Games</h3>
+<p class="text-wk-text-dark/80 font-medium line-clamp-3">Learn something new while your kids playing games!</p>
+</div>
+</div>
+</section>
+<!-- END: Interactive Features -->
+<!-- BEGIN: About / Teachers Section -->
+<section class="bg-wk-purple-primary py-24 mt-16" data-purpose="teachers-section">
+<div class="container mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-16 relative">
+<!-- Decorative star -->
+<div class="absolute -top-10 -left-10 w-12 h-12 bg-wk-yellow-primary rounded-full transform rotate-45 border-4 border-wk-purple-primary z-10" style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
+<h2 class="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-8">
+          We aim to help children <span class="text-wk-yellow-primary font-display italic">discover the joy</span> of creative learning and grow into well-rounded individuals.
+        </h2>
+</div>
+<!-- Teachers Carousel (Static Representation) -->
+<div class="flex items-center justify-center gap-4 overflow-hidden py-8">
+<button class="w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/40 transition-colors z-10">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<div class="flex gap-8 px-4">
+<!-- Teacher 1 -->
+<div class="text-center group">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-wk-yellow-primary overflow-hidden border-4 border-transparent group-hover:border-white transition-all duration-300 mb-4 mx-auto relative">
+<img alt="Kristin Watson" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu3WgNglaW95QiBRB5ev6REhVBOpdF9m9zQVfakZKsY-mLrM0XuHPLy7CDn1kANrO-hdRqky0BTPHz4NLR7mLEtBot3AHFnQrx1-ecQLO2Wcf1EcFcuUcUMIV_SkrtiF5rripTc1n4gphnvOEz7pH9GTdFYQl0B2gGFI3oX7pCzJtQ0ceJ7F-WXqKpDVE3E0wKYSOBd6HVQUFk2iRrQEma_ccBKcCdvKhL91VWtdaT9LXO_NgyHCUg9K-iEiv4JCDmrQSQpkV5GCM">
+</div>
+<h4 class="text-white font-bold text-lg">Kristin Watson</h4>
+<p class="text-white/70 text-sm">Science Teacher</p>
+</div>
+<!-- Teacher 2 -->
+<div class="text-center group">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-pink-200 overflow-hidden border-4 border-transparent group-hover:border-white transition-all duration-300 mb-4 mx-auto relative">
+<img alt="Jenny Wilson" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO0xQAZOp8Rd0hzGVl7_TzFHy7OsGuBCeIkPbsAKMXaNELU-vQO5DY-ZkMYADAggT0_BgumxAy0FE32nOZJWbZHDTwoQ6JsOaPdzhrOxFJ5yNfv7nR08XEuhLb0QAPLebNMRTb_nDLrCeTOmABE5PMo6LZ_X9vkzds2eAGcfy8OLOk6YD3fECOeK6Pzg3rdV4Qu6KSspEI0Eevr4dB5pGGrncy9uZC3IadwodA_3zwzNHH71jtltIziAlVhzKOHkwC1inHAJHonzM">
+</div>
+<h4 class="text-white font-bold text-lg">Jenny Wilson</h4>
+<p class="text-white/70 text-sm">Drawing Teacher</p>
+</div>
+<!-- Teacher 3 -->
+<div class="text-center group">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-blue-200 overflow-hidden border-4 border-transparent group-hover:border-white transition-all duration-300 mb-4 mx-auto relative">
+<img alt="Jacob Jones" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCI9tZpeFw7csduCpemE1RPnm1Yrro8ELV3VN8dL3j2GFWQRHeZXFd2KqE7HOj0l2kosF89tfN9y8Fa_sTs2ZQZJhdToDVEfHCj3TiCf4bPiiZJIVtM1k91xsnaemt_Q6bxe2ppJfG2gEzKMFw-iyD2dezLhELn3GVuKscQVsngeR2lmIvBEPsRY3fB-HoSK8_oqs0Jl_8WZnI_zwxOBdlGiZFw8quJchku2IP4xdurVz4FBPC1vuY3q_pDlFzqNzYBdvp1r1Hsoug">
+</div>
+<h4 class="text-white font-bold text-lg">Jacob Jones</h4>
+<p class="text-white/70 text-sm">Math Teacher</p>
+</div>
+<!-- Teacher 4 -->
+<div class="text-center group">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-green-200 overflow-hidden border-4 border-transparent group-hover:border-white transition-all duration-300 mb-4 mx-auto relative">
+<img alt="Savannah Nguyen" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEyavpq3EPJbEr_LK5Z_jAjJ3aMbJbaHij823TrZ3WQxmFGc4Ku40-YHzjQEB2R-RmdbGZc-GAl7pYi5SRuT7_t9fd0ubcOKBl7GT8fA75swF8rKEb-cayPds3IZKcCv0fkYm8Dplt3gH_OMgawf65ojUue7OM0loP3OzRyBJYWOF_RP8zk9nSLMr7-r6D9C_ZDLLbbJI2u9Z-Iu1xp8OieNfPz4NROwsOAPKIHjRIBzvSasqjkiaDAZoUzcjismllEtZhdDN4x40">
+</div>
+<h4 class="text-white font-bold text-lg">Savannah Nguyen</h4>
+<p class="text-white/70 text-sm">Reading Teacher</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: About / Teachers Section -->
+<!-- BEGIN: Blog Section -->
+<section class="container mx-auto px-6 py-24" data-purpose="blog-section">
+<h2 class="text-4xl md:text-5xl font-extrabold text-wk-text-dark mb-12">
+      Read our <span class="text-wk-purple-primary font-display italic">blog</span>
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Blog Post 1 -->
+<div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<div class="rounded-2xl overflow-hidden mb-6 h-48 bg-gray-100">
+<img alt="Learning with Games" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj4oItJ973gtiw4QKpIpvlRsrpLpEYaqTAYyamkRn7g7m9-t80OaPSD6xNVGmVXWCW80XT3Q4GnW_Ue51geF_2BIx8zDecNNOlKNGMhErEA-yvXFvOlklHeouLnFkSATp6WgZBAVeQkABq3u0JzUgKsvnFHJivwjgdT2rEa9R4dR0VVgwsahuWFYP9ultB1g-6CP9H3ei8wDhY9nuCLEJPvEI7bSHah181AhZorDCuntCYVAnSDWiPlJ3PQzod5Ob3rUBw0m406NQ">
+</div>
+<h3 class="text-xl font-bold text-wk-text-dark mb-3">Learning with Games? Why n...</h3>
+<p class="text-gray-500 text-sm mb-6 line-clamp-2">Embrace the joy of games to enhance your learning experience!</p>
+<a class="inline-flex items-center gap-2 text-wk-purple-primary font-bold hover:text-wk-purple-dark group text-sm" href="#">
+          Read More
+          <span class="w-6 h-6 bg-wk-purple-light rounded-full flex items-center justify-center group-hover:bg-wk-purple-primary group-hover:text-white transition-colors">↗</span>
+</a>
+</div>
+<!-- Blog Post 2 -->
+<div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<div class="rounded-2xl overflow-hidden mb-6 h-48 bg-gray-100">
+<img alt="10 Learning Game Ideas" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXfOfar0ND3MMgFm_-n61pzx9Pw260Emq52rLjBtwVwQJNPrguDVCVlfsZUx8MVJR5GpioMTsdGGGT8IAWRl_Ws2HYrnSwqkAUs9v4GjqvduEBDklI4mRu0OUaPZz97BrGeZ0-ZR8IkYLm0WU3uFaBgwRLAGSTk64NMBD_ASbTocDorBHqGdMFdF1jvXJpuJP97GJHwH_8Q67Zsx5z87Pv_vS90r-Ts4NWQglW7FuUhwwhq27aBp9IFuk3-Beo9qBc5I_C-rYZX5k">
+</div>
+<h3 class="text-xl font-bold text-wk-text-dark mb-3">10 Learning Game Ideas</h3>
+<p class="text-gray-500 text-sm mb-6 line-clamp-2">10 ideas for learning with for your kids to have fun.</p>
+<a class="inline-flex items-center gap-2 text-wk-purple-primary font-bold hover:text-wk-purple-dark group text-sm" href="#">
+          Read More
+          <span class="w-6 h-6 bg-wk-purple-light rounded-full flex items-center justify-center group-hover:bg-wk-purple-primary group-hover:text-white transition-colors">↗</span>
+</a>
+</div>
+<!-- Blog Post 3 -->
+<div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<div class="rounded-2xl overflow-hidden mb-6 h-48 bg-gray-100">
+<img alt="Fun Activities for Kids" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBv3F5Q3GXhKDKvTPD5QYs2P-XC9ppcOXOQ-YoMZqzYs2uD1vZMhKLBe6ZKkFax27ZYuY5a6OAO5MxwwunnRFYlhwQPRNn-2VuHIpdMdx8ElwLgxBvsL12D3zqVOFaS5ypRniLFHiURzdwAJYgAN0yEq5i-Hm2fdWBSmpBwgYpmc9v1D5gbe2d9MvcEHf1c9QxtcVbeqPiFMjz4lyBSQRkRvmcaagTfL-PjhIAr-mzbnwZ1ysAmjvimwNcjXMB7PDrUT5SBHVDz01k">
+</div>
+<h3 class="text-xl font-bold text-wk-text-dark mb-3">Fun Activities for Kids</h3>
+<p class="text-gray-500 text-sm mb-6 line-clamp-2">Want to do something outside laptop? Here are our recommend...</p>
+<a class="inline-flex items-center gap-2 text-wk-purple-primary font-bold hover:text-wk-purple-dark group text-sm" href="#">
+          Read More
+          <span class="w-6 h-6 bg-wk-purple-light rounded-full flex items-center justify-center group-hover:bg-wk-purple-primary group-hover:text-white transition-colors">↗</span>
+</a>
+</div>
+</div>
+</section>
+<!-- END: Blog Section -->
+
+
+</body></html>

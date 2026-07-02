@@ -1,0 +1,14 @@
+Act as a Senior Frontend Developer and Lead UI Engineer.
+
+Your task is to completely rebuild the landing page (route: /kkn2026) using Tailwind CSS. The user wants the design to be EXACTLY like a provided visual reference ("image_71087e.jpg" - a playful, WonderKids EdTech style landing page).
+
+You must strictly follow the updated `design.md` file provided.
+
+Critical Implementation Directives to achieve the EXACT Look:
+1. PLAYFUL ORGANIC AESTHETIC: You MUST implement organic shapes (blobs), hand-drawn vector elements (scribbled arrows, rough circles circling words, underlines), and decorative card patterns (concentric circles, dot grids, wavy lines) exactly as seen in the reference. Use SVG elements (inline or via data URI in Tailwind arbitrary classes) to create these hand-drawn accents and patterns.
+2. DUAL-TYPOGRAPHY SYSTEM: You MUST use a clean, rounded sans-serif font (like Nunito) for the main text, AND import a handwriting/script font (like Caveat or Pacifico from Google Fonts) specifically for highlighted words in the headings to replicate the playful emphasis (e.g., the words "learn" and "play" in the reference).
+3. COLOR MAPPING: Replicate the contrast and color usage of the reference, but apply the HIMA TI brand colors. Where the reference uses Purple, use "HIMA Green" (e.g., `#10b981` or standard Tailwind `green-500/600`). Where it uses Yellow, use "HIMA Yellow" (`#f59e0b` or `yellow-400`). Use soft pastel versions of the green for card backgrounds.
+4. EXTREME BORDER RADIUS: Replicate the exact card styles. Use `rounded-[2rem]` or `rounded-3xl` for the feature cards. There should be virtually no heavy drop-shadows; rely on flat colors and padding.
+5. POSITIONING: Use `relative` containers and `absolute` positioning extensively to place the floating avatars, organic background blobs, and hand-drawn SVG scribbles precisely overlapping the text and cards, just like the reference image.
+
+Generate the complete JSX/TSX and Tailwind CSS code now. Ensure the inline SVGs for the decorative hand-drawn elements and card patterns are included in the code so the playful, organic aesthetic is immediately visible.
