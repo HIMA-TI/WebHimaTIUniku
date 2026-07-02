@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
-import { getAuthHeader } from '../utils/authUtils';
-
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { API_BASE } from '../config/api';
 
 export default function useShortUrls() {
   const [shortUrls, setShortUrls] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const getAuthHeader = () => {
+    const token = sessionStorage.getItem('himati_auth');
+    return token ? `Bearer ${token}` : '';
+  };
+
   const fetchShortUrls = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${BASE_URL}/api/short-url`, {
+      const res = await fetch(`${API_BASE}/short-url`, {
         headers: {
           'Authorization': getAuthHeader()
         }
@@ -32,7 +35,7 @@ export default function useShortUrls() {
 
   const addShortUrl = async (urlData) => {
     try {
-      const res = await fetch(`${BASE_URL}/api/short-url`, {
+      const res = await fetch(`${API_BASE}/short-url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +56,7 @@ export default function useShortUrls() {
 
   const updateShortUrl = async (id, urlData) => {
     try {
-      const res = await fetch(`${BASE_URL}/api/short-url/${id}`, {
+      const res = await fetch(`${API_BASE}/short-url/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +77,7 @@ export default function useShortUrls() {
 
   const deleteShortUrl = async (id) => {
     try {
-      const res = await fetch(`${BASE_URL}/api/short-url/${id}`, {
+      const res = await fetch(`${API_BASE}/short-url/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': getAuthHeader()
