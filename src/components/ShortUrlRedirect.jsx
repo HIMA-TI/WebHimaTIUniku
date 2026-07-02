@@ -45,40 +45,17 @@ export default function ShortUrlRedirect() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 via-white to-green-100 overflow-hidden relative">
-      {/* Decorative Blur Backgrounds */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-40 pointer-events-none">
-         <div className="w-[30rem] h-[30rem] bg-green-300 rounded-full blur-[100px] mix-blend-multiply translate-x-20 translate-y-10 animate-pulse" style={{ animationDuration: '4s' }}></div>
-         <div className="w-[20rem] h-[20rem] bg-yellow-200 rounded-full blur-[80px] mix-blend-multiply -translate-x-20 -translate-y-20 animate-pulse" style={{ animationDuration: '5s' }}></div>
-      </div>
-      
-      <div className="z-10 flex flex-col items-center">
-        {/* Animated Logo Container */}
-        <div className="relative mb-10 flex justify-center items-center">
-          <div className="absolute w-36 h-36 bg-white rounded-full blur-2xl opacity-80 animate-pulse" style={{ animationDuration: '2s' }}></div>
-          
-          <div className="w-28 h-28 bg-white/90 backdrop-blur-sm rounded-[2rem] shadow-2xl p-5 relative z-10 flex items-center justify-center border border-white/50 rotate-3 hover:rotate-0 transition-transform duration-500">
-            <img src={logo} alt="HIMA TI" className="w-full h-full object-contain drop-shadow-md" />
-          </div>
-
-          {/* Dual Spinning Rings */}
-          <div className="absolute inset-[-12px] border-[3px] border-green-500/80 border-t-transparent border-l-transparent rounded-[2.5rem] animate-spin" style={{ animationDuration: '1.5s' }}></div>
-          <div className="absolute inset-[-22px] border-[3px] border-yellow-400/80 border-b-transparent border-r-transparent rounded-[3rem] animate-spin" style={{ animationDuration: '2.5s', animationDirection: 'reverse' }}></div>
-        </div>
-
-        {/* Brand Name */}
-        <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-green-900 tracking-tight mb-4 drop-shadow-sm">
-          HIMA TI UNIKU
-        </h2>
-        
-        {/* Loading Indicator */}
-        <div className="flex items-center gap-3 text-green-800 font-semibold bg-white/70 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-white">
-          <svg className="w-5 h-5 animate-spin text-green-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span className="animate-pulse tracking-wide">Mengarahkan ke tujuan...</span>
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+      <div className="flex flex-col items-center gap-6">
+        <img 
+          src={logo} 
+          alt="HIMA TI" 
+          className="w-28 h-28 object-contain animate-pulse" 
+          style={{ animationDuration: '2s' }}
+        />
+        <p className="text-gray-400 font-medium tracking-widest text-sm animate-pulse">
+          Mengarahkan...
+        </p>
       </div>
     </div>
   );
