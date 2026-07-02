@@ -89,6 +89,7 @@ function App() {
             <Route path="/portal" element={<Portal />} />
             <Route path="/kkn-uniku-2026" element={<KKN2026 />} />
             <Route path="/s/:code" element={<ShortUrlRedirect />} />
+            <Route path="/:code" element={<ShortUrlRedirect />} />
           </Routes>
         </Suspense>
       </main>

@@ -68,8 +68,8 @@ export default function ShortUrlForm({ shortUrl, onSubmit, onCancel, submitting,
               Short Code
             </label>
             <div className="flex rounded-xl shadow-sm">
-              <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-200 bg-gray-50 text-gray-500 sm:text-sm">
-                hima-ti.uniku.ac.id/s/
+              <span className="flex items-center px-4 rounded-l-xl border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                hima-ti.uniku.ac.id/
               </span>
               <input
                 type="text"

@@ -583,10 +583,10 @@ export default function Dashboard({ onLogout }) {
                   <div key={url.id} className="bg-white rounded-xl border border-gray-200/60 shadow-sm p-5 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-gray-900 text-lg truncate">hima-ti.uniku.ac.id/s/{url.short_code}</h3>
+                        <h3 className="font-bold text-gray-900 text-lg truncate">hima-ti.uniku.ac.id/{url.short_code}</h3>
                         <button 
                           onClick={() => {
-                            navigator.clipboard.writeText(`https://hima-ti.uniku.ac.id/s/${url.short_code}`);
+                            navigator.clipboard.writeText(`https://hima-ti.uniku.ac.id/${url.short_code}`);
                             alert('Tautan disalin ke clipboard!');
                           }}
                           className="p-1.5 text-gray-400 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors"
