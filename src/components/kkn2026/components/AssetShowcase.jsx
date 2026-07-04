@@ -33,14 +33,13 @@ export default function AssetShowcase({ onSelectAsset, digitalAssets = [], loadi
 
   const dynamicCategories = digitalAssets.length > 0 ? [
     { id: 'all', label: 'Semua Aset' },
-    ...Array.from(new Set(digitalAssets.map(item => item.type))).filter(Boolean).map(type => {
-      const label = digitalAssets.find(a => a.type === type)?.cat || type;
-      return { id: type, label };
+    ...Array.from(new Set(digitalAssets.map(item => item.cat))).filter(Boolean).map(cat => {
+      return { id: cat, label: cat };
     })
   ] : staticCategories;
 
   let filteredItems = digitalAssets.filter((item) => {
-    const matchesCategory = activeCategory === 'all' || item.type === activeCategory;
+    const matchesCategory = activeCategory === 'all' || item.cat === activeCategory;
     const q = searchQuery.toLowerCase();
     const matchesSearch = !q
       || item.title.toLowerCase().includes(q)
