@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ExternalLink, BookOpen, ArrowLeft, CheckCircle2, Code, Layers, Zap, Play, Share2, X, Check, Info, ChevronRight, Image as ImageIcon, ChevronLeft, Users, Star, Cpu, Quote, History, MessageSquare, Download, Calculator, Monitor, BarChart2, Heart, Clock, Eye, Send, Lock, Link2 } from 'lucide-react';
 import InteractiveBackground from './InteractiveBackground';
 import { API_BASE } from '../../../config/api';
@@ -29,10 +29,30 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
     name: '',
     whatsapp: '',
     organization: '',
-    reason: ''
+    reason: '',
+    borrow_start_date: '',
+    borrow_end_date: ''
   });
   const [formErrors, setFormErrors] = useState({});
+  const [bookedDates, setBookedDates] = useState([]);
   const sliderRef = useRef(null);
+
+  useEffect(() => {
+    if (selectedAsset?.is_limited && showRequestModal) {
+      const fetchBookedDates = async () => {
+        try {
+          const res = await fetch(`${API_BASE}/asset-requests/asset/${selectedAsset.id}/dates`);
+          if (res.ok) {
+            const data = await res.json();
+            setBookedDates(data.data || []);
+          }
+        } catch (e) {
+          console.error("Failed to fetch booked dates", e);
+        }
+      };
+      fetchBookedDates();
+    }
+  }, [selectedAsset?.is_limited, showRequestModal, selectedAsset?.id]);
 
   const scrollSlider = (direction) => {
     if (sliderRef.current) {
@@ -90,6 +110,15 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
         if (!value.trim()) error = 'Alasan penggunaan wajib diisi.';
         else if (value.trim().length < 5) error = 'Alasan minimal 5 karakter.';
         break;
+      case 'borrow_start_date':
+        if (selectedAsset?.is_limited && !value) error = 'Tanggal mulai wajib diisi.';
+        break;
+      case 'borrow_end_date':
+        if (selectedAsset?.is_limited && !value) error = 'Tanggal selesai wajib diisi.';
+        else if (selectedAsset?.is_limited && new Date(value) < new Date(requestData.borrow_start_date)) {
+          error = 'Tanggal selesai harus setelah tanggal mulai.';
+        }
+        break;
       default:
         break;
     }
@@ -116,8 +145,10 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
     const isNameValid = validateField('name', requestData.name);
     const isWaValid = validateField('whatsapp', requestData.whatsapp);
     const isReasonValid = validateField('reason', requestData.reason);
+    const isStartDateValid = selectedAsset?.is_limited ? validateField('borrow_start_date', requestData.borrow_start_date) : true;
+    const isEndDateValid = selectedAsset?.is_limited ? validateField('borrow_end_date', requestData.borrow_end_date) : true;
 
-    if (!isNameValid || !isWaValid || !isReasonValid) {
+    if (!isNameValid || !isWaValid || !isReasonValid || !isStartDateValid || !isEndDateValid) {
       return;
     }
 
@@ -699,6 +730,57 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                       />
                       {formErrors.reason && <p className="text-red-500 text-xs mt-1.5 font-medium flex items-center gap-1.5"><Info className="w-3.5 h-3.5"/> {formErrors.reason}</p>}
                     </div>
+
+                    {selectedAsset?.is_limited && (
+                      <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mt-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Clock className="w-4 h-4 text-orange-600" />
+                          <h4 className="text-sm font-bold text-orange-900">Aset Fisik Terbatas</h4>
+                        </div>
+                        <p className="text-xs text-orange-700 mb-4">Aset ini memiliki fisik yang jumlahnya terbatas. Silakan tentukan tanggal peminjaman Anda.</p>
+                        
+                        {bookedDates.length > 0 && (
+                          <div className="mb-4 bg-white/60 p-3 rounded-lg border border-orange-100">
+                            <p className="text-xs font-bold text-orange-800 mb-2">Tanggal yang sudah di-booking:</p>
+                            <ul className="list-disc pl-4 text-xs text-gray-700 space-y-1">
+                              {bookedDates.map((d, i) => (
+                                <li key={i}>{new Date(d.borrow_start_date).toLocaleDateString('id-ID')} s/d {new Date(d.borrow_end_date).toLocaleDateString('id-ID')}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-700 mb-1.5">Dari Tanggal</label>
+                            <input
+                              required
+                              type="date"
+                              name="borrow_start_date"
+                              className={`w-full px-3 py-2 bg-white border ${formErrors.borrow_start_date ? 'border-red-400 focus:ring-red-500/20' : 'border-gray-200 focus:ring-orange-500/20'} rounded-lg focus:ring-2 transition-colors font-medium text-sm`}
+                              value={requestData.borrow_start_date}
+                              onChange={handleInputChange}
+                              onBlur={handleBlur}
+                            />
+                            {formErrors.borrow_start_date && <p className="text-red-500 text-[10px] mt-1">{formErrors.borrow_start_date}</p>}
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-700 mb-1.5">Sampai Tanggal</label>
+                            <input
+                              required
+                              type="date"
+                              name="borrow_end_date"
+                              min={requestData.borrow_start_date}
+                              className={`w-full px-3 py-2 bg-white border ${formErrors.borrow_end_date ? 'border-red-400 focus:ring-red-500/20' : 'border-gray-200 focus:ring-orange-500/20'} rounded-lg focus:ring-2 transition-colors font-medium text-sm`}
+                              value={requestData.borrow_end_date}
+                              onChange={handleInputChange}
+                              onBlur={handleBlur}
+                            />
+                            {formErrors.borrow_end_date && <p className="text-red-500 text-[10px] mt-1">{formErrors.borrow_end_date}</p>}
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     <button
                       type="submit"

@@ -425,6 +425,11 @@ export default function Dashboard({ onLogout }) {
                         <p className="text-sm text-neutral-600 mt-1">
                           Aset yang diminta: <span className="font-semibold text-emerald-700">{req.asset_title}</span>
                         </p>
+                        {req.borrow_start_date && req.borrow_end_date && (
+                          <p className="text-sm text-neutral-600 mt-1">
+                            Jadwal Pinjam: <span className="font-semibold text-orange-600">{new Date(req.borrow_start_date).toLocaleDateString('id-ID')} s/d {new Date(req.borrow_end_date).toLocaleDateString('id-ID')}</span>
+                          </p>
+                        )}
                       </div>
                       <div className="flex gap-2 items-center">
                         <span className={`px-2.5 py-1 text-xs font-bold rounded-full border ${req.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : req.status === 'rejected' ? 'bg-red-50 text-red-600 border-red-200' : 'bg-yellow-50 text-yellow-600 border-yellow-200'}`}>
