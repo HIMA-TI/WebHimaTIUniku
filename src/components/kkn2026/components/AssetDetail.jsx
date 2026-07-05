@@ -4,6 +4,8 @@ import InteractiveBackground from './InteractiveBackground';
 import { API_BASE } from '../../../config/api';
 import { supabase } from '../../../config/supabase';
 import { techIcons } from '../data/techIcons';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 /** Sekretariat HIMA TI address info */
 const SEKRETARIAT_INFO = {
@@ -62,33 +64,6 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const maxBorrowersLimit = selectedAsset?.maxBorrowers || 2;
-
-  // Function to check if a date range is available (doesn't exceed max slots)
-  const isDateRangeAvailable = (startStr, endStr) => {
-    if (!startStr || !endStr) return true;
-    const s = new Date(startStr);
-    const e = new Date(endStr);
-    s.setHours(0, 0, 0, 0);
-    e.setHours(23, 59, 59, 999);
-
-    let curr = new Date(s);
-    while (curr <= e) {
-      let count = 0;
-      for (const b of bookedDates) {
-        if (!b.borrow_start_date || !b.borrow_end_date) continue;
-        const bs = new Date(b.borrow_start_date);
-        const be = new Date(b.borrow_end_date);
-        bs.setHours(0, 0, 0, 0);
-        be.setHours(23, 59, 59, 999);
-        if (curr >= bs && curr <= be) count++;
-      }
-      if (count >= maxBorrowersLimit) return false;
-      curr.setDate(curr.getDate() + 1);
-    }
-    return true;
-  };
-
   // Calculate active borrowers (all current and future bookings)
   const activeBorrowers = bookedDates.filter(d => {
     if (!d.borrow_start_date || !d.borrow_end_date) return false;
@@ -96,8 +71,16 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
     end.setHours(23, 59, 59, 999);
     return end >= today;
   });
-  const slotsFull = isLimited && activeBorrowers.length >= maxBorrowersLimit;
 
+  const getExcludedDateIntervals = () => {
+    return bookedDates
+      .filter(b => b.borrow_start_date && b.borrow_end_date)
+      .map(b => ({
+        start: new Date(new Date(b.borrow_start_date).setHours(0,0,0,0)),
+        end: new Date(new Date(b.borrow_end_date).setHours(23,59,59,999))
+      }));
+  };
+  const excludedIntervals = getExcludedDateIntervals();
   const scrollSlider = (direction) => {
     if (sliderRef.current) {
       const scrollAmount = 400;
@@ -162,12 +145,6 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
           error = 'Tanggal selesai harus setelah tanggal mulai.';
         } else if (name === 'borrow_start_date' && isLimited && requestData.borrow_end_date && value && new Date(value) >= new Date(requestData.borrow_end_date)) {
           error = 'Tanggal mulai harus sebelum tanggal selesai.';
-        } else if (isLimited) {
-          const start = name === 'borrow_start_date' ? value : requestData.borrow_start_date;
-          const end = name === 'borrow_end_date' ? value : requestData.borrow_end_date;
-          if (start && end && !isDateRangeAvailable(start, end)) {
-            error = 'Terdapat tanggal yang sudah penuh (sudah di-booking) pada rentang ini.';
-          }
         }
         break;
       default:
@@ -450,15 +427,9 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
               <div className="flex items-center justify-between mb-6">
                 <span className="font-semibold text-slate-500 text-sm">Status Aset</span>
                 {isLimited ? (
-                  slotsFull ? (
-                    <span className="px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-[11px] font-bold flex items-center gap-1.5 border border-amber-200">
-                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div> Slot Penuh ({activeBorrowers.length}/{maxBorrowersLimit})
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold flex items-center gap-1.5">
-                      <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Tersedia ({activeBorrowers.length}/{maxBorrowersLimit})
-                    </span>
-                  )
+                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Jadwal Tersedia
+                  </span>
                 ) : (
                   <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Tersedia
@@ -467,19 +438,13 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
               </div>
 
               {/* Main Action */}
-              {slotsFull ? (
-                <div className="w-full py-3.5 bg-gray-100 text-gray-400 font-semibold rounded-2xl flex items-center justify-center gap-2 text-sm mb-4 cursor-not-allowed">
-                  <Lock className="w-4 h-4" /> Slot Peminjaman Penuh
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowRequestModal(true)}
-                  className="w-full py-3.5 bg-emerald-600 text-white font-semibold rounded-2xl hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 text-sm mb-4 cursor-pointer"
-                  aria-label="Request akses aset digital"
-                >
-                  Gass Request Akses! <ChevronRight className="w-4 h-4 text-emerald-200" />
-                </button>
-              )}
+              <button
+                onClick={() => setShowRequestModal(true)}
+                className="w-full py-3.5 bg-emerald-600 text-white font-semibold rounded-2xl hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 text-sm mb-4 cursor-pointer"
+                aria-label="Request akses aset digital"
+              >
+                Gass Request Akses! <ChevronRight className="w-4 h-4 text-emerald-200" />
+              </button>
 
               {/* Secondary Actions */}
               <div className="grid grid-cols-2 gap-3 mb-3">
@@ -511,9 +476,8 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                 </button>
               </div>
               <button
-                onClick={() => !slotsFull && setShowRequestModal(true)}
-                className={`w-full py-2.5 font-bold rounded-2xl transition-colors flex items-center justify-center gap-2 text-sm mb-8 ${slotsFull ? 'bg-gray-50 text-gray-300 cursor-not-allowed' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer'}`}
-                disabled={slotsFull}
+                onClick={() => setShowRequestModal(true)}
+                className="w-full py-2.5 font-bold rounded-2xl transition-colors flex items-center justify-center gap-2 text-sm mb-8 bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer"
                 aria-label="Request starter kit"
               >
                 <Download className="w-4 h-4 text-gray-500" /> Request Starter Kit
@@ -527,10 +491,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                   <hr className="border-slate-100 my-6" />
                   <div className="mb-6">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-[11px] font-bold text-emerald-800 tracking-widest uppercase">Peminjam Aktif</h4>
-                      <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${slotsFull ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
-                        {activeBorrowers.length}/{maxBorrowersLimit} Slot
-                      </span>
+                      <h4 className="text-[11px] font-bold text-emerald-800 tracking-widest uppercase">Jadwal Peminjam Aktif</h4>
                     </div>
 
                     {loadingDates ? (
@@ -572,44 +533,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                       </div>
                     )}
 
-                    {/* Slot Full Banner — Arahkan ke Sekretariat */}
-                    {slotsFull && (
-                      <div className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-5 relative overflow-hidden">
-                        <div className="absolute -right-6 -top-6 w-20 h-20 bg-amber-100/50 rounded-full blur-2xl pointer-events-none"></div>
-                        <div className="relative z-10">
-                          <div className="flex items-start gap-3 mb-3">
-                            <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                              <AlertTriangle className="w-4 h-4 text-amber-700" />
-                            </div>
-                            <div>
-                              <h5 className="font-bold text-amber-900 text-sm mb-1">Slot Peminjaman Penuh</h5>
-                              <p className="text-[12px] text-amber-800/80 font-medium leading-relaxed">
-                                Saat ini seluruh slot peminjaman aset ini sudah terisi. Untuk koordinasi lebih lanjut, silakan datang langsung ke:
-                              </p>
-                            </div>
-                          </div>
 
-                          <div className="bg-white rounded-xl p-4 border border-amber-100 mt-3">
-                            <div className="flex items-start gap-3">
-                              <MapPin className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                              <div className="text-left">
-                                <p className="font-bold text-gray-900 text-sm">{SEKRETARIAT_INFO.name}</p>
-                                <p className="font-semibold text-emerald-600 text-xs mt-0.5">{SEKRETARIAT_INFO.building}</p>
-                                <p className="text-[11px] text-gray-500 font-medium mt-1.5 leading-relaxed">{SEKRETARIAT_INFO.address}</p>
-                              </div>
-                            </div>
-                            <a
-                              href={SEKRETARIAT_INFO.mapsUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="mt-3 w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-colors"
-                            >
-                              <MapPin className="w-3.5 h-3.5" /> Buka di Google Maps
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </>
               )}
@@ -926,29 +850,35 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                         <div className="grid grid-cols-2 gap-3">
                           <div>
                             <label className="block text-[11px] font-bold text-gray-600 mb-1">Tanggal Mulai</label>
-                            <input
-                              required
-                              type="date"
-                              name="borrow_start_date"
-                              min={getMinDate()}
+                            <DatePicker
+                              selected={requestData.borrow_start_date ? new Date(requestData.borrow_start_date) : null}
+                              onChange={(date) => {
+                                const val = date ? date.toLocaleDateString('en-CA') : '';
+                                setRequestData(prev => ({ ...prev, borrow_start_date: val }));
+                                if (formErrors.borrow_start_date) validateField('borrow_start_date', val);
+                              }}
+                              excludeDateIntervals={excludedIntervals}
+                              minDate={new Date()}
+                              dateFormat="yyyy-MM-dd"
+                              placeholderText="Pilih Tanggal"
                               className={`w-full px-3 py-2.5 bg-white border ${formErrors.borrow_start_date ? 'border-red-400' : 'border-gray-200 focus:border-emerald-500'} rounded-lg focus:ring-2 focus:ring-emerald-500/20 transition-colors font-medium text-sm`}
-                              value={requestData.borrow_start_date}
-                              onChange={handleInputChange}
-                              onBlur={handleBlur}
                             />
                             {formErrors.borrow_start_date && <p className="text-red-500 text-[10px] mt-1 font-medium">{formErrors.borrow_start_date}</p>}
                           </div>
                           <div>
                             <label className="block text-[11px] font-bold text-gray-600 mb-1">Tanggal Selesai</label>
-                            <input
-                              required
-                              type="date"
-                              name="borrow_end_date"
-                              min={requestData.borrow_start_date || getMinDate()}
+                            <DatePicker
+                              selected={requestData.borrow_end_date ? new Date(requestData.borrow_end_date) : null}
+                              onChange={(date) => {
+                                const val = date ? date.toLocaleDateString('en-CA') : '';
+                                setRequestData(prev => ({ ...prev, borrow_end_date: val }));
+                                if (formErrors.borrow_end_date) validateField('borrow_end_date', val);
+                              }}
+                              excludeDateIntervals={excludedIntervals}
+                              minDate={requestData.borrow_start_date ? new Date(requestData.borrow_start_date) : new Date()}
+                              dateFormat="yyyy-MM-dd"
+                              placeholderText="Pilih Tanggal"
                               className={`w-full px-3 py-2.5 bg-white border ${formErrors.borrow_end_date ? 'border-red-400' : 'border-gray-200 focus:border-emerald-500'} rounded-lg focus:ring-2 focus:ring-emerald-500/20 transition-colors font-medium text-sm`}
-                              value={requestData.borrow_end_date}
-                              onChange={handleInputChange}
-                              onBlur={handleBlur}
                             />
                             {formErrors.borrow_end_date && <p className="text-red-500 text-[10px] mt-1 font-medium">{formErrors.borrow_end_date}</p>}
                           </div>
