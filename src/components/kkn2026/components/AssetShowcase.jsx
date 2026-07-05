@@ -61,9 +61,9 @@ export default function AssetShowcase({ onSelectAsset, digitalAssets = [], loadi
       <div className="container mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-10">
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4 font-display">
-            Pilih <span className="text-emerald-600 font-display italic">Aset Digital</span> Terbaik
+            Temukan <span className="text-emerald-600 font-display italic">Aset Digital</span> Keren
           </h2>
-          <p className="text-gray-500 font-semibold text-lg">Pilih aset digital yang sesuai dengan kebutuhanmu, semua siap pakai tinggal ajukan izin guna!</p>
+          <p className="text-gray-500 font-semibold text-lg">Cari dan pilih aset digital yang pas buat dukung proker kamu. Tinggal request izin, langsung siap pakai!</p>
         </div>
 
         {/* Search + Filter */}
