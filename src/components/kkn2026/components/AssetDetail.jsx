@@ -5,9 +5,6 @@ import { API_BASE } from '../../../config/api';
 import { supabase } from '../../../config/supabase';
 import { techIcons } from '../data/techIcons';
 
-/** Maximum concurrent borrowers for limited assets */
-const MAX_BORROWERS = 2;
-
 /** Sekretariat HIMA TI address info */
 const SEKRETARIAT_INFO = {
   name: 'Sekretariat HIMA TI',
@@ -75,7 +72,8 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
     return start <= today && end >= today;
   });
 
-  const slotsFull = isLimited && activeBorrowers.length >= MAX_BORROWERS;
+  const maxBorrowersLimit = selectedAsset?.maxBorrowers || 2;
+  const slotsFull = isLimited && activeBorrowers.length >= maxBorrowersLimit;
 
   const scrollSlider = (direction) => {
     if (sliderRef.current) {
@@ -424,11 +422,11 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                 {isLimited ? (
                   slotsFull ? (
                     <span className="px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-[11px] font-bold flex items-center gap-1.5 border border-amber-200">
-                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div> Slot Penuh ({activeBorrowers.length}/{MAX_BORROWERS})
+                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div> Slot Penuh ({activeBorrowers.length}/{maxBorrowersLimit})
                     </span>
                   ) : (
                     <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold flex items-center gap-1.5">
-                      <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Tersedia ({activeBorrowers.length}/{MAX_BORROWERS})
+                      <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Tersedia ({activeBorrowers.length}/{maxBorrowersLimit})
                     </span>
                   )
                 ) : (
@@ -501,7 +499,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="text-[11px] font-bold text-emerald-800 tracking-widest uppercase">Peminjam Aktif</h4>
                       <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${slotsFull ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
-                        {activeBorrowers.length}/{MAX_BORROWERS} Slot
+                        {activeBorrowers.length}/{maxBorrowersLimit} Slot
                       </span>
                     </div>
 

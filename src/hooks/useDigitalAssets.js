@@ -78,6 +78,7 @@ export default function useDigitalAssets() {
               requestCount: Number(item.request_count) || 0,
               likes: Number(item.likes) || 0,
               is_limited: item.is_limited === true,
+              maxBorrowers: Number(item.max_borrowers) || 2,
               ...theme
             };
           });
