@@ -30,13 +30,12 @@ export default function Navbar({ currentTab, setCurrentTab, session }) {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-      isScrolled 
-        ? 'bg-white/85 backdrop-blur-md border-b border-gray-100/80 py-3 shadow-sm' 
-        : 'bg-transparent border-b border-transparent py-5 shadow-none'
-    }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${isScrolled
+      ? 'bg-white/85 backdrop-blur-md border-b border-gray-100/80 py-3 shadow-sm'
+      : 'bg-transparent border-b border-transparent py-5 shadow-none'
+      }`}>
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <button 
+        <button
           onClick={() => handleTab('beranda')}
           className="flex items-center gap-3 hover:opacity-90 transition-opacity cursor-pointer bg-transparent border-0"
         >
@@ -48,17 +47,15 @@ export default function Navbar({ currentTab, setCurrentTab, session }) {
         <div className="hidden md:flex items-center gap-8 bg-white px-8 py-3 rounded-full shadow-sm border border-gray-100">
           <button
             onClick={() => handleTab('beranda')}
-            className={`font-semibold cursor-pointer transition-colors text-sm bg-transparent border-none ${
-              currentTab === 'beranda' ? 'text-emerald-600' : 'text-gray-500 hover:text-emerald-600'
-            }`}
+            className={`font-semibold cursor-pointer transition-colors text-sm bg-transparent border-none ${currentTab === 'beranda' ? 'text-emerald-600' : 'text-gray-500 hover:text-emerald-600'
+              }`}
           >
             Beranda
           </button>
           <button
             onClick={() => handleTab('aset-digital')}
-            className={`font-semibold cursor-pointer transition-colors text-sm bg-transparent border-none ${
-              currentTab === 'aset-digital' ? 'text-emerald-600' : 'text-gray-500 hover:text-emerald-600'
-            }`}
+            className={`font-semibold cursor-pointer transition-colors text-sm bg-transparent border-none ${currentTab === 'aset-digital' ? 'text-emerald-600' : 'text-gray-500 hover:text-emerald-600'
+              }`}
           >
             Aset Digital
           </button>
@@ -99,7 +96,7 @@ export default function Navbar({ currentTab, setCurrentTab, session }) {
             </div>
           ) : (
             <>
-              <a className="font-semibold text-wk-text-dark hover:text-wk-purple-primary transition-colors hidden sm:block text-sm" href="https://himati.uniku.ac.id" target="_blank" rel="noopener noreferrer">Official Web</a>
+              <a className="font-semibold text-wk-text-dark hover:text-wk-purple-primary transition-colors hidden sm:block text-sm" href="https://hima-ti.uniku.ac.id" target="_blank" rel="noopener noreferrer">Official Web</a>
               <a className="items-center gap-2 border-2 border-wk-purple-primary text-wk-purple-primary font-bold py-2 px-6 rounded-full hover:bg-wk-purple-primary hover:text-white transition-all group text-sm hidden md:inline-flex" href="https://github.com/HIMA-TI" target="_blank" rel="noopener noreferrer">
                 HIMA TI GitHub
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -120,23 +117,20 @@ export default function Navbar({ currentTab, setCurrentTab, session }) {
       </div>
 
       {/* Mobile menu */}
-      <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-        isMobileOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
-      }`}>
+      <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
+        }`}>
         <div className="bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm px-6 py-4 flex flex-col gap-3">
           <button
             onClick={() => handleTab('beranda')}
-            className={`w-full text-left py-3 px-4 rounded-2xl font-bold text-sm transition-colors cursor-pointer bg-transparent border-0 ${
-              currentTab === 'beranda' ? 'bg-emerald-50 text-emerald-600' : 'text-gray-600 hover:bg-gray-50'
-            }`}
+            className={`w-full text-left py-3 px-4 rounded-2xl font-bold text-sm transition-colors cursor-pointer bg-transparent border-0 ${currentTab === 'beranda' ? 'bg-emerald-50 text-emerald-600' : 'text-gray-600 hover:bg-gray-50'
+              }`}
           >
             Beranda
           </button>
           <button
             onClick={() => handleTab('aset-digital')}
-            className={`w-full text-left py-3 px-4 rounded-2xl font-bold text-sm transition-colors cursor-pointer bg-transparent border-0 ${
-              currentTab === 'aset-digital' ? 'bg-emerald-50 text-emerald-600' : 'text-gray-600 hover:bg-gray-50'
-            }`}
+            className={`w-full text-left py-3 px-4 rounded-2xl font-bold text-sm transition-colors cursor-pointer bg-transparent border-0 ${currentTab === 'aset-digital' ? 'bg-emerald-50 text-emerald-600' : 'text-gray-600 hover:bg-gray-50'
+              }`}
           >
             Aset Digital
           </button>
