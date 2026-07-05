@@ -59,20 +59,43 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
     fetchBookedDates();
   }, [fetchBookedDates]);
 
-  // Calculate active borrowers (dates that overlap with today)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  const maxBorrowersLimit = selectedAsset?.maxBorrowers || 2;
+
+  // Function to check if a date range is available (doesn't exceed max slots)
+  const isDateRangeAvailable = (startStr, endStr) => {
+    if (!startStr || !endStr) return true;
+    const s = new Date(startStr);
+    const e = new Date(endStr);
+    s.setHours(0, 0, 0, 0);
+    e.setHours(23, 59, 59, 999);
+
+    let curr = new Date(s);
+    while (curr <= e) {
+      let count = 0;
+      for (const b of bookedDates) {
+        if (!b.borrow_start_date || !b.borrow_end_date) continue;
+        const bs = new Date(b.borrow_start_date);
+        const be = new Date(b.borrow_end_date);
+        bs.setHours(0, 0, 0, 0);
+        be.setHours(23, 59, 59, 999);
+        if (curr >= bs && curr <= be) count++;
+      }
+      if (count >= maxBorrowersLimit) return false;
+      curr.setDate(curr.getDate() + 1);
+    }
+    return true;
+  };
+
+  // Calculate active borrowers (all current and future bookings)
   const activeBorrowers = bookedDates.filter(d => {
     if (!d.borrow_start_date || !d.borrow_end_date) return false;
-    const start = new Date(d.borrow_start_date);
     const end = new Date(d.borrow_end_date);
-    start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
-    return start <= today && end >= today;
+    return end >= today;
   });
-
-  const maxBorrowersLimit = selectedAsset?.maxBorrowers || 2;
   const slotsFull = isLimited && activeBorrowers.length >= maxBorrowersLimit;
 
   const scrollSlider = (direction) => {
@@ -132,12 +155,19 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
         else if (value.trim().length < 5) error = 'Alasan minimal 5 karakter.';
         break;
       case 'borrow_start_date':
-        if (isLimited && !value) error = 'Tanggal mulai pinjam wajib diisi.';
-        break;
       case 'borrow_end_date':
-        if (isLimited && !value) error = 'Tanggal selesai pinjam wajib diisi.';
-        else if (isLimited && requestData.borrow_start_date && value && new Date(value) <= new Date(requestData.borrow_start_date)) {
+        if (isLimited && !value) {
+          error = name === 'borrow_start_date' ? 'Tanggal mulai pinjam wajib diisi.' : 'Tanggal selesai pinjam wajib diisi.';
+        } else if (name === 'borrow_end_date' && isLimited && requestData.borrow_start_date && value && new Date(value) <= new Date(requestData.borrow_start_date)) {
           error = 'Tanggal selesai harus setelah tanggal mulai.';
+        } else if (name === 'borrow_start_date' && isLimited && requestData.borrow_end_date && value && new Date(value) >= new Date(requestData.borrow_end_date)) {
+          error = 'Tanggal mulai harus sebelum tanggal selesai.';
+        } else if (isLimited) {
+          const start = name === 'borrow_start_date' ? value : requestData.borrow_start_date;
+          const end = name === 'borrow_end_date' ? value : requestData.borrow_end_date;
+          if (start && end && !isDateRangeAvailable(start, end)) {
+            error = 'Terdapat tanggal yang sudah penuh (sudah di-booking) pada rentang ini.';
+          }
         }
         break;
       default:
