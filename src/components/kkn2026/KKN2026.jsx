@@ -61,6 +61,17 @@ export default function KKN2026() {
   };
 
   useEffect(() => {
+    const preconnectGstatic = document.createElement('link');
+    preconnectGstatic.rel = 'preconnect';
+    preconnectGstatic.href = 'https://fonts.gstatic.com';
+    preconnectGstatic.crossOrigin = 'anonymous';
+    document.head.appendChild(preconnectGstatic);
+
+    const preconnectGfonts = document.createElement('link');
+    preconnectGfonts.rel = 'preconnect';
+    preconnectGfonts.href = 'https://fonts.googleapis.com';
+    document.head.appendChild(preconnectGfonts);
+
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap';
@@ -83,6 +94,8 @@ export default function KKN2026() {
     return () => {
       elements.forEach((el) => observer.unobserve(el));
       document.head.removeChild(link);
+      document.head.removeChild(preconnectGfonts);
+      document.head.removeChild(preconnectGstatic);
     };
   }, []);
 

@@ -77,6 +77,7 @@ export default function useDigitalAssets() {
               faqs: safeParse(item.faqs, []),
               requestCount: Number(item.request_count) || 0,
               likes: Number(item.likes) || 0,
+              is_limited: item.is_limited === true,
               ...theme
             };
           });

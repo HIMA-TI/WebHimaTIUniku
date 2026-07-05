@@ -1,22 +1,20 @@
-import { useState, useRef, useEffect } from 'react';
-import { ExternalLink, BookOpen, ArrowLeft, CheckCircle2, Code, Layers, Zap, Play, Share2, X, Check, Info, ChevronRight, Image as ImageIcon, ChevronLeft, Users, Star, Cpu, Quote, History, MessageSquare, Download, Calculator, Monitor, BarChart2, Heart, Clock, Eye, Send, Lock, Link2 } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { ExternalLink, BookOpen, ArrowLeft, CheckCircle2, Code, Layers, Zap, Play, Share2, X, Check, Info, ChevronRight, Image as ImageIcon, ChevronLeft, Users, Star, Download, Monitor, Heart, Send, Lock, MapPin, AlertTriangle, Calendar } from 'lucide-react';
 import InteractiveBackground from './InteractiveBackground';
 import { API_BASE } from '../../../config/api';
 import { supabase } from '../../../config/supabase';
+import { techIcons } from '../data/techIcons';
 
-const techIcons = {
-  'React': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg',
-  'Tailwind CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg',
-  'Supabase': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg',
-  'HTML': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
-  'HTML5': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
-  'CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg',
-  'JavaScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg',
-  'Bootstrap': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg',
-  'PHP': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg',
-  'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg',
-  'Unity': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/unity/unity-original.svg',
-  'C#': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg'
+/** Maximum concurrent borrowers for limited assets */
+const MAX_BORROWERS = 2;
+
+/** Sekretariat HIMA TI address info */
+const SEKRETARIAT_INFO = {
+  name: 'Sekretariat HIMA TI',
+  building: 'Kampus 2 UNIKU — Fakultas Ilmu Komputer (FKOM)',
+  address: 'Jl. Pramuka No.67, Purwawinangun, Kec. Kuningan, Kabupaten Kuningan, Jawa Barat 45512',
+  mapsUrl: 'https://maps.google.com/?q=2FFH%2BP57+Kuningan',
+  plusCode: '2FFH+P57'
 };
 
 export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset, session }) {
@@ -34,25 +32,50 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
     borrow_end_date: ''
   });
   const [formErrors, setFormErrors] = useState({});
-  const [bookedDates, setBookedDates] = useState([]);
   const sliderRef = useRef(null);
 
-  useEffect(() => {
-    if (selectedAsset?.is_limited && showRequestModal) {
-      const fetchBookedDates = async () => {
-        try {
-          const res = await fetch(`${API_BASE}/asset-requests/asset/${selectedAsset.id}/dates`);
-          if (res.ok) {
-            const data = await res.json();
-            setBookedDates(data.data || []);
-          }
-        } catch (e) {
-          console.error("Failed to fetch booked dates", e);
-        }
-      };
-      fetchBookedDates();
+  // Borrower tracking state
+  const [bookedDates, setBookedDates] = useState([]);
+  const [loadingDates, setLoadingDates] = useState(false);
+
+  const isLimited = selectedAsset?.is_limited === true;
+
+  // Fetch booked dates for limited assets
+  const fetchBookedDates = useCallback(async () => {
+    if (!isLimited || !selectedAsset?.id) return;
+    setLoadingDates(true);
+    try {
+      const response = await fetch(`${API_BASE}/asset-requests/asset/${selectedAsset.id}/dates`);
+      if (response.ok) {
+        const json = await response.json();
+        const dates = json?.data || [];
+        setBookedDates(dates);
+      }
+    } catch (err) {
+      console.error('Failed to fetch booked dates:', err);
+    } finally {
+      setLoadingDates(false);
     }
-  }, [selectedAsset?.is_limited, showRequestModal, selectedAsset?.id]);
+  }, [isLimited, selectedAsset?.id]);
+
+  useEffect(() => {
+    fetchBookedDates();
+  }, [fetchBookedDates]);
+
+  // Calculate active borrowers (dates that overlap with today)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const activeBorrowers = bookedDates.filter(d => {
+    if (!d.borrow_start_date || !d.borrow_end_date) return false;
+    const start = new Date(d.borrow_start_date);
+    const end = new Date(d.borrow_end_date);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    return start <= today && end >= today;
+  });
+
+  const slotsFull = isLimited && activeBorrowers.length >= MAX_BORROWERS;
 
   const scrollSlider = (direction) => {
     if (sliderRef.current) {
@@ -63,7 +86,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
 
   if (!selectedAsset) return null;
 
-  const { title, desc, cat, icon: IconComponent, bgColor, textColor, descColor, iconBg, iconColor, demoUrl, stats, difficulty, systemReq, developer, testimonial, changelog, faqs } = selectedAsset;
+  const { title, desc, cat, icon: IconComponent, demoUrl, difficulty, systemReq, developer } = selectedAsset;
 
   const parseImages = (imgData) => {
     if (!imgData) return [];
@@ -72,10 +95,10 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
        try {
          const parsed = JSON.parse(imgData);
          if (Array.isArray(parsed)) return parsed;
-       } catch (e) {
-         if (imgData.includes(',')) return imgData.split(',').map(s => s.trim());
-         return [imgData];
-       }
+        } catch {
+          if (imgData.includes(',')) return imgData.split(',').map(s => s.trim());
+          return [imgData];
+        }
     }
     return [];
   };
@@ -111,11 +134,11 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
         else if (value.trim().length < 5) error = 'Alasan minimal 5 karakter.';
         break;
       case 'borrow_start_date':
-        if (selectedAsset?.is_limited && !value) error = 'Tanggal mulai wajib diisi.';
+        if (isLimited && !value) error = 'Tanggal mulai pinjam wajib diisi.';
         break;
       case 'borrow_end_date':
-        if (selectedAsset?.is_limited && !value) error = 'Tanggal selesai wajib diisi.';
-        else if (selectedAsset?.is_limited && new Date(value) < new Date(requestData.borrow_start_date)) {
+        if (isLimited && !value) error = 'Tanggal selesai pinjam wajib diisi.';
+        else if (isLimited && requestData.borrow_start_date && value && new Date(value) <= new Date(requestData.borrow_start_date)) {
           error = 'Tanggal selesai harus setelah tanggal mulai.';
         }
         break;
@@ -145,26 +168,35 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
     const isNameValid = validateField('name', requestData.name);
     const isWaValid = validateField('whatsapp', requestData.whatsapp);
     const isReasonValid = validateField('reason', requestData.reason);
-    const isStartDateValid = selectedAsset?.is_limited ? validateField('borrow_start_date', requestData.borrow_start_date) : true;
-    const isEndDateValid = selectedAsset?.is_limited ? validateField('borrow_end_date', requestData.borrow_end_date) : true;
+    let isDatesValid = true;
+    if (isLimited) {
+      isDatesValid = validateField('borrow_start_date', requestData.borrow_start_date) && validateField('borrow_end_date', requestData.borrow_end_date);
+    }
 
-    if (!isNameValid || !isWaValid || !isReasonValid || !isStartDateValid || !isEndDateValid) {
+    if (!isNameValid || !isWaValid || !isReasonValid || !isDatesValid) {
       return;
     }
 
     setIsSubmitting(true);
     
     try {
+      const bodyPayload = {
+        asset_id: selectedAsset.id,
+        email: session?.user?.email,
+        ...requestData
+      };
+      // Only send borrow dates for limited assets
+      if (!isLimited) {
+        delete bodyPayload.borrow_start_date;
+        delete bodyPayload.borrow_end_date;
+      }
+
       const response = await fetch(`${API_BASE}/asset-requests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          asset_id: selectedAsset.id,
-          email: session?.user?.email,
-          ...requestData
-        })
+        body: JSON.stringify(bodyPayload)
       });
 
       if (!response.ok) {
@@ -177,6 +209,8 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
       }
 
       setRequestSuccess(true);
+      // Refresh booked dates after successful submission
+      if (isLimited) fetchBookedDates();
     } catch (error) {
       console.error('Error submitting request:', error);
       alert(error.message || 'Terjadi kesalahan saat mengajukan izin.');
@@ -185,7 +219,19 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
     }
   };
 
-  const isSolid = bgColor === 'bg-emerald-600';
+
+  // Helper: format date to "DD MMM YYYY"
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  // Helper: get min date for date picker (today)
+  const getMinDate = () => {
+    const d = new Date();
+    return d.toISOString().split('T')[0];
+  };
 
   return (
     <div className="kkn2026-page bg-gray-50 text-wk-text-dark font-sans antialiased min-h-screen pb-24 relative overflow-hidden">
@@ -200,6 +246,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
         <button
           onClick={() => setSelectedAsset(null)}
           className="flex items-center gap-2 px-4 py-2 border border-gray-200 text-wk-text-light font-bold rounded-full hover:bg-gray-100 transition-colors cursor-pointer bg-white text-sm"
+          aria-label="Kembali ke daftar aset"
         >
           <ArrowLeft className="w-4 h-4" /> Kembali
         </button>
@@ -215,7 +262,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
             <div className="relative mb-10 mt-2">
               {coverImage && (
                 <div className="w-full aspect-video rounded-[2rem] overflow-hidden mb-8 border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] relative group">
-                  <img src={coverImage} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={coverImage} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               )}
@@ -224,6 +271,11 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                   <IconComponent className="w-4 h-4" strokeWidth={2.5} />
                   {cat}
                 </span>
+                {isLimited && (
+                  <span className="px-3 py-1.5 font-bold text-[11px] rounded-full border border-amber-200 bg-amber-50 text-amber-700 flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5" /> Aset Terbatas
+                  </span>
+                )}
               </div>
               <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight text-[#0F172A] mb-4 drop-shadow-sm">
                 {title}
@@ -270,7 +322,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                         key={tech}
                         className="px-4 py-1.5 bg-gray-50 border border-gray-100 text-gray-600 font-medium text-xs rounded-xl flex items-center gap-2"
                       >
-                        {techIcons[tech] && <img src={techIcons[tech]} alt={tech} className="w-3.5 h-3.5 object-contain" />}
+                        {techIcons[tech] && <img src={techIcons[tech]} alt={tech} className="w-3.5 h-3.5 object-contain" loading="lazy" />}
                         {tech}
                       </span>
                     ))}
@@ -304,7 +356,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                         <div className="flex items-center gap-5">
                           <div className="w-14 h-14 rounded-full bg-emerald-50 border-2 border-emerald-100 overflow-hidden shrink-0 flex items-center justify-center">
                             {dev.avatar ? (
-                              <img src={dev.avatar} alt={dev.name} className="w-full h-full object-cover" />
+                              <img src={dev.avatar} alt={dev.name} className="w-full h-full object-cover" loading="lazy" />
                             ) : (
                               <Users className="w-6 h-6 text-emerald-500" />
                             )}
@@ -334,6 +386,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                   <button
                     onClick={() => likeAsset(selectedAsset.id)}
                     className="w-12 h-12 shrink-0 bg-white rounded-full flex items-center justify-center border border-emerald-100 shadow-[0_2px_10px_-4px_rgba(16,185,129,0.2)] hover:bg-emerald-50 hover:scale-110 active:scale-95 transition-all cursor-pointer"
+                    aria-label="Suka aset ini"
                   >
                     <Heart className="w-5 h-5 fill-emerald-500 text-emerald-500" />
                   </button>
@@ -351,7 +404,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                   <div className="hidden sm:block w-px h-8 bg-gray-100"></div>
                   <div className="flex items-center gap-1.5 text-[13px] font-bold text-gray-500">
                     <Users className="w-4 h-4 text-emerald-500" />
-                    24 <span className="font-medium text-gray-400">Ulasan</span>
+                    {selectedAsset.requestCount || 0} <span className="font-medium text-gray-400">Pengajuan</span>
                   </div>
                 </div>
               </div>
@@ -368,18 +421,37 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
               {/* Status */}
               <div className="flex items-center justify-between mb-6">
                 <span className="font-semibold text-slate-500 text-sm">Status Aset</span>
-                <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Tersedia
-                </span>
+                {isLimited ? (
+                  slotsFull ? (
+                    <span className="px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-[11px] font-bold flex items-center gap-1.5 border border-amber-200">
+                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div> Slot Penuh ({activeBorrowers.length}/{MAX_BORROWERS})
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Tersedia ({activeBorrowers.length}/{MAX_BORROWERS})
+                    </span>
+                  )
+                ) : (
+                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-bold flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Tersedia
+                  </span>
+                )}
               </div>
 
               {/* Main Action */}
-              <button
-                onClick={() => setShowRequestModal(true)}
-                className="w-full py-3.5 bg-emerald-600 text-white font-semibold rounded-2xl hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 text-sm mb-4 cursor-pointer"
-              >
-                Gass Request Akses! <ChevronRight className="w-4 h-4 text-emerald-200" />
-              </button>
+              {slotsFull ? (
+                <div className="w-full py-3.5 bg-gray-100 text-gray-400 font-semibold rounded-2xl flex items-center justify-center gap-2 text-sm mb-4 cursor-not-allowed">
+                  <Lock className="w-4 h-4" /> Slot Peminjaman Penuh
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowRequestModal(true)}
+                  className="w-full py-3.5 bg-emerald-600 text-white font-semibold rounded-2xl hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 text-sm mb-4 cursor-pointer"
+                  aria-label="Request akses aset digital"
+                >
+                  Gass Request Akses! <ChevronRight className="w-4 h-4 text-emerald-200" />
+                </button>
+              )}
 
               {/* Secondary Actions */}
               <div className="grid grid-cols-2 gap-3 mb-3">
@@ -392,6 +464,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                     }
                   }}
                   className={`w-full py-2.5 border border-slate-200 font-semibold rounded-2xl flex items-center justify-center gap-2 text-sm transition-colors ${selectedAsset.demoUrl ? 'text-slate-600 hover:bg-slate-50 cursor-pointer' : 'text-slate-400 bg-gray-50 cursor-not-allowed opacity-70'}`}
+                  aria-label="Lihat live demo"
                 >
                   <Play className={`w-4 h-4 ${selectedAsset.demoUrl ? 'text-slate-400' : 'text-slate-300'}`} /> Live Demo
                 </button>
@@ -403,17 +476,115 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                       alert("Buku panduan pemakaian lengkap akan dikirimkan via WhatsApp setelah pengajuan akses Anda disetujui.");
                     }
                   }}
-                  className={`w-full py-2.5 border border-slate-200 font-semibold rounded-2xl flex items-center justify-center gap-2 text-sm transition-colors ${selectedAsset.guideUrl ? 'text-slate-600 hover:bg-slate-50 cursor-pointer' : 'text-slate-600 hover:bg-slate-50 cursor-pointer'}`}
+                  className="w-full py-2.5 border border-slate-200 font-semibold rounded-2xl flex items-center justify-center gap-2 text-sm transition-colors text-slate-600 hover:bg-slate-50 cursor-pointer"
+                  aria-label="Lihat dokumentasi"
                 >
                   <BookOpen className="w-4 h-4 text-slate-400" /> Dokumentasi
                 </button>
               </div>
               <button
-                onClick={() => setShowRequestModal(true)}
-                className="w-full py-2.5 bg-gray-100 text-gray-600 font-bold rounded-2xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 text-sm cursor-pointer mb-8"
+                onClick={() => !slotsFull && setShowRequestModal(true)}
+                className={`w-full py-2.5 font-bold rounded-2xl transition-colors flex items-center justify-center gap-2 text-sm mb-8 ${slotsFull ? 'bg-gray-50 text-gray-300 cursor-not-allowed' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer'}`}
+                disabled={slotsFull}
+                aria-label="Request starter kit"
               >
                 <Download className="w-4 h-4 text-gray-500" /> Request Starter Kit
               </button>
+
+              {/* ═══════════════════════════════════════════ */}
+              {/* TABEL PEMINJAM AKTIF — Only for limited assets */}
+              {/* ═══════════════════════════════════════════ */}
+              {isLimited && (
+                <>
+                  <hr className="border-slate-100 my-6" />
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-[11px] font-bold text-emerald-800 tracking-widest uppercase">Peminjam Aktif</h4>
+                      <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${slotsFull ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
+                        {activeBorrowers.length}/{MAX_BORROWERS} Slot
+                      </span>
+                    </div>
+
+                    {loadingDates ? (
+                      <div className="space-y-3">
+                        {[1, 2].map(i => (
+                          <div key={i} className="animate-pulse flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                            <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                            <div className="flex-1 space-y-2">
+                              <div className="w-24 h-3 bg-gray-200 rounded"></div>
+                              <div className="w-32 h-2.5 bg-gray-200 rounded"></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : activeBorrowers.length > 0 ? (
+                      <div className="space-y-2.5">
+                        {activeBorrowers.map((borrower, idx) => (
+                          <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100 hover:bg-emerald-50/50 hover:border-emerald-100 transition-colors">
+                            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
+                              <span className="text-[11px] font-extrabold text-emerald-700">{idx + 1}</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-bold text-gray-800 truncate">
+                                {borrower.organization || borrower.name || `Peminjam ${idx + 1}`}
+                              </p>
+                              <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-semibold mt-0.5">
+                                <Calendar className="w-3 h-3 text-gray-400" />
+                                <span>{formatDate(borrower.borrow_start_date)} — {formatDate(borrower.borrow_end_date)}</span>
+                              </div>
+                            </div>
+                            <div className="w-2 h-2 bg-emerald-400 rounded-full shrink-0 animate-pulse"></div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-5 bg-gray-50 rounded-xl border border-gray-100">
+                        <Users className="w-6 h-6 text-gray-300 mx-auto mb-2" />
+                        <p className="text-xs font-semibold text-gray-400">Belum ada peminjam aktif</p>
+                      </div>
+                    )}
+
+                    {/* Slot Full Banner — Arahkan ke Sekretariat */}
+                    {slotsFull && (
+                      <div className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-5 relative overflow-hidden">
+                        <div className="absolute -right-6 -top-6 w-20 h-20 bg-amber-100/50 rounded-full blur-2xl pointer-events-none"></div>
+                        <div className="relative z-10">
+                          <div className="flex items-start gap-3 mb-3">
+                            <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                              <AlertTriangle className="w-4 h-4 text-amber-700" />
+                            </div>
+                            <div>
+                              <h5 className="font-bold text-amber-900 text-sm mb-1">Slot Peminjaman Penuh</h5>
+                              <p className="text-[12px] text-amber-800/80 font-medium leading-relaxed">
+                                Saat ini seluruh slot peminjaman aset ini sudah terisi. Untuk koordinasi lebih lanjut, silakan datang langsung ke:
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="bg-white rounded-xl p-4 border border-amber-100 mt-3">
+                            <div className="flex items-start gap-3">
+                              <MapPin className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                              <div className="text-left">
+                                <p className="font-bold text-gray-900 text-sm">{SEKRETARIAT_INFO.name}</p>
+                                <p className="font-semibold text-emerald-600 text-xs mt-0.5">{SEKRETARIAT_INFO.building}</p>
+                                <p className="text-[11px] text-gray-500 font-medium mt-1.5 leading-relaxed">{SEKRETARIAT_INFO.address}</p>
+                              </div>
+                            </div>
+                            <a
+                              href={SEKRETARIAT_INFO.mapsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-3 w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-colors"
+                            >
+                              <MapPin className="w-3.5 h-3.5" /> Buka di Google Maps
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
 
               <hr className="border-slate-100 my-8" />
 
@@ -451,15 +622,15 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">Bagikan halaman aset ini</p>
                 <div className="flex items-center gap-3">
                   {/* WhatsApp */}
-                  <a href={`https://api.whatsapp.com/send?text=Lihat ${encodeURIComponent(title)} di Inventaris IPTEK HIMA-TI! ${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-colors">
+                  <a href={`https://api.whatsapp.com/send?text=Lihat ${encodeURIComponent(title)} di Inventaris IPTEK HIMA-TI! ${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-colors" aria-label="Bagikan ke WhatsApp">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                   </a>
                   {/* Twitter / X */}
-                  <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=Lihat ${encodeURIComponent(title)} di Inventaris IPTEK HIMA-TI!`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors">
+                  <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=Lihat ${encodeURIComponent(title)} di Inventaris IPTEK HIMA-TI!`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors" aria-label="Bagikan ke Twitter/X">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.005 4.15H5.059z"/></svg>
                   </a>
                   {/* Facebook */}
-                  <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-colors">
+                  <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-colors" aria-label="Bagikan ke Facebook">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                   </a>
                   
@@ -478,7 +649,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                     } else {
                       handleShare();
                     }
-                  }} className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-colors cursor-pointer relative group">
+                  }} className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-colors cursor-pointer relative group" aria-label="Bagikan atau salin link">
                     {copied ? <Check className="w-4 h-4 text-emerald-600 group-hover:text-white" /> : <Share2 className="w-4 h-4" />}
                     <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[11px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                       {copied ? 'Tersalin!' : 'Share / Copy'}
@@ -492,10 +663,10 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                 <div className="absolute top-0 right-0 w-20 h-20 bg-blue-100/30 rounded-bl-full pointer-events-none"></div>
 
                 <div className="flex -space-x-3 mb-4 relative z-10">
-                  <img className="w-11 h-11 rounded-full border-2 border-white object-cover shadow-sm hover:-translate-y-1 transition-transform" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi&backgroundColor=e2e8f0" alt="User 1" />
-                  <img className="w-11 h-11 rounded-full border-2 border-white object-cover shadow-sm hover:-translate-y-1 transition-transform" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Siti&backgroundColor=fef08a" alt="User 2" />
-                  <img className="w-11 h-11 rounded-full border-2 border-white object-cover shadow-sm hover:-translate-y-1 transition-transform" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Joko&backgroundColor=bbf7d0" alt="User 3" />
-                  <img className="w-11 h-11 rounded-full border-2 border-white object-cover shadow-sm hover:-translate-y-1 transition-transform" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rina&backgroundColor=fbcfe8" alt="User 4" />
+                  <img className="w-11 h-11 rounded-full border-2 border-white object-cover shadow-sm hover:-translate-y-1 transition-transform" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi&backgroundColor=e2e8f0" alt="User 1" loading="lazy" />
+                  <img className="w-11 h-11 rounded-full border-2 border-white object-cover shadow-sm hover:-translate-y-1 transition-transform" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Siti&backgroundColor=fef08a" alt="User 2" loading="lazy" />
+                  <img className="w-11 h-11 rounded-full border-2 border-white object-cover shadow-sm hover:-translate-y-1 transition-transform" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Joko&backgroundColor=bbf7d0" alt="User 3" loading="lazy" />
+                  <img className="w-11 h-11 rounded-full border-2 border-white object-cover shadow-sm hover:-translate-y-1 transition-transform" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rina&backgroundColor=fbcfe8" alt="User 4" loading="lazy" />
                 </div>
 
                 <div className="relative z-10 flex flex-col items-center">
@@ -527,10 +698,10 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
   
               {/* Nav Controls */}
               <div className="flex items-center gap-2">
-                <button onClick={() => scrollSlider('left')} className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 border border-gray-100 hover:border-emerald-200 transition-all cursor-pointer">
+                <button onClick={() => scrollSlider('left')} className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 border border-gray-100 hover:border-emerald-200 transition-all cursor-pointer" aria-label="Geser galeri ke kiri">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <button onClick={() => scrollSlider('right')} className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 border border-gray-100 hover:border-emerald-200 transition-all cursor-pointer">
+                <button onClick={() => scrollSlider('right')} className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 border border-gray-100 hover:border-emerald-200 transition-all cursor-pointer" aria-label="Geser galeri ke kanan">
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
@@ -543,7 +714,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
               `}</style>
               {images.map((imgUrl, idx) => (
                 <div key={idx} className="shrink-0 w-[280px] md:w-[420px] aspect-video bg-gray-50 rounded-2xl flex items-center justify-center overflow-hidden border border-gray-100 shadow-sm group cursor-pointer hover:border-emerald-200 transition-all duration-300 snap-center">
-                  <img src={imgUrl} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={imgUrl} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                 </div>
               ))}
             </div>
@@ -569,6 +740,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
               <button
                 onClick={() => setShowDemo(false)}
                 className="p-2 bg-white border border-gray-200 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                aria-label="Tutup demo"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -590,7 +762,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
       {showRequestModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm animate-fade-in" onClick={() => !isSubmitting && setShowRequestModal(false)}></div>
-          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-xl animate-slide-up">
+          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-xl animate-slide-up max-h-[90vh] overflow-y-auto">
             {!session ? (
               <div className="p-8 text-center flex flex-col items-center">
                 <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-5 border border-emerald-100">
@@ -598,7 +770,7 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                 </div>
                 <h3 className="text-xl font-bold font-display text-gray-900 mb-2">Login Diperlukan</h3>
                 <p className="text-sm text-gray-500 font-semibold mb-6 max-w-xs leading-relaxed">
-                  Untuk mengajukan akses aset digital, kamu wajib masuk menggunakan email resmi UNIKU (<span className="text-emerald-600 font-bold">@uniku.ac.id</span>).
+                  Untuk mengajukan akses source code, kamu wajib masuk menggunakan email resmi UNIKU (<span className="text-emerald-600 font-bold">@uniku.ac.id</span>).
                 </p>
                 <button
                   onClick={async () => {
@@ -637,8 +809,8 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
             ) : (
               <>
                 <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                  <h3 className="text-xl font-bold font-display text-gray-900">Request Akses Aset Digital</h3>
-                  <button onClick={() => setShowRequestModal(false)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                  <h3 className="text-xl font-bold font-display text-gray-900">Request Akses Source Code</h3>
+                  <button onClick={() => setShowRequestModal(false)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-full transition-colors cursor-pointer" aria-label="Tutup modal">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -715,6 +887,47 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                         onChange={handleInputChange}
                       />
                     </div>
+
+                    {/* Borrow Date Fields — Only for limited assets */}
+                    {isLimited && (
+                      <div className="bg-amber-50/60 border border-amber-100 rounded-xl p-4 space-y-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Calendar className="w-4 h-4 text-amber-600" />
+                          <span className="text-xs font-bold text-amber-800">Periode Peminjaman (Wajib)</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[11px] font-bold text-gray-600 mb-1">Tanggal Mulai</label>
+                            <input
+                              required
+                              type="date"
+                              name="borrow_start_date"
+                              min={getMinDate()}
+                              className={`w-full px-3 py-2.5 bg-white border ${formErrors.borrow_start_date ? 'border-red-400' : 'border-gray-200 focus:border-emerald-500'} rounded-lg focus:ring-2 focus:ring-emerald-500/20 transition-colors font-medium text-sm`}
+                              value={requestData.borrow_start_date}
+                              onChange={handleInputChange}
+                              onBlur={handleBlur}
+                            />
+                            {formErrors.borrow_start_date && <p className="text-red-500 text-[10px] mt-1 font-medium">{formErrors.borrow_start_date}</p>}
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-bold text-gray-600 mb-1">Tanggal Selesai</label>
+                            <input
+                              required
+                              type="date"
+                              name="borrow_end_date"
+                              min={requestData.borrow_start_date || getMinDate()}
+                              className={`w-full px-3 py-2.5 bg-white border ${formErrors.borrow_end_date ? 'border-red-400' : 'border-gray-200 focus:border-emerald-500'} rounded-lg focus:ring-2 focus:ring-emerald-500/20 transition-colors font-medium text-sm`}
+                              value={requestData.borrow_end_date}
+                              onChange={handleInputChange}
+                              onBlur={handleBlur}
+                            />
+                            {formErrors.borrow_end_date && <p className="text-red-500 text-[10px] mt-1 font-medium">{formErrors.borrow_end_date}</p>}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-1.5">Alasan Penggunaan</label>
                       <textarea
@@ -730,57 +943,6 @@ export default function AssetDetail({ selectedAsset, setSelectedAsset, likeAsset
                       />
                       {formErrors.reason && <p className="text-red-500 text-xs mt-1.5 font-medium flex items-center gap-1.5"><Info className="w-3.5 h-3.5"/> {formErrors.reason}</p>}
                     </div>
-
-                    {selectedAsset?.is_limited && (
-                      <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mt-4">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Clock className="w-4 h-4 text-orange-600" />
-                          <h4 className="text-sm font-bold text-orange-900">Aset Fisik Terbatas</h4>
-                        </div>
-                        <p className="text-xs text-orange-700 mb-4">Aset ini memiliki fisik yang jumlahnya terbatas. Silakan tentukan tanggal peminjaman Anda.</p>
-                        
-                        {bookedDates.length > 0 && (
-                          <div className="mb-4 bg-white/60 p-3 rounded-lg border border-orange-100">
-                            <p className="text-xs font-bold text-orange-800 mb-2">Tanggal yang sudah di-booking:</p>
-                            <ul className="list-disc pl-4 text-xs text-gray-700 space-y-1">
-                              {bookedDates.map((d, i) => (
-                                <li key={i}>{new Date(d.borrow_start_date).toLocaleDateString('id-ID')} s/d {new Date(d.borrow_end_date).toLocaleDateString('id-ID')}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-xs font-bold text-gray-700 mb-1.5">Dari Tanggal</label>
-                            <input
-                              required
-                              type="date"
-                              name="borrow_start_date"
-                              className={`w-full px-3 py-2 bg-white border ${formErrors.borrow_start_date ? 'border-red-400 focus:ring-red-500/20' : 'border-gray-200 focus:ring-orange-500/20'} rounded-lg focus:ring-2 transition-colors font-medium text-sm`}
-                              value={requestData.borrow_start_date}
-                              onChange={handleInputChange}
-                              onBlur={handleBlur}
-                            />
-                            {formErrors.borrow_start_date && <p className="text-red-500 text-[10px] mt-1">{formErrors.borrow_start_date}</p>}
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold text-gray-700 mb-1.5">Sampai Tanggal</label>
-                            <input
-                              required
-                              type="date"
-                              name="borrow_end_date"
-                              min={requestData.borrow_start_date}
-                              className={`w-full px-3 py-2 bg-white border ${formErrors.borrow_end_date ? 'border-red-400 focus:ring-red-500/20' : 'border-gray-200 focus:ring-orange-500/20'} rounded-lg focus:ring-2 transition-colors font-medium text-sm`}
-                              value={requestData.borrow_end_date}
-                              onChange={handleInputChange}
-                              onBlur={handleBlur}
-                            />
-                            {formErrors.borrow_end_date && <p className="text-red-500 text-[10px] mt-1">{formErrors.borrow_end_date}</p>}
-                          </div>
-                        </div>
-                      </div>
-                    )}
 
                     <button
                       type="submit"

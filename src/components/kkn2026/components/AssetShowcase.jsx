@@ -1,28 +1,12 @@
 import { useState } from 'react';
-import { Search, X, ArrowUpRight, LayoutGrid, List, Flame, ThumbsUp, Star } from 'lucide-react';
+import { Search, X, ArrowUpRight, LayoutGrid, Star } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-
-const techIcons = {
-  'React': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg',
-  'Tailwind CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg',
-  'Supabase': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg',
-  'HTML': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
-  'HTML5': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg',
-  'CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg',
-  'JavaScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg',
-  'Bootstrap': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg',
-  'PHP': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg',
-  'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg',
-  'Unity': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/unity/unity-original.svg',
-  'C#': 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg'
-};
+import { techIcons } from '../data/techIcons';
 
 // Dynamic categories will be generated in the component
 export default function AssetShowcase({ onSelectAsset, digitalAssets = [], loading }) {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState('grid');
-  const [sortBy, setSortBy] = useState('default');
 
   const staticCategories = [
     { id: 'all', label: 'Semua Aset' },
@@ -33,13 +17,14 @@ export default function AssetShowcase({ onSelectAsset, digitalAssets = [], loadi
 
   const dynamicCategories = digitalAssets.length > 0 ? [
     { id: 'all', label: 'Semua Aset' },
-    ...Array.from(new Set(digitalAssets.map(item => item.cat))).filter(Boolean).map(cat => {
-      return { id: cat, label: cat };
+    ...Array.from(new Set(digitalAssets.map(item => item.type))).filter(Boolean).map(type => {
+      const label = digitalAssets.find(a => a.type === type)?.cat || type;
+      return { id: type, label };
     })
   ] : staticCategories;
 
   let filteredItems = digitalAssets.filter((item) => {
-    const matchesCategory = activeCategory === 'all' || item.cat === activeCategory;
+    const matchesCategory = activeCategory === 'all' || item.type === activeCategory;
     const q = searchQuery.toLowerCase();
     const matchesSearch = !q
       || item.title.toLowerCase().includes(q)
@@ -49,21 +34,15 @@ export default function AssetShowcase({ onSelectAsset, digitalAssets = [], loadi
     return matchesCategory && matchesSearch;
   });
 
-  if (sortBy === 'popular') {
-    filteredItems.sort((a, b) => (b.stats?.users || 0) - (a.stats?.users || 0));
-  } else if (sortBy === 'easy') {
-    const order = { 'Mudah': 1, 'Menengah': 2, 'Sulit': 3 };
-    filteredItems.sort((a, b) => (order[a.difficulty] || 99) - (order[b.difficulty] || 99));
-  }
 
   return (
     <section id="kkn-showcase" className="bg-white border-b border-gray-100 py-28 animate-fade-in">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-10">
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4 font-display">
-            Temukan <span className="text-emerald-600 font-display italic">Aset Digital</span> Keren
+            Pilih <span className="text-emerald-600 font-display italic">Aset Digital</span> Terbaik
           </h2>
-          <p className="text-gray-500 font-semibold text-lg">Cari dan pilih aset digital yang pas buat dukung proker kamu. Tinggal request izin, langsung siap pakai!</p>
+          <p className="text-gray-500 font-semibold text-lg">Pilih aset digital yang sesuai dengan kebutuhanmu, semua siap pakai tinggal ajukan izin guna!</p>
         </div>
 
         {/* Search + Filter */}
@@ -115,7 +94,7 @@ export default function AssetShowcase({ onSelectAsset, digitalAssets = [], loadi
 
         {/* Grid/List */}
         {loading ? (
-          <div className={`grid gap-8 max-w-6xl mx-auto w-full ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+          <div className="grid gap-8 max-w-6xl mx-auto w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map(i => (
               <div key={i} className="relative overflow-hidden rounded-[2rem] p-8 min-h-[19rem] flex flex-col justify-between shadow-sm bg-gray-50 border border-gray-100 animate-pulse">
                 <div className="flex items-center justify-between gap-4 mb-6">
@@ -132,44 +111,17 @@ export default function AssetShowcase({ onSelectAsset, digitalAssets = [], loadi
             ))}
           </div>
         ) : (
-          <div className={`grid gap-8 max-w-6xl mx-auto w-full ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+          <div className="grid gap-8 max-w-6xl mx-auto w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {filteredItems.map((item) => {
               const IconComponent = typeof item.icon === 'string' && LucideIcons[item.icon] ? LucideIcons[item.icon] : LayoutGrid;
               const isSolid = item.bgColor === 'bg-emerald-600';
+              const _viewMode = 'grid'; // always grid
             
-            if (viewMode === 'list') {
-              return (
-                <div key={item.title} className={`relative overflow-hidden rounded-[2rem] p-6 flex flex-col md:flex-row items-center gap-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 ${item.bgColor} ${item.textColor} border border-transparent hover:border-emerald-200/50`}>
 
-
-                  <div className={`w-16 h-16 shrink-0 rounded-2xl flex items-center justify-center ${item.iconBg} ${item.iconColor} shadow-xs`}>
-                    <IconComponent className="w-8 h-8" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className={`px-2.5 py-0.5 font-bold text-[10px] uppercase tracking-wider rounded-full border ${isSolid ? 'bg-emerald-500/20 text-emerald-100 border-emerald-500/35' : 'bg-white/60 text-emerald-800 border-emerald-100/80'}`}>
-                        {item.cat}
-                      </span>
-                      <span className="flex items-center gap-1 text-[11px] font-bold"><Star className="w-3 h-3" /> {item.difficulty}</span>
-                    </div>
-                    <h3 className="text-xl font-bold tracking-tight mb-2">{item.title}</h3>
-                    <p className={`text-sm font-semibold leading-relaxed max-w-xl ${item.descColor}`}>{item.desc}</p>
-                  </div>
-                  <button
-                    onClick={() => onSelectAsset(item)}
-                    className={`shrink-0 px-6 py-3 rounded-xl font-bold text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-                      isSolid ? 'bg-white text-emerald-900 hover:bg-emerald-50 hover:shadow' : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow'
-                    }`}
-                  >
-                    Lihat Detail <ArrowUpRight className="w-4 h-4" />
-                  </button>
-                </div>
-              );
-            }
 
             return (
               <div
-                key={item.title}
+                key={item.id || item.title}
                 className={`relative overflow-hidden rounded-[2rem] p-8 min-h-[19rem] flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-350 ${item.bgColor} ${item.textColor} group`}
               >
                 {item.decor}

@@ -10,19 +10,27 @@ export default function InteractiveBackground() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let width = canvas.width = canvas.offsetWidth;
-    let height = canvas.height = canvas.offsetHeight;
+    // Cap pixel ratio at 2x to avoid excessive GPU load on retina displays
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let width, height;
 
-    const handleResize = () => {
+    const setCanvasSize = () => {
       if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
+      width = canvas.offsetWidth;
+      height = canvas.offsetHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
+    setCanvasSize();
+
+    const handleResize = () => setCanvasSize();
     window.addEventListener('resize', handleResize);
 
     const particles = [];
-    const particleCount = Math.min(55, Math.floor((width * height) / 30000));
+    const particleCount = Math.min(35, Math.floor((width * height) / 35000));
     const mouse = { x: null, y: null, active: false };
+    let mouseMoveQueued = false;
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
@@ -36,10 +44,15 @@ export default function InteractiveBackground() {
     }
 
     const handleMouseMove = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-      mouse.active = true;
+      if (mouseMoveQueued) return;
+      mouseMoveQueued = true;
+      requestAnimationFrame(() => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+        mouse.active = true;
+        mouseMoveQueued = false;
+      });
     };
     const handleMouseLeave = () => { mouse.active = false; };
 
