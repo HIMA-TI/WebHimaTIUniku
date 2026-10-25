@@ -1,0 +1,2937 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHNOVERSARY VOL. II | Eksplorasi Inovasi & Kompetisi Teknologi</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Unbounded & Inter for futuristic & quirky display look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Original TechnoVersary Palette
+                        tvPurpleDark: '#38096B',
+                        tvPurple: '#5B1494',
+                        tvMagenta: '#C82D8C',
+                        tvOrange: '#FF5722',
+                        tvGold: '#FFB82E',
+                        tvCream: '#FFFFFF',
+                        tvDark: '#1A1125',
+                    },
+                    fontFamily: {
+                        display: ['Unbounded', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Clean styling matching reference layout with TechnoVersary palette */
+        body {
+            background-color: #FFB82E;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .quirky-title {
+            font-family: 'Unbounded', sans-serif;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+
+        /* TechnoVersary Gradient Background */
+        .tv-clean-bg {
+            background: linear-gradient(180deg, #FFB82E 0%, #FF7722 52%, #B92B8A 100%);
+        }
+
+        .tv-pill-gradient {
+            background: linear-gradient(135deg, #5B1494 0%, #C82D8C 100%);
+        }
+
+        .tv-btn-gradient {
+            background: linear-gradient(135deg, #FF5722 0%, #C82D8C 50%, #5B1494 100%);
+        }
+
+        /* Floating animation for 3D-style mascots */
+        @keyframes floatSlow {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-7px);
+            }
+        }
+
+        .mascot-float {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+
+        /* Soft clean shadow on 3D characters */
+        .vinyl-shadow {
+            filter: drop-shadow(0px 14px 18px rgba(26, 17, 37, 0.18));
+        }
+
+
+        /* Hide scrollbars for carousel tracks */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #FFFFFF;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #5B1494;
+            border-radius: 4px;
+        }
+
+        /* Splash Screen Mascot Animation */
+        @keyframes splashPulse {
+
+            0%,
+            100% {
+                transform: scale(1) translateY(0);
+            }
+
+            50% {
+                transform: scale(1.08) translateY(-6px);
+            }
+        }
+
+        /* Smooth Infinite Marquee Keyframes */
+        @keyframes marqueeLeft {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        @keyframes marqueeRight {
+            0% {
+                transform: translateX(-50%);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .animate-marquee-left {
+            display: flex;
+            width: max-content;
+            animation: marqueeLeft 30s linear infinite;
+        }
+
+        .animate-marquee-right {
+            display: flex;
+            width: max-content;
+            animation: marqueeRight 42s linear infinite;
+        }
+
+        .marquee-container:hover .animate-marquee-left,
+        .marquee-container:hover .animate-marquee-right {
+            animation-play-state: paused;
+        }
+
+        .marquee-fade-mask {
+            mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+        }
+
+        /* ======================== SMOOTH ON-SCROLL REVEAL ANIMATIONS ======================== */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            /* Base reveal elements */
+            .tv-reveal {
+                opacity: 0;
+                transform: translateY(32px);
+                transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+                will-change: opacity, transform;
+            }
+
+            .tv-reveal-scale {
+                opacity: 0;
+                transform: scale(0.96) translateY(24px);
+                transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+                will-change: opacity, transform;
+            }
+
+            .tv-reveal.is-revealed,
+            .tv-reveal-scale.is-revealed {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            /* Progressive Stagger Delays */
+            .tv-delay-1 { transition-delay: 80ms; }
+            .tv-delay-2 { transition-delay: 160ms; }
+            .tv-delay-3 { transition-delay: 240ms; }
+            .tv-delay-4 { transition-delay: 320ms; }
+
+            /* Modern CSS Scroll-Driven Animation where supported natively */
+            @supports ((animation-timeline: view()) and (animation-range: entry)) {
+                @keyframes tvScrollFadeUp {
+                    from {
+                        opacity: 0.1;
+                        transform: translateY(32px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .tv-scroll-driven {
+                    animation: tvScrollFadeUp linear both;
+                    animation-timeline: view();
+                    animation-range: entry 5% entry 35%;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen w-full tv-clean-bg flex flex-col justify-between overflow-x-hidden">
+
+    <!-- ======================== ULTRA-CLEAN SPLASH SCREEN (MASCOT LOGO ONLY) ======================== -->
+    <div id="splash-screen"
+        class="fixed inset-0 z-[99999] bg-white flex items-center justify-center transition-all duration-700 ease-out select-none">
+        <div class="relative flex items-center justify-center">
+            <!-- Subtle ambient glow matching theme palette -->
+            <div
+                class="absolute w-48 h-48 sm:w-60 sm:h-60 bg-gradient-to-tr from-[#FFB82E]/35 via-[#FF5722]/20 to-[#5B1494]/15 rounded-full blur-2xl animate-pulse">
+            </div>
+
+            <!-- Mascot Logo ZERO Only -->
+            <img src="/technoversary/assets/mascot-1.svg" alt="ZERO Mascot Logo"
+                class="w-36 sm:w-44 md:w-48 h-auto relative z-10 select-none pointer-events-none splash-mascot-anim" />
+        </div>
+    </div>
+
+    <!-- Main Full-Width Desktop Website Container -->
+    <main class="w-full relative overflow-hidden">
+
+        <!-- ======================== HERO SECTION (CLEAN WHITE ROUNDED BLOCK) ======================== -->
+        <section
+            class="w-full bg-white rounded-b-[56px] md:rounded-b-[90px] lg:rounded-b-[110px] min-h-[90vh] lg:min-h-[95vh] flex flex-col justify-between pt-6 pb-28 sm:pb-32 lg:pb-36 relative z-20">
+
+            <!-- Inner Desktop Container -->
+            <div class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 w-full flex-1 flex flex-col relative z-10">
+
+                <!-- Header / Minimalist Clean Responsive Navbar -->
+                <header class="flex items-center justify-between gap-4 py-2 mb-2 lg:mb-4 w-full">
+                    <!-- Left: Logo + Brand Name -->
+                    <a href="#" class="flex items-center gap-3 sm:gap-3.5 flex-shrink-0 group">
+                        <img src="/technoversary/assets/logo.svg" alt="TechnoVersary Logo"
+                            class="w-10 h-10 sm:w-11 sm:h-11 object-contain transition-transform group-hover:scale-105 flex-shrink-0" />
+                        <span
+                            class="font-display font-extrabold text-base sm:text-lg tracking-wide text-tvDark uppercase whitespace-nowrap flex-shrink-0">
+                            TECHNOVERSARY
+                        </span>
+                    </a>
+
+                    <!-- Right Group: Nav Links + Minimal Menu ••• -->
+                    <div class="flex items-center gap-4 sm:gap-6 flex-shrink-0">
+                        <nav
+                            class="hidden xl:flex items-center gap-5 2xl:gap-7 text-xs font-semibold text-tvDark/80 flex-shrink-0">
+                            <a href="/" class="hover:text-tvPurple transition-colors flex items-center gap-1.5 text-tvPurple font-bold bg-purple-50 px-3 py-1.5 rounded-full border border-purple-100">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                <span>Web HIMA-TI</span>
+                            </a>
+                            <a href="#tentang" class="hover:text-tvPurple transition-colors">Tentang</a>
+                            <a href="#programs" class="hover:text-tvPurple transition-colors">Kompetisi</a>
+                            <a href="#seminar" class="hover:text-tvPurple transition-colors flex items-center gap-1.5">
+                                <span>Seminar</span>
+                                <span
+                                    class="text-[9px] font-bold uppercase tracking-wider bg-purple-100 text-tvPurple px-1.5 py-0.5 rounded-full">Soon</span>
+                            </a>
+                            <a href="#dokumentasi" class="hover:text-tvPurple transition-colors">Dokumentasi</a>
+                            <a href="#testimoni" class="hover:text-tvPurple transition-colors">Testimoni</a>
+                            <a href="#sponsor" class="hover:text-tvPurple transition-colors">Sponsor</a>
+                            <a href="#contacts" class="hover:text-tvPurple transition-colors">Kontak</a>
+                        </nav>
+
+                        <!-- Direct Action Button on Desktop -->
+                        <button onclick="openCourseModal('Pendaftaran TechnoVersary Vol. II', 'Umum / Tim')"
+                            class="hidden xl:inline-flex bg-tvPurple hover:bg-tvMagenta text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all shadow-sm hover:shadow hover:-translate-y-0.5 flex-shrink-0">
+                            DAFTAR
+                        </button>
+
+                        <!-- Clean Responsive Menu Button (For mobile, tablet, & smaller laptop viewports) -->
+                        <button onclick="toggleMobileMenu()"
+                            class="flex xl:hidden items-center gap-2 text-xs sm:text-sm font-semibold text-tvDark hover:text-tvPurple px-3.5 py-2 rounded-full bg-gray-100/90 hover:bg-purple-50 border border-gray-200/90 transition-all flex-shrink-0">
+                            <span>Menu</span>
+                            <span class="flex gap-1 items-center">
+                                <span class="w-1.5 h-1.5 rounded-full bg-tvDark"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-tvDark"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-tvDark"></span>
+                            </span>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Dropdown Menu Drawer -->
+                <div id="mobile-menu"
+                    class="hidden mb-6 p-4 sm:p-6 bg-white/95 backdrop-blur-md rounded-2xl border border-purple-100 shadow-xl relative z-30 transition-all">
+                    <div
+                        class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs sm:text-sm font-semibold text-tvDark text-center">
+                        <a href="/" class="p-2.5 rounded-xl bg-purple-50 text-tvPurple font-bold transition-colors border border-purple-100 flex items-center justify-center gap-1.5 col-span-2 sm:col-span-4">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                <span>Kembali ke Web HIMA-TI Utama</span>
+                            </a>
+                        <a href="#tentang" onclick="toggleMobileMenu()"
+                            class="p-2.5 rounded-xl hover:bg-purple-50 hover:text-tvPurple transition-colors border border-transparent hover:border-purple-100">Tentang</a>
+                        <a href="#programs" onclick="toggleMobileMenu()"
+                            class="p-2.5 rounded-xl hover:bg-purple-50 hover:text-tvPurple transition-colors border border-transparent hover:border-purple-100">Kompetisi (7)</a>
+                        <a href="#seminar" onclick="toggleMobileMenu()"
+                            class="p-2.5 rounded-xl hover:bg-purple-50 hover:text-tvPurple transition-colors border border-transparent hover:border-purple-100 flex items-center justify-center gap-1.5">
+                            <span>Seminar</span>
+                            <span
+                                class="text-[9px] font-bold uppercase tracking-wider bg-purple-100 text-tvPurple px-1.5 py-0.5 rounded-full">Soon</span>
+                        </a>
+                        <a href="#dokumentasi" onclick="toggleMobileMenu()"
+                            class="p-2.5 rounded-xl hover:bg-purple-50 hover:text-tvPurple transition-colors border border-transparent hover:border-purple-100">Dokumentasi</a>
+                        <a href="#testimoni" onclick="toggleMobileMenu()"
+                            class="p-2.5 rounded-xl hover:bg-purple-50 hover:text-tvPurple transition-colors border border-transparent hover:border-purple-100">Testimoni</a>
+                        <a href="#sponsor" onclick="toggleMobileMenu()"
+                            class="p-2.5 rounded-xl hover:bg-purple-50 hover:text-tvPurple transition-colors border border-transparent hover:border-purple-100">Sponsor</a>
+                        <a href="#contacts" onclick="toggleMobileMenu()"
+                            class="p-2.5 rounded-xl hover:bg-purple-50 hover:text-tvPurple transition-colors border border-transparent hover:border-purple-100">Kontak</a>
+                        <button
+                            onclick="toggleMobileMenu(); openCourseModal('Pendaftaran TechnoVersary Vol. II', 'Umum / Tim');"
+                            class="p-2.5 rounded-xl bg-tvPurple text-white font-bold hover:bg-tvMagenta transition-colors shadow-sm">Daftar</button>
+                    </div>
+                </div>
+
+                <!-- Hero: Clean 2-Column Split (Copy Left, Mascot Right) -->
+                <div id="hero"
+                    class="my-auto py-6 lg:py-10 relative grid grid-cols-1 lg:grid-cols-12 items-center gap-10 lg:gap-8">
+
+                    <!-- Left: Copy -->
+                    <div class="lg:col-span-7 order-2 lg:order-1 text-center lg:text-left">
+                        <h1
+                            class="quirky-title text-tvOrange text-4xl sm:text-5xl lg:text-[64px] font-extrabold tracking-tight leading-[1.1] mb-6">
+                            Tech Career Preparation:
+                            <span class="block text-tvPurple">From Zero to Hired</span>
+                        </h1>
+
+                        <p class="text-sm sm:text-base text-tvDark/70 leading-relaxed max-w-md mx-auto lg:mx-0 mb-8">
+                            Saatnya ubah teori kuliah jadi portofolio nyata. Uji skill di 7 cabang kompetisi, perluas
+                            koneksi di Techno Summit, dan siapkan karier impianmu dari sekarang.
+                        </p>
+
+                        <!-- Event Countdown Widget (In Place of CTA) -->
+                        <div class="flex items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5">
+                            <!-- Hari -->
+                            <div
+                                class="bg-purple-50/70 border border-purple-100 rounded-2xl p-2.5 sm:p-3.5 min-w-[68px] sm:min-w-[80px] text-center shadow-sm hover:shadow-md transition-shadow">
+                                <span id="cd-days"
+                                    class="font-display font-extrabold text-2xl sm:text-3xl text-tvPurple leading-none block">00</span>
+                                <span
+                                    class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1.5 block">Hari</span>
+                            </div>
+                            <span class="text-tvPurple/30 font-bold text-xl sm:text-2xl -mt-3 select-none">:</span>
+
+                            <!-- Jam -->
+                            <div
+                                class="bg-purple-50/70 border border-purple-100 rounded-2xl p-2.5 sm:p-3.5 min-w-[68px] sm:min-w-[80px] text-center shadow-sm hover:shadow-md transition-shadow">
+                                <span id="cd-hours"
+                                    class="font-display font-extrabold text-2xl sm:text-3xl text-tvPurple leading-none block">00</span>
+                                <span
+                                    class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1.5 block">Jam</span>
+                            </div>
+                            <span class="text-tvPurple/30 font-bold text-xl sm:text-2xl -mt-3 select-none">:</span>
+
+                            <!-- Menit -->
+                            <div
+                                class="bg-purple-50/70 border border-purple-100 rounded-2xl p-2.5 sm:p-3.5 min-w-[68px] sm:min-w-[80px] text-center shadow-sm hover:shadow-md transition-shadow">
+                                <span id="cd-minutes"
+                                    class="font-display font-extrabold text-2xl sm:text-3xl text-tvPurple leading-none block">00</span>
+                                <span
+                                    class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1.5 block">Menit</span>
+                            </div>
+                            <span class="text-tvPurple/30 font-bold text-xl sm:text-2xl -mt-3 select-none">:</span>
+
+                            <!-- Detik -->
+                            <div
+                                class="bg-purple-50/70 border border-purple-100 rounded-2xl p-2.5 sm:p-3.5 min-w-[68px] sm:min-w-[80px] text-center shadow-sm hover:shadow-md transition-shadow">
+                                <span id="cd-seconds"
+                                    class="font-display font-extrabold text-2xl sm:text-3xl text-tvOrange leading-none block">00</span>
+                                <span
+                                    class="text-[9px] sm:text-[10px] font-bold text-tvOrange/70 uppercase tracking-wider mt-1.5 block">Detik</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Mascot ZERO + Gold Splash -->
+                    <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center relative">
+                        <svg class="w-72 h-64 sm:w-80 sm:h-72 lg:w-[380px] lg:h-[320px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
+                            viewBox="0 0 280 230" fill="none" aria-hidden="true">
+                            <path
+                                d="M130,22 C146,-6 182,0 178,35 C215,14 240,46 206,75 C246,82 236,126 195,120 C220,158 176,190 148,152 C126,194 82,180 96,140 C46,162 22,126 64,100 C20,82 38,42 86,60 C76,16 116,6 130,22 Z"
+                                fill="#FFB82E" />
+                        </svg>
+                        <div class="relative z-10 mascot-float vinyl-shadow">
+                            <img src="/technoversary/assets/mascot-1.svg" alt="Maskot resmi TechnoVersary: ZERO"
+                                class="w-52 sm:w-60 lg:w-72 h-auto object-contain select-none pointer-events-none" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== CLEAN SOLID ORANGE-RED BOLD RIBBON SHAPE OVERLAP ======================== -->
+        <div
+            class="relative h-28 sm:h-40 lg:h-48 -mt-16 sm:-mt-22 lg:-mt-28 z-30 pointer-events-none flex justify-center">
+            <svg class="w-80 sm:w-[460px] lg:w-[560px] h-52 sm:h-72 lg:h-80 overflow-visible" viewBox="0 0 420 250"
+                fill="none">
+                <path
+                    d="M110 180 C110 120 120 50 160 50 C195 50 170 195 240 195 C290 195 270 55 315 55 C345 55 355 110 355 140"
+                    stroke="#FF5722" stroke-width="56" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </div>
+
+        <!-- ======================== SECTION 2: TENTANG EVENT & KENALAN SAMA MASKOT ======================== -->
+        <section id="tentang"
+            class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 pt-24 sm:pt-32 lg:pt-36 pb-16 lg:pb-24 relative z-20">
+            <!-- Section Header Row -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                    <h2
+                        class="quirky-title text-white text-3xl sm:text-4xl lg:text-5xl font-extrabold max-w-lg leading-tight">
+                        <span class="block">Kenalan Sama</span>
+                        <span class="block">TechnoVersary Vol. II</span>
+                    </h2>
+                </div>
+                <p class="text-xs sm:text-sm text-white font-medium max-w-[320px] leading-relaxed">
+                    Ekosistem belajar dan berkompetisi yang diinisiasi HIMA-TI UNIKU untuk membantumu melompat dari
+                    bangku kuliah langsung ke panggung industri teknologi.
+                </p>
+            </div>
+
+            <!-- Two Cards: About Event + Mascot ZERO -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-8">
+
+                <!-- Card 1: About Event -->
+                <div
+                    class="lg:col-span-7 bg-white rounded-[40px] p-8 sm:p-10 lg:p-12 shadow-xl flex flex-col justify-between h-full">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-tvPurple">HIMA-TI UNIVERSITAS
+                            KUNINGAN</span>
+                        <h3 class="quirky-title text-2xl sm:text-3xl font-extrabold text-tvDark mt-3 mb-5 leading-snug">
+                            Jembatan Nyata Menuju Karier Impianmu
+                        </h3>
+                        <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                            Banyak mahasiswa dan pelajar bingung harus mulai dari mana untuk menembus industri
+                            teknologi. <strong class="text-tvDark">TechnoVersary Vol. II</strong> hadir sebagai jawaban:
+                            ruang bertumbuh yang mempertemukan ambisimu dengan standar nyata kebutuhan industri saat
+                            ini.
+                        </p>
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            Melalui 7 cabang kompetisi aplikatif, seminar inspiratif bersama praktisi, dan pembuktian
+                            portofolio, kamu tidak hanya berkompetisi, tetapi sedang membangun modal karier terkuatmu:
+                            dari pemula hingga siap diperhitungkan di dunia kerja.
+                        </p>
+                    </div>
+
+                    <!-- 3 Focus Pillars -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-10 pt-8 border-t border-gray-100">
+                        <div>
+                            <div
+                                class="w-10 h-10 rounded-xl bg-purple-100 text-tvPurple flex items-center justify-center mb-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                                </svg>
+                            </div>
+                            <h4 class="font-display font-bold text-sm text-tvDark mb-1">Mental Industri</h4>
+                            <p class="text-xs text-gray-500 leading-snug">Adaptif, solutif, dan punya cara pandang
+                                profesional.</p>
+                        </div>
+                        <div>
+                            <div
+                                class="w-10 h-10 rounded-xl bg-orange-100 text-tvOrange flex items-center justify-center mb-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                    <polyline points="16 18 22 12 16 6" />
+                                    <polyline points="8 6 2 12 8 18" />
+                                </svg>
+                            </div>
+                            <h4 class="font-display font-bold text-sm text-tvDark mb-1">Validasi Skill</h4>
+                            <p class="text-xs text-gray-500 leading-snug">Uji kualitas karyamu langsung di hadapan dewan
+                                juri ahli.</p>
+                        </div>
+                        <div>
+                            <div
+                                class="w-10 h-10 rounded-xl bg-pink-100 text-tvMagenta flex items-center justify-center mb-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                            </div>
+                            <h4 class="font-display font-bold text-sm text-tvDark mb-1">Koneksi Nyata</h4>
+                            <p class="text-xs text-gray-500 leading-snug">Bangun relasi dengan mentor industri dan
+                                sesama talenta muda.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Mascot ZERO (purple, matches official poster) -->
+                <div
+                    class="lg:col-span-5 bg-gradient-to-br from-tvPurple to-[#3A0B63] rounded-[40px] p-8 sm:p-10 shadow-xl text-white flex flex-col h-full">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-tvGold">Official Mascot</span>
+                        <span class="text-[11px] font-semibold bg-white/15 px-3 py-1 rounded-full">Filosofi ZERO</span>
+                    </div>
+
+                    <div class="flex items-center gap-5 mb-6">
+                        <div
+                            class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-tvGold flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <img src="/technoversary/assets/mascot-1.svg" alt="Maskot ZERO"
+                                class="w-20 sm:w-24 h-auto object-contain" />
+                        </div>
+                        <div>
+                            <h3 class="quirky-title text-3xl sm:text-4xl font-extrabold leading-none mb-2">ZERO</h3>
+                            <p class="text-xs text-white/80 leading-relaxed">Pengingat bahwa setiap praktisi dan
+                                developer hebat selalu mengawali perjalanannya dari angka nol.</p>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-4 mt-auto pt-6 border-t border-white/15">
+                        <li class="flex gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-white/15 text-tvGold text-[11px] font-bold flex items-center justify-center flex-shrink-0">1</span>
+                            <p class="text-xs text-white/85 leading-relaxed"><strong class="text-white">Harmoni Manusia
+                                    & Tech</strong> - Simbol perpaduan rasa ingin tahu alami manusia dengan akselerasi
+                                alat modern.</p>
+                        </li>
+                        <li class="flex gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-white/15 text-tvGold text-[11px] font-bold flex items-center justify-center flex-shrink-0">2</span>
+                            <p class="text-xs text-white/85 leading-relaxed"><strong class="text-white">Karakter
+                                    Kakatua</strong> - Mewakili sosok mahasiswa yang kritis, komunikatif, dan tangkas
+                                menyerap wawasan baru.</p>
+                        </li>
+                        <li class="flex gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-white/15 text-tvGold text-[11px] font-bold flex items-center justify-center flex-shrink-0">3</span>
+                            <p class="text-xs text-white/85 leading-relaxed"><strong class="text-white">Semangat
+                                    Cyborg</strong> - Kegigihan talenta masa depan yang siap berevolusi dan relevan di
+                                industri global.</p>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- 3 Minimalist Highlight Stats Pills (Clean SVG Icons - No native emojis) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div
+                    class="bg-white rounded-[32px] p-7 shadow-lg flex items-center gap-5 hover:-translate-y-1 transition-transform">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-tvPurple/10 flex items-center justify-center text-tvPurple flex-shrink-0">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                            <path d="M4 22h16" />
+                            <path d="M10 14.66V17c0 .55-.45 1-1 1H7" />
+                            <path d="M14 14.66V17c0 .55.45 1 1 1h2" />
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                            <path d="M12 14v4" />
+                            <path d="M8 22v-2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="quirky-title text-2xl lg:text-3xl font-extrabold text-tvDark">Rp 15 Juta+</div>
+                        <p class="text-xs text-gray-500 font-medium mt-0.5">Total Prize Pool & Apresiasi Juara</p>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white rounded-[32px] p-7 shadow-lg flex items-center gap-5 hover:-translate-y-1 transition-transform">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-tvOrange/10 flex items-center justify-center text-tvOrange flex-shrink-0">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="6" />
+                            <circle cx="12" cy="12" r="2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="quirky-title text-2xl lg:text-3xl font-extrabold text-tvDark">7 Cabang</div>
+                        <p class="text-xs text-gray-500 font-medium mt-0.5">E-Sports, Desain & Inovasi Bisnis</p>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white rounded-[32px] p-7 shadow-lg flex items-center gap-5 hover:-translate-y-1 transition-transform">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-tvMagenta/10 flex items-center justify-center text-tvMagenta flex-shrink-0">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                            <path
+                                d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="quirky-title text-2xl lg:text-3xl font-extrabold text-tvDark">1.000+</div>
+                        <p class="text-xs text-gray-500 font-medium mt-0.5">Komunitas Talenta Muda Nasional</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== PROGRAMS / COMPETITION SECTION (MASCOT REFERENCE LAYOUT) ======================== -->
+        <section id="programs" class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 pt-4 pb-24 lg:pb-32 relative z-20">
+
+            <!-- Section Header Row -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                    <h2 class="quirky-title text-white text-3xl sm:text-5xl font-extrabold max-w-lg leading-tight">
+                        <span class="block">Kompetisi</span>
+                        <span class="block">TechnoVersary</span>
+                    </h2>
+                </div>
+                <p class="text-[11px] sm:text-xs text-white font-medium max-w-[280px] leading-snug">
+                    7 arena pembuktian untuk mengasah kemampuan teknis, kerja sama tim, dan insting kompetitifmu di
+                    hadapan dewan juri ahli.
+                </p>
+            </div>
+
+            <!-- Category Filter Tabs (Matching Reference Aesthetics) -->
+            <div class="flex flex-wrap items-center gap-2 mb-16">
+                <button onclick="filterCompCards('all', this)"
+                    class="comp-filter-btn active bg-tvDark text-white font-bold text-xs px-5 py-2.5 rounded-full shadow-md transition-all">
+                    Semua Lomba (7)
+                </button>
+                <button onclick="filterCompCards('esports', this)"
+                    class="comp-filter-btn bg-white/30 text-tvDark hover:bg-white hover:text-tvDark font-semibold text-xs px-5 py-2.5 rounded-full transition-all">
+                    E-Sports (4)
+                </button>
+                <button onclick="filterCompCards('desain', this)"
+                    class="comp-filter-btn bg-white/30 text-tvDark hover:bg-white hover:text-tvDark font-semibold text-xs px-5 py-2.5 rounded-full transition-all">
+                    Desain (2)
+                </button>
+                <button onclick="filterCompCards('bisnis', this)"
+                    class="comp-filter-btn bg-white/30 text-tvDark hover:bg-white hover:text-tvDark font-semibold text-xs px-5 py-2.5 rounded-full transition-all">
+                    Bisnis Proposal (1)
+                </button>
+            </div>
+
+            <!-- Shared SVG Gradients for Authentic ZERO Mascot Cards (matching assets/mascot-1.svg) -->
+            <svg width="0" height="0" class="absolute" aria-hidden="true">
+                <defs>
+                    <radialGradient id="zeroPurple" cx="40%" cy="30%" r="70%">
+                        <stop offset="0%" stop-color="#8A35B8" />
+                        <stop offset="60%" stop-color="#662D91" />
+                        <stop offset="100%" stop-color="#421863" />
+                    </radialGradient>
+                    <radialGradient id="zeroScreen" cx="50%" cy="30%" r="70%">
+                        <stop offset="0%" stop-color="#3A3A3A" />
+                        <stop offset="80%" stop-color="#222222" />
+                        <stop offset="100%" stop-color="#141414" />
+                    </radialGradient>
+                    <linearGradient id="zeroGold" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#FFF099" />
+                        <stop offset="50%" stop-color="#FFB82E" />
+                        <stop offset="100%" stop-color="#D97706" />
+                    </linearGradient>
+                    <linearGradient id="zeroChest" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#FFFFFF" />
+                        <stop offset="60%" stop-color="#E2E8F0" />
+                        <stop offset="100%" stop-color="#CBD5E1" />
+                    </linearGradient>
+                    <linearGradient id="goldChain" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#FFF099" />
+                        <stop offset="50%" stop-color="#FFAE00" />
+                        <stop offset="100%" stop-color="#9E5700" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <!-- 7 Official Competition Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-28 gap-x-8 pt-4">
+
+                <!-- ==================== LOMBA 1: MOBILE LEGENDS (MLBB) ==================== -->
+                <div data-category="esports"
+                    class="comp-card bg-white rounded-[32px] p-6 sm:p-7 pt-28 sm:pt-32 relative shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
+                    <!-- Pop-out Character: ZERO MLBB Fighter -->
+                    <div
+                        class="absolute -top-[100px] lg:-top-[114px] left-1/2 -translate-x-1/2 pointer-events-none z-10 w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div
+                            class="mascot-float vinyl-shadow w-44 sm:w-48 h-44 sm:h-48 flex items-center justify-center">
+                            <img src="/technoversary/assets/zero_clean_3d_vinyl.webp" alt="ZERO Mascot 3D Vinyl Toy"
+                                class="w-full h-full object-contain filter drop-shadow-2xl select-none pointer-events-none transition-transform duration-300 hover:scale-105">
+                        </div>
+                    </div>
+
+                    <div>
+
+                        <h3 class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            Mobile Legends
+                        </h3>
+                        <p class="text-xs text-gray-500 leading-relaxed mb-6">
+                            Uji mekanik mikro, penguasaan hero pool, dan sinergi makro tim 5v5 di panggung bergengsi
+                            Land of Dawn.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <button onclick="openCompetitionModal('mlbb')"
+                            class="bg-tvPurple hover:bg-tvMagenta text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow hover:-translate-y-0.5">
+                            DAFTAR LOMBA
+                        </button>
+                        <span class="quirky-title text-base lg:text-lg font-extrabold text-tvDark">
+                            50K
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ==================== LOMBA 2: WEB DESIGN ==================== -->
+                <div data-category="desain"
+                    class="comp-card bg-white rounded-[32px] p-6 sm:p-7 pt-28 sm:pt-32 relative shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
+                    <!-- Pop-out Character: ZERO Web Dev Specialist -->
+                    <div
+                        class="absolute -top-[100px] lg:-top-[114px] left-1/2 -translate-x-1/2 pointer-events-none z-10 w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div
+                            class="mascot-float vinyl-shadow w-44 sm:w-48 h-44 sm:h-48 flex items-center justify-center">
+                            <img src="/technoversary/assets/zero_clean_3d_vinyl.webp" alt="ZERO Mascot 3D Vinyl Toy"
+                                class="w-full h-full object-contain filter drop-shadow-2xl select-none pointer-events-none transition-transform duration-300 hover:scale-105">
+                        </div>
+                    </div>
+
+                    <div>
+
+                        <h3 class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            Web Design
+                        </h3>
+                        <p class="text-xs text-gray-500 leading-relaxed mb-6">
+                            Rancang antarmuka UI/UX yang estetik, responsif, dan menyelesaikan masalah nyata pengguna
+                            dengan standar industri web modern.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <button onclick="openCompetitionModal('web')"
+                            class="bg-tvPurple hover:bg-tvMagenta text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow hover:-translate-y-0.5">
+                            DAFTAR LOMBA
+                        </button>
+                        <span class="quirky-title text-base lg:text-lg font-extrabold text-tvDark">
+                            60K
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ==================== LOMBA 3: POSTER DESIGN ==================== -->
+                <div data-category="desain"
+                    class="comp-card bg-white rounded-[32px] p-6 sm:p-7 pt-28 sm:pt-32 relative shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
+                    <!-- Pop-out Character: ZERO Poster Artist -->
+                    <div
+                        class="absolute -top-[100px] lg:-top-[114px] left-1/2 -translate-x-1/2 pointer-events-none z-10 w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div
+                            class="mascot-float vinyl-shadow w-44 sm:w-48 h-44 sm:h-48 flex items-center justify-center">
+                            <img src="/technoversary/assets/zero_clean_3d_vinyl.webp" alt="ZERO Mascot 3D Vinyl Toy"
+                                class="w-full h-full object-contain filter drop-shadow-2xl select-none pointer-events-none transition-transform duration-300 hover:scale-105">
+                        </div>
+                    </div>
+
+                    <div>
+
+                        <h3 class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            Poster Design
+                        </h3>
+                        <p class="text-xs text-gray-500 leading-relaxed mb-6">
+                            Sampaikan gagasan teknologi masa depan lewat kekuatan visual, harmonisasi warna, dan
+                            tipografi yang memikat pandangan.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <button onclick="openCompetitionModal('poster')"
+                            class="bg-tvPurple hover:bg-tvMagenta text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow hover:-translate-y-0.5">
+                            DAFTAR LOMBA
+                        </button>
+                        <span class="quirky-title text-base lg:text-lg font-extrabold text-tvDark">
+                            35K
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ==================== LOMBA 4: BUSINESS PROPOSAL ==================== -->
+                <div data-category="bisnis"
+                    class="comp-card bg-white rounded-[32px] p-6 sm:p-7 pt-28 sm:pt-32 relative shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
+                    <!-- Pop-out Character: ZERO Business Founder & CEO -->
+                    <div
+                        class="absolute -top-[100px] lg:-top-[114px] left-1/2 -translate-x-1/2 pointer-events-none z-10 w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div
+                            class="mascot-float vinyl-shadow w-44 sm:w-48 h-44 sm:h-48 flex items-center justify-center">
+                            <img src="/technoversary/assets/zero_clean_3d_vinyl.webp" alt="ZERO Mascot 3D Vinyl Toy"
+                                class="w-full h-full object-contain filter drop-shadow-2xl select-none pointer-events-none transition-transform duration-300 hover:scale-105">
+                        </div>
+                    </div>
+
+                    <div>
+
+                        <h3 class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            Business Proposal
+                        </h3>
+                        <p class="text-xs text-gray-500 leading-relaxed mb-6">
+                            Ubah ide kreatif menjadi rencana bisnis teknologi yang bernilai jual, terukur, dan siap
+                            dipresentasikan di hadapan calon investor.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <button onclick="openCompetitionModal('probis')"
+                            class="bg-tvPurple hover:bg-tvMagenta text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow hover:-translate-y-0.5">
+                            DAFTAR LOMBA
+                        </button>
+                        <span class="quirky-title text-base lg:text-lg font-extrabold text-tvDark">
+                            50K
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ==================== LOMBA 5: ROBLOX ==================== -->
+                <div data-category="esports"
+                    class="comp-card bg-white rounded-[32px] p-6 sm:p-7 pt-28 sm:pt-32 relative shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
+                    <!-- Pop-out Character: ZERO Metaverse Roblox Gamer -->
+                    <div
+                        class="absolute -top-[100px] lg:-top-[114px] left-1/2 -translate-x-1/2 pointer-events-none z-10 w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div
+                            class="mascot-float vinyl-shadow w-44 sm:w-48 h-44 sm:h-48 flex items-center justify-center">
+                            <img src="/technoversary/assets/zero_clean_3d_vinyl.webp" alt="ZERO Mascot 3D Vinyl Toy"
+                                class="w-full h-full object-contain filter drop-shadow-2xl select-none pointer-events-none transition-transform duration-300 hover:scale-105">
+                        </div>
+                    </div>
+
+                    <div>
+
+                        <h3 class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            Roblox
+                        </h3>
+                        <p class="text-xs text-gray-500 leading-relaxed mb-6">
+                            Tantangan ketangkasan, obstacle timing, dan kekompakan tim di arena virtual metaverse Roblox
+                            yang seru dan kompetitif.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <button onclick="openCompetitionModal('roblox')"
+                            class="bg-tvPurple hover:bg-tvMagenta text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow hover:-translate-y-0.5">
+                            DAFTAR LOMBA
+                        </button>
+                        <span class="quirky-title text-base lg:text-lg font-extrabold text-tvDark">
+                            35K
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ==================== LOMBA 6: PES (eFOOTBALL) ==================== -->
+                <div data-category="esports"
+                    class="comp-card bg-white rounded-[32px] p-6 sm:p-7 pt-28 sm:pt-32 relative shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
+                    <!-- Pop-out Character: ZERO Football Striker -->
+                    <div
+                        class="absolute -top-[100px] lg:-top-[114px] left-1/2 -translate-x-1/2 pointer-events-none z-10 w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div
+                            class="mascot-float vinyl-shadow w-44 sm:w-48 h-44 sm:h-48 flex items-center justify-center">
+                            <img src="/technoversary/assets/zero_clean_3d_vinyl.webp" alt="ZERO Mascot 3D Vinyl Toy"
+                                class="w-full h-full object-contain filter drop-shadow-2xl select-none pointer-events-none transition-transform duration-300 hover:scale-105">
+                        </div>
+                    </div>
+
+                    <div>
+
+                        <h3 class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            PES (eFootball)
+                        </h3>
+                        <p class="text-xs text-gray-500 leading-relaxed mb-6">
+                            Adu taktik racikan formasi, dribble presisi, dan mental juara di turnamen sepak bola konsol
+                            1v1 paling panas.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <button onclick="openCompetitionModal('pes')"
+                            class="bg-tvPurple hover:bg-tvMagenta text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow hover:-translate-y-0.5">
+                            DAFTAR LOMBA
+                        </button>
+                        <span class="quirky-title text-base lg:text-lg font-extrabold text-tvDark">
+                            35K
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ==================== LOMBA 7: MCGG (MAGIC CHESS) ==================== -->
+                <div id="card-last" data-category="esports"
+                    class="comp-card bg-white rounded-[32px] p-6 sm:p-7 pt-28 sm:pt-32 relative shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full lg:col-start-2">
+                    <!-- Pop-out Character: ZERO Grandmaster Commander -->
+                    <div
+                        class="absolute -top-[100px] lg:-top-[114px] left-1/2 -translate-x-1/2 pointer-events-none z-10 w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div
+                            class="mascot-float vinyl-shadow w-44 sm:w-48 h-44 sm:h-48 flex items-center justify-center">
+                            <img src="/technoversary/assets/zero_clean_3d_vinyl.webp" alt="ZERO Mascot 3D Vinyl Toy"
+                                class="w-full h-full object-contain filter drop-shadow-2xl select-none pointer-events-none transition-transform duration-300 hover:scale-105">
+                        </div>
+                    </div>
+
+                    <div>
+
+                        <h3 class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            MCGG
+                        </h3>
+                        <p class="text-xs text-gray-500 leading-relaxed mb-6">
+                            Buktikan keahlian membaca perputaran ekonomi hero, sinergi commander, dan posisi pion catur
+                            untuk taklukkan lawan.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <button onclick="openCompetitionModal('mcgg')"
+                            class="bg-tvPurple hover:bg-tvMagenta text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow hover:-translate-y-0.5">
+                            DAFTAR LOMBA
+                        </button>
+                        <span class="quirky-title text-base lg:text-lg font-extrabold text-tvDark">
+                            30K
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ======================== SECTION 4: SEMINAR NASIONAL (CLEAN COMING SOON BANNER) ======================== -->
+        <section id="seminar" class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 pt-6 pb-20 lg:pb-28 relative z-20">
+            <!-- Clean White Seminar CTA Card (Ultra-Clean Centered, No Mascot) -->
+            <div
+                class="bg-white rounded-[36px] lg:rounded-[48px] p-8 sm:p-14 lg:p-16 text-center relative shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 overflow-hidden">
+
+                <!-- Subtle Ambient Glow Background -->
+                <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-64 bg-gradient-to-b from-purple-100/50 via-orange-50/30 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 max-w-3xl mx-auto">
+                    <!-- Pill Badge -->
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-50 border border-purple-100 text-tvPurple mb-6">
+                        <span class="w-2 h-2 rounded-full bg-tvOrange animate-ping"></span>
+                        <span class="font-display font-bold text-xs uppercase tracking-wider">Seminar Nasional 2026</span>
+                        <span class="text-gray-300">•</span>
+                        <span class="font-bold text-xs text-tvOrange uppercase tracking-wider">Coming Soon</span>
+                    </div>
+
+                    <!-- Main Title Consistent with Website Heading Style -->
+                    <h3 class="quirky-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-tvDark leading-[1.15] mb-4">
+                        Tech Career Preparation: <br class="hidden sm:inline" />
+                        <span class="text-tvPurple">From Zero to Hired</span>
+                    </h3>
+
+                    <p class="text-xs sm:text-sm lg:text-base text-gray-500 leading-relaxed mb-8 max-w-2xl mx-auto font-medium">
+                        Satu panggung inspiratif bersama praktisi industri teknologi terkemuka. Membedah kurikulum software engineering, implementasi Artificial Intelligence praktis, dan strategi menyusun portofolio berdaya saing tinggi. Lineup pembicara dan registrasi tiket segera dibuka.
+                    </p>
+
+                    <!-- Feature Pills Consistent with Site Style -->
+                    <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 mb-10">
+                        <span class="inline-flex items-center gap-2 text-xs font-semibold text-tvDark bg-gray-50 border border-gray-200/80 px-4 py-2 rounded-full">
+                            <svg class="w-3.5 h-3.5 text-tvPurple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            Poin SKKM Resmi Mahasiswa
+                        </span>
+                        <span class="inline-flex items-center gap-2 text-xs font-semibold text-tvDark bg-gray-50 border border-gray-200/80 px-4 py-2 rounded-full">
+                            <svg class="w-3.5 h-3.5 text-tvPurple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            Live Hybrid (Onsite & Online)
+                        </span>
+                        <span class="inline-flex items-center gap-2 text-xs font-semibold text-tvDark bg-gray-50 border border-gray-200/80 px-4 py-2 rounded-full">
+                            <svg class="w-3.5 h-3.5 text-tvPurple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            E-Certificate Nasional
+                        </span>
+                    </div>
+
+                    <!-- CTA Action Button & Note -->
+                    <div class="flex flex-col items-center justify-center gap-3">
+                        <a href="https://wa.me/6281461143708?text=Halo%20Panitia%20TechnoVersary,%20saya%20ingin%20daftar%20antrean%20early%20access%20tiket%20Seminar%20Nasional%20TechnoVersary%202026"
+                            target="_blank"
+                            class="inline-flex items-center gap-2.5 bg-tvPurple hover:bg-tvMagenta text-white font-display font-bold text-xs uppercase tracking-wider px-9 py-4 rounded-full transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5">
+                            <span>INGATKAN SAYA SAAT RILIS</span>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                        <p class="text-[11px] text-gray-400 font-medium">
+                            * Pendaftar antrean akan menerima notifikasi prioritas saat kuota tiket Early Bird resmi dibuka.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ======================== SECTION 5: DOKUMENTASI KEGIATAN (PAST MOMENTS) ======================== -->
+        <section id="dokumentasi" class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 pt-4 pb-24 lg:pb-32 relative z-20">
+            <!-- Section Header Row -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+                <div>
+                    <h2 class="quirky-title text-white text-3xl sm:text-5xl font-extrabold max-w-lg leading-tight">
+                        <span class="block">Dokumentasi</span>
+                        <span class="block">Keseruan Acara</span>
+                    </h2>
+                </div>
+                <p class="text-[11px] sm:text-xs text-white font-medium max-w-[280px] leading-snug">
+                    Intip lagi vibes seru, obrolan berbobot bareng praktisi, dan energi kompetisi TechnoVersary di edisi sebelumnya.
+                </p>
+            </div>
+
+            <!-- Bento Grid of Authentic Moments (Original Photos Added by User) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Momen 1 (Span 12 - Highlight Akbar): Grand Gathering Auditorium -->
+                <div class="lg:col-span-12 bg-white rounded-[36px] p-6 sm:p-8 lg:p-10 shadow-lg hover:-translate-y-1.5 transition-all duration-300">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <!-- Foto Akbar -->
+                        <div class="lg:col-span-7 relative h-64 sm:h-80 lg:h-96 rounded-[24px] overflow-hidden group shadow-md bg-gray-100">
+                            <img src="/technoversary/assets/dokumentasi/dokumentasi-1.jpeg" alt="Grand Gathering Seluruh Peserta TechnoVersary"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
+                                <span class="text-xs font-semibold bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+                                    Student Center Iman Hidayat UNIKU
+                                </span>
+                                <span class="text-[11px] font-bold text-tvGold flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+                                    <span class="w-2 h-2 rounded-full bg-tvGold animate-ping"></span>
+                                    500+ Peserta Hadir
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Deskripsi Momen Akbar -->
+                        <div class="lg:col-span-5 flex flex-col justify-between h-full py-2 text-left">
+                            <div>
+                                <div class="flex items-center justify-between gap-3 mb-4">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-tvPurple bg-purple-50 px-3.5 py-1.5 rounded-full">
+                                        Grand Gathering
+                                    </span>
+                                    <span class="text-xs font-bold text-gray-400">TechnoVersary 2025</span>
+                                </div>
+                                <h3 class="quirky-title text-2xl lg:text-3xl font-extrabold text-tvDark mb-3 leading-snug">
+                                    Ratusan Mahasiswa Ngumpul, Saling Terkoneksi
+                                </h3>
+                                <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-6 font-medium">
+                                    Student Center dipadati mahasiswa dari berbagai kampus yang datang buat belajar hal baru, tukar ide, dan kenalan langsung sama praktisi. Bukan sekadar denger materi, tapi tempat asik buat memperluas relasi sejak di bangku kuliah.
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-gray-100">
+                                <div class="bg-gray-50 rounded-xl p-2.5 text-center">
+                                    <span class="font-display font-extrabold text-base text-tvPurple block">500+</span>
+                                    <span class="text-[9px] text-gray-500 font-semibold uppercase">Peserta Hadir</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-2.5 text-center">
+                                    <span class="font-display font-extrabold text-base text-tvOrange block">7 Cabang</span>
+                                    <span class="text-[9px] text-gray-500 font-semibold uppercase">Lomba Seru</span>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-2.5 text-center">
+                                    <span class="font-display font-extrabold text-base text-emerald-600 block">Nasional</span>
+                                    <span class="text-[9px] text-gray-500 font-semibold uppercase">Skala Acara</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Momen 2 (Span 6): Keynote Speaker Session -->
+                <div class="lg:col-span-6 bg-white rounded-[36px] p-6 sm:p-8 shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between h-full text-left">
+                    <div>
+                        <div class="flex items-center justify-between gap-3 mb-5">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-tvOrange bg-orange-50 px-3.5 py-1.5 rounded-full">
+                                Keynote Session
+                            </span>
+                            <span class="text-xs font-bold text-gray-400">Techno Summit</span>
+                        </div>
+                        <h3 class="quirky-title text-xl lg:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            Dapat Insight Nyata Langsung dari Praktisi
+                        </h3>
+                        <p class="text-xs text-gray-600 leading-relaxed mb-6 font-medium">
+                            Materinya padat dan aplikatif. Pembicara langsung bedah skill yang beneran dicari industri teknologi saat ini, pemanfaatan AI yang relevan, sampai cara nyusun portofolio yang dilirik recruiter.
+                        </p>
+                    </div>
+
+                    <!-- Foto Keynote -->
+                    <div class="relative w-full h-56 sm:h-64 rounded-[22px] overflow-hidden group shadow-md bg-gray-100">
+                        <img src="/technoversary/assets/dokumentasi/dokumentasi-2.jpeg" alt="Sesi Pembicara Utama Seminar Nasional"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
+                            <span class="text-[11px] font-semibold bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+                                Panggung Utama Seminar
+                            </span>
+                            <span class="text-[10px] font-bold text-amber-300">Live Insight Praktisi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Momen 3 (Span 6): Interactive Talkshow Panel -->
+                <div class="lg:col-span-6 bg-white rounded-[36px] p-6 sm:p-8 shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between h-full text-left">
+                    <div>
+                        <div class="flex items-center justify-between gap-3 mb-5">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-tvMagenta bg-pink-50 px-3.5 py-1.5 rounded-full">
+                                Interactive Talkshow
+                            </span>
+                            <span class="text-xs font-bold text-gray-400">Dialog & Q&A</span>
+                        </div>
+                        <h3 class="quirky-title text-xl lg:text-2xl font-extrabold text-tvDark mb-2 leading-snug">
+                            Tanya Jawab Terbuka Seputar Karier & Magang
+                        </h3>
+                        <p class="text-xs text-gray-600 leading-relaxed mb-6 font-medium">
+                            Gak ada rasa canggung buat nanya. Di sesi ini, mahasiswa bebas diskusi langsung soal realita dunia kerja, tips tembus magang idaman, sampai persiapan diri sebelum lulus kuliah.
+                        </p>
+                    </div>
+
+                    <!-- Foto Talkshow -->
+                    <div class="relative w-full h-56 sm:h-64 rounded-[22px] overflow-hidden group shadow-md bg-gray-100">
+                        <img src="/technoversary/assets/dokumentasi/dokumentasi-3.jpeg" alt="Panel Talkshow Interaktif TechnoVersary"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
+                            <span class="text-[11px] font-semibold bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+                                Diskusi Bareng Narasumber
+                            </span>
+                            <span class="text-[10px] font-bold text-pink-300">Q&A Live Session</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ======================== SECTION 6: TESTIMONI PESERTA (CAROUSEL LIVE VOICES) ======================== -->
+        <section id="testimoni" class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 pt-6 pb-24 lg:pb-32 relative z-20">
+            <!-- Section Header Row with Carousel Controls -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12">
+                <div>
+
+                    <h2 class="quirky-title text-white text-3xl sm:text-5xl font-extrabold max-w-lg leading-tight">
+                        <span class="block">Kesan & Pesan</span>
+                        <span class="block">Peserta Nyata</span>
+                    </h2>
+                </div>
+
+                <!-- Right Controls: Info & Arrows -->
+                <div
+                    class="flex flex-col sm:flex-row md:flex-col lg:flex-row items-start sm:items-center md:items-end lg:items-center gap-4">
+                    <a href="https://technoversary25.vercel.app/" target="_blank" rel="noopener"
+                        class="inline-flex items-center gap-2 text-xs font-bold text-tvDark bg-white/95 hover:bg-white px-4 py-2 rounded-full shadow-sm hover:shadow transition-all group">
+                        <span>Buka Live Feed</span>
+                        <svg class="w-3.5 h-3.5 text-tvPurple transition-transform group-hover:translate-x-0.5"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" />
+                        </svg>
+                    </a>
+
+                    <!-- Prev & Next Carousel Arrows -->
+                    <div class="flex items-center gap-2">
+                        <button id="testi-prev" aria-label="Previous Testimonial"
+                            class="w-11 h-11 rounded-full bg-white/90 hover:bg-white text-tvDark hover:text-tvPurple shadow-md hover:shadow-lg transition-all flex items-center justify-center active:scale-95">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6" />
+                            </svg>
+                        </button>
+                        <button id="testi-next" aria-label="Next Testimonial"
+                            class="w-11 h-11 rounded-full bg-white/90 hover:bg-white text-tvDark hover:text-tvPurple shadow-md hover:shadow-lg transition-all flex items-center justify-center active:scale-95">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel Container with Smooth Snapping -->
+            <div class="relative">
+                <div id="testi-track"
+                    class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-6 pt-2 px-1">
+
+                    <!-- Slide 1: Muhammad Ainurofiq Zakiansyah -->
+                    <div
+                        class="testi-slide w-[320px] sm:w-[380px] lg:w-[400px] flex-shrink-0 snap-center bg-white rounded-[32px] p-6 sm:p-7 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-white/60">
+                        <div>
+                            <!-- Header: Avatar, Name & Stars -->
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="/technoversary/assets/testimonials/avatar_ainurofiq.jpg" alt="Muhammad Ainurofiq"
+                                        class="w-11 h-11 rounded-full object-cover border-2 border-purple-100 shadow-sm">
+                                    <div>
+                                        <h4 class="font-bold text-xs sm:text-sm text-tvDark leading-snug">M. Ainurofiq
+                                            Zakiansyah</h4>
+                                    </div>
+                                </div>
+                                <span
+                                    class="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    Verified
+                                </span>
+                            </div>
+
+                            <!-- Real Photo Strip -->
+                            <div
+                                class="relative w-full h-40 sm:h-44 rounded-2xl overflow-hidden mb-4 bg-gray-100 group">
+                                <img src="/technoversary/assets/testimonials/photo_ainurofiq.jpg" alt="Dokumentasi Seminar"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                                </div>
+                                <span
+                                    class="absolute bottom-2.5 left-3 text-[10px] font-semibold text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full">
+                                    06 Des 2025
+                                </span>
+                            </div>
+
+                            <!-- Rating & Quote Text -->
+                            <div class="flex items-center gap-1 mb-2.5 text-amber-400">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal italic">
+                                “Sangat senang bisa menghadiri acara yang sangat bermanfaat dengan para pemateri yang
+                                hebat. Semoga bisa menyerap materi yang disampaikan oleh pemateri, pesan dari saya mulai
+                                acara tepat waktu agar selesai tepat waktu.”
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: Pandu -->
+                    <div
+                        class="testi-slide w-[320px] sm:w-[380px] lg:w-[400px] flex-shrink-0 snap-center bg-white rounded-[32px] p-6 sm:p-7 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-white/60">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="/technoversary/assets/testimonials/avatar_pandu.jpg" alt="Pandu"
+                                        class="w-11 h-11 rounded-full object-cover border-2 border-purple-100 shadow-sm">
+                                    <div>
+                                        <h4 class="font-bold text-xs sm:text-sm text-tvDark leading-snug">Pandu</h4>
+                                    </div>
+                                </div>
+                                <span
+                                    class="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    Verified
+                                </span>
+                            </div>
+
+                            <div
+                                class="relative w-full h-40 sm:h-44 rounded-2xl overflow-hidden mb-4 bg-gray-100 group">
+                                <img src="/technoversary/assets/testimonials/photo_pandu.jpg" alt="Dokumentasi Seminar"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                                </div>
+                                <span
+                                    class="absolute bottom-2.5 left-3 text-[10px] font-semibold text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full">
+                                    06 Des 2025
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-1 mb-2.5 text-amber-400">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal italic">
+                                “Insightful++++, benar-benar daging banget materi yang dibagikan oleh Kang Avip di
+                                Universitas Kuningan. Penyampaian materi mudah dipahami, dan ilmunya membuka rahasia
+                                untuk mendapatkan masa depan oke di dunia teknologi!”
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Ade Imron -->
+                    <div
+                        class="testi-slide w-[320px] sm:w-[380px] lg:w-[400px] flex-shrink-0 snap-center bg-white rounded-[32px] p-6 sm:p-7 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-white/60">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="/technoversary/assets/testimonials/avatar_ade.jpg" alt="Ade Imron"
+                                        class="w-11 h-11 rounded-full object-cover border-2 border-purple-100 shadow-sm">
+                                    <div>
+                                        <h4 class="font-bold text-xs sm:text-sm text-tvDark leading-snug">Ade Imron</h4>
+                                    </div>
+                                </div>
+                                <span
+                                    class="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    Verified
+                                </span>
+                            </div>
+
+                            <div
+                                class="relative w-full h-40 sm:h-44 rounded-2xl overflow-hidden mb-4 bg-gray-100 group">
+                                <img src="/technoversary/assets/testimonials/photo_ade.jpg" alt="Dokumentasi Seminar"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                                </div>
+                                <span
+                                    class="absolute bottom-2.5 left-3 text-[10px] font-semibold text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full">
+                                    06 Des 2025
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-1 mb-2.5 text-amber-400">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal italic">
+                                “Merupakan pengalaman berharga bisa bertemu langsung dengan Bapak Aviv Syaifulloh, CEO
+                                WPU Course. Beliau menyampaikan materi dengan sangat inspiratif, membuka wawasan tentang
+                                dunia teknologi dan pentingnya konsistensi dalam belajar.”
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4: MUHAMAD GHIYAST NADHIF -->
+                    <div
+                        class="testi-slide w-[320px] sm:w-[380px] lg:w-[400px] flex-shrink-0 snap-center bg-white rounded-[32px] p-6 sm:p-7 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-white/60">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="/technoversary/assets/testimonials/avatar_ghiyast.jpg" alt="Muhamad Ghiyast"
+                                        class="w-11 h-11 rounded-full object-cover border-2 border-purple-100 shadow-sm">
+                                    <div>
+                                        <h4 class="font-bold text-xs sm:text-sm text-tvDark leading-snug">Muhamad
+                                            Ghiyast Nadhif</h4>
+                                    </div>
+                                </div>
+                                <span
+                                    class="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    Verified
+                                </span>
+                            </div>
+
+                            <div
+                                class="relative w-full h-40 sm:h-44 rounded-2xl overflow-hidden mb-4 bg-gray-100 group">
+                                <img src="/technoversary/assets/testimonials/photo_ghiyast.jpg" alt="Dokumentasi Seminar"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                                </div>
+                                <span
+                                    class="absolute bottom-2.5 left-3 text-[10px] font-semibold text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full">
+                                    06 Des 2025
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-1 mb-2.5 text-amber-400">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal italic">
+                                “Sangat terinspirasi setelah menghadiri acara Technoversary. Pemateri menjelaskan
+                                perjalanan kariernya dengan profesional dan mudah dipahami, memberikan pandangan baru
+                                serta langkah persiapan masa depan di bidang IT.”
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5: Wira Sukma Saputra -->
+                    <div
+                        class="testi-slide w-[320px] sm:w-[380px] lg:w-[400px] flex-shrink-0 snap-center bg-white rounded-[32px] p-6 sm:p-7 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-white/60">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="/technoversary/assets/testimonials/avatar_wira.jpg" alt="Wira Sukma Saputra"
+                                        class="w-11 h-11 rounded-full object-cover border-2 border-purple-100 shadow-sm">
+                                    <div>
+                                        <h4 class="font-bold text-xs sm:text-sm text-tvDark leading-snug">Wira Sukma
+                                            Saputra</h4>
+                                    </div>
+                                </div>
+                                <span
+                                    class="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    Verified
+                                </span>
+                            </div>
+
+                            <div
+                                class="relative w-full h-40 sm:h-44 rounded-2xl overflow-hidden mb-4 bg-gray-100 group">
+                                <img src="/technoversary/assets/testimonials/photo_wira.jpg" alt="Dokumentasi Seminar"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                                </div>
+                                <span
+                                    class="absolute bottom-2.5 left-3 text-[10px] font-semibold text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full">
+                                    06 Des 2025
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-1 mb-2.5 text-amber-400">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal italic">
+                                “Pertemuan dengan Pak Avip memberi saya gambaran nyata tentang bagaimana seorang
+                                praktisi teknologi berpikir dan mengambil keputusan. Penjelasannya lugas, relevan, dan
+                                membuat saya semakin semangat membangun karier!”
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 6: Rehan Janwar Pratama -->
+                    <div
+                        class="testi-slide w-[320px] sm:w-[380px] lg:w-[400px] flex-shrink-0 snap-center bg-white rounded-[32px] p-6 sm:p-7 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between border border-white/60">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="/technoversary/assets/testimonials/avatar_rehan.jpg" alt="Rehan Janwar"
+                                        class="w-11 h-11 rounded-full object-cover border-2 border-purple-100 shadow-sm">
+                                    <div>
+                                        <h4 class="font-bold text-xs sm:text-sm text-tvDark leading-snug">Rehan Janwar
+                                            Pratama</h4>
+                                    </div>
+                                </div>
+                                <span
+                                    class="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    Verified
+                                </span>
+                            </div>
+
+                            <div
+                                class="relative w-full h-40 sm:h-44 rounded-2xl overflow-hidden mb-4 bg-gray-100 group">
+                                <img src="/technoversary/assets/testimonials/photo_rehan.jpg" alt="Dokumentasi Seminar"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                                </div>
+                                <span
+                                    class="absolute bottom-2.5 left-3 text-[10px] font-semibold text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full">
+                                    06 Des 2025
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-1 mb-2.5 text-amber-400">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal italic">
+                                “Keren banget! Materinya mengenai engineering yang dibawakan sangat berbobot bagi saya
+                                yang baru belajar IT. Saya jadi tahu tujuan dan langkah step by step ke depan. Terima
+                                kasih panitia TechnoVersary!”
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Carousel Pagination Dots & Live Feed CTA -->
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <!-- Dots indicator -->
+                <div id="testi-dots" class="flex items-center gap-2">
+                    <!-- Dynamic dots created by JS -->
+                </div>
+
+                <a href="https://technoversary25.vercel.app/" target="_blank" rel="noopener"
+                    class="inline-flex items-center gap-2.5 bg-white text-tvDark hover:text-tvPurple font-extrabold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 border border-white/80 group">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Buka 59+ Momen di technoversary25.vercel.app</span>
+                    <svg class="w-4 h-4 text-tvPurple transition-transform duration-300 group-hover:translate-x-1"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- ======================== SECTION 7: SPONSORS & PARTNERS (MARQUEE) ======================== -->
+        <section id="sponsor" class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 pt-8 pb-20 lg:pb-28 relative z-20">
+            <!-- Section Header Row -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
+                <div>
+                    <h2 class="quirky-title text-white text-3xl sm:text-5xl font-extrabold max-w-lg leading-tight">
+                        <span class="block">Didukung oleh</span>
+                        <span class="block">Mitra & Sponsor</span>
+                    </h2>
+                </div>
+                <p class="text-[11px] sm:text-xs text-white/90 font-medium max-w-[280px] leading-snug">
+                    Kolaborasi strategis institusi pendidikan, sponsor industri teknologi terkemuka, dan jejaring
+                    komunitas mahasiswa se-Indonesia.
+                </p>
+            </div>
+
+            <!-- Purple Grand Marquee Card (Authentic Figma Styling) -->
+            <div
+                class="bg-gradient-to-br from-[#771b9c] via-[#5c137c] to-[#450d5f] rounded-[36px] lg:rounded-[44px] p-6 sm:p-10 lg:p-12 relative shadow-2xl border border-white/15 overflow-hidden">
+
+                <!-- Subtle Decorative Background Glows -->
+                <div
+                    class="absolute -top-24 -left-24 w-72 h-72 bg-purple-400/20 rounded-full blur-3xl pointer-events-none">
+                </div>
+                <div
+                    class="absolute -bottom-24 -right-24 w-72 h-72 bg-tvOrange/20 rounded-full blur-3xl pointer-events-none">
+                </div>
+
+                <div class="relative z-10 space-y-10">
+
+                    <!-- 1. POWERED AND ORGANIZED BY -->
+                    <div class="text-center">
+                        <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-200/90 mb-6">
+                            Powered And Organized By
+                        </h3>
+                        <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-10 lg:gap-14">
+                            <div
+                                class="group flex items-center justify-center p-2 rounded-2xl hover:bg-white/10 transition-all duration-300">
+                                <img src="/technoversary/assets/partners/uniku.png" alt="Universitas Kuningan"
+                                    class="h-10 sm:h-12 w-auto object-contain filter drop-shadow group-hover:scale-105 transition-transform" />
+                            </div>
+                            <div
+                                class="group flex items-center justify-center p-2 rounded-2xl hover:bg-white/10 transition-all duration-300">
+                                <img src="/technoversary/assets/partners/fkom.png" alt="Fakultas Ilmu Komputer UNIKU"
+                                    class="h-9 sm:h-11 w-auto object-contain filter drop-shadow group-hover:scale-105 transition-transform" />
+                            </div>
+                            <div
+                                class="group flex items-center justify-center p-2 rounded-2xl hover:bg-white/10 transition-all duration-300">
+                                <img src="/technoversary/assets/partners/ti.png" alt="Teknik Informatika FKOM UNIKU"
+                                    class="h-9 sm:h-11 w-auto object-contain filter drop-shadow group-hover:scale-105 transition-transform" />
+                            </div>
+                            <div
+                                class="group flex items-center justify-center p-2 rounded-2xl hover:bg-white/10 transition-all duration-300">
+                                <img src="/technoversary/assets/partners/himati.png" alt="HIMA TI FKOM UNIKU"
+                                    class="h-10 sm:h-12 w-auto object-contain filter drop-shadow group-hover:scale-105 transition-transform" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full h-px bg-white/10"></div>
+
+                    <!-- 2. SPONSORED BY (MARQUEE TRACK 1: LEFT) -->
+                    <div class="marquee-container">
+                        <div class="flex items-center justify-between mb-4 px-2">
+                            <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-200/90">
+                                Sponsored By
+                            </h3>
+                            <span class="text-[10px] text-purple-300/70 font-medium">Arahkan kursor untuk menjeda</span>
+                        </div>
+
+                        <div class="overflow-hidden marquee-fade-mask py-3">
+                            <div class="animate-marquee-left flex items-center gap-8 sm:gap-12">
+                                <!-- Set 1 -->
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/pegadaian.png" alt="Pegadaian"
+                                        class="h-8 sm:h-9 w-auto object-contain rounded-lg filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300 bg-white/15 px-3.5 py-1.5 rounded-xl backdrop-blur-sm">
+                                    <img src="/technoversary/assets/partners/wpu_course.png" alt="WPU Course"
+                                        class="h-8 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/mie_sedaap.png" alt="Mie Sedaap"
+                                        class="h-9 sm:h-11 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/determined_studio.png" alt="Determined Studio"
+                                        class="h-10 sm:h-12 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/for_coffee.png" alt="For Coffee"
+                                        class="h-10 sm:h-12 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/highland.png" alt="Highland"
+                                        class="h-10 sm:h-12 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/appscare.png" alt="Appscare"
+                                        class="h-10 sm:h-12 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/agrabudi.png" alt="Agrabudi Komunika"
+                                        class="h-8 sm:h-9 w-auto object-contain rounded-lg filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/telkomsel.png" alt="Telkomsel"
+                                        class="h-8 sm:h-9 w-auto object-contain rounded-lg filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/byu.png" alt="by.U"
+                                        class="h-9 sm:h-11 w-auto object-contain filter drop-shadow" />
+                                </div>
+
+                                <!-- Set 2 (Duplicate for Seamless Loop) -->
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/pegadaian.png" alt="Pegadaian"
+                                        class="h-8 sm:h-9 w-auto object-contain rounded-lg filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300 bg-white/15 px-3.5 py-1.5 rounded-xl backdrop-blur-sm">
+                                    <img src="/technoversary/assets/partners/wpu_course.png" alt="WPU Course"
+                                        class="h-8 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/mie_sedaap.png" alt="Mie Sedaap"
+                                        class="h-9 sm:h-11 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/determined_studio.png" alt="Determined Studio"
+                                        class="h-10 sm:h-12 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/for_coffee.png" alt="For Coffee"
+                                        class="h-10 sm:h-12 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/highland.png" alt="Highland"
+                                        class="h-10 sm:h-12 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/appscare.png" alt="Appscare"
+                                        class="h-10 sm:h-12 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/agrabudi.png" alt="Agrabudi Komunika"
+                                        class="h-8 sm:h-9 w-auto object-contain rounded-lg filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/telkomsel.png" alt="Telkomsel"
+                                        class="h-8 sm:h-9 w-auto object-contain rounded-lg filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/byu.png" alt="by.U"
+                                        class="h-9 sm:h-11 w-auto object-contain filter drop-shadow" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full h-px bg-white/10"></div>
+
+                    <!-- 3. MEDIA PARTNER (MARQUEE TRACK 2: RIGHT) -->
+                    <div class="marquee-container">
+                        <div class="flex items-center justify-between mb-4 px-2">
+                            <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-200/90">
+                                Media Partner & Jejaring Komunitas
+                            </h3>
+                            <span class="text-[10px] text-purple-300/70 font-medium">23+ Mitra Kampus & Media</span>
+                        </div>
+
+                        <div class="overflow-hidden marquee-fade-mask py-3">
+                            <div class="animate-marquee-right flex items-center gap-7 sm:gap-10">
+                                <!-- Set 1 (23 Media Partners from My Figma 3) -->
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/uiuxindo_logo_main_2.png" alt="UIUXINDO"
+                                        class="h-8 sm:h-9 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/agendabesok.png" alt="Agenda Besok"
+                                        class="h-8 sm:h-9 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_info_lomba_it_1.png"
+                                        alt="Info Lomba IT"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/permikomnas_jabar.png"
+                                        alt="Permikomnas Jabar"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_kie_1.png" alt="Kuningan Info Event"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/bem_uniku.png" alt="BEM UNIKU"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_bem_fkom_1.png" alt="BEM FKOM"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/bem_fkip_1.png" alt="BEM FKIP"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_himafor_uinssc.png"
+                                        alt="HIMAFOR UINSSC"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_himasantika_umc_1.png"
+                                        alt="HIMASANTIKA UMC"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_himatif_ucic_1.png" alt="HIMATIF UCIC"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/salinan_logo_hmif_1.png" alt="HMIF"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/himatika_unisa_removebg_preview_1.png"
+                                        alt="HIMATIKA UNISA"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_himaskc_1.png" alt="HIMASKC"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_fok.png" alt="FOK"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/pbk_logo_1_2.png" alt="PBK"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/si_bolpis_1_2.png" alt="Si Bolpis"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/group_545.png" alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/group_560.png" alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/20250221_151853.png" alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_hitam_2.png" alt="HIMA DEV UNIKU"
+                                        class="h-8 sm:h-9 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/img_20251030_131033_518_2.png"
+                                        alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/img_20251031_wa0052_2.png"
+                                        alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+
+                                <!-- Set 2 (Duplicate for Seamless Loop) -->
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/uiuxindo_logo_main_2.png" alt="UIUXINDO"
+                                        class="h-8 sm:h-9 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/agendabesok.png" alt="Agenda Besok"
+                                        class="h-8 sm:h-9 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_info_lomba_it_1.png"
+                                        alt="Info Lomba IT"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/permikomnas_jabar.png"
+                                        alt="Permikomnas Jabar"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_kie_1.png" alt="Kuningan Info Event"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/bem_uniku.png" alt="BEM UNIKU"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_bem_fkom_1.png" alt="BEM FKOM"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/bem_fkip_1.png" alt="BEM FKIP"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_himafor_uinssc.png"
+                                        alt="HIMAFOR UINSSC"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_himasantika_umc_1.png"
+                                        alt="HIMASANTIKA UMC"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_himatif_ucic_1.png" alt="HIMATIF UCIC"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/salinan_logo_hmif_1.png" alt="HMIF"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/himatika_unisa_removebg_preview_1.png"
+                                        alt="HIMATIKA UNISA"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_himaskc_1.png" alt="HIMASKC"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_fok.png" alt="FOK"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/pbk_logo_1_2.png" alt="PBK"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/si_bolpis_1_2.png" alt="Si Bolpis"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/group_545.png" alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/group_560.png" alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/20250221_151853.png" alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/logo_hitam_2.png" alt="HIMA DEV UNIKU"
+                                        class="h-8 sm:h-9 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/img_20251030_131033_518_2.png"
+                                        alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                                <div
+                                    class="flex items-center justify-center flex-shrink-0 hover:scale-110 transition-transform duration-300">
+                                    <img src="/technoversary/assets/partners/media_partner/img_20251031_wa0052_2.png"
+                                        alt="Partner Media"
+                                        class="h-9 sm:h-10 w-auto object-contain filter drop-shadow" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. PARTNERSHIP CALL TO ACTION -->
+                    <div
+                        class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Buka Peluang Kolaborasi Bersama TechnoVersary Vol. II</h4>
+                            <p class="text-xs text-purple-200/80 mt-1">Jangkau ribuan mahasiswa bertalenta di bidang teknologi, industri kreatif, dan e-sports.</p>
+                        </div>
+                        <a href="https://wa.me/6281461143708?text=Halo%20Tim%20Sponsorship%20TechnoVersary%20Vol.%20II,%20kami%20tertarik%20untuk%20mengetahui%20proposal%20kemitraan%20dan%20peluang%20sponsorship."
+                            target="_blank"
+                            class="flex-shrink-0 inline-flex items-center gap-2.5 bg-white hover:bg-amber-300 text-tvDark font-display font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                            <svg class="w-4 h-4 text-emerald-600 fill-current" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>
+                            <span>HUBUNGI KEMITRAAN</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== SECTION 8: CLEAN MODERN FOOTER & CTA ======================== -->
+        <footer id="contacts" class="w-full bg-white rounded-t-[56px] md:rounded-t-[80px] lg:rounded-t-[100px] pt-16 sm:pt-24 pb-12 relative z-20 shadow-2xl mt-8">
+            
+            <!-- Upper CTA Area -->
+            <div class="max-w-3xl mx-auto px-6 text-center">
+                <h2
+                    class="quirky-title text-tvOrange text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-4">
+                    <span class="block">Jangan Cuma Jadi Penonton,</span>
+                    <span class="block text-tvPurple">Waktunya Bersinar di Panggung Nyata!</span>
+                </h2>
+                <p class="text-xs sm:text-sm text-tvDark/70 max-w-lg mx-auto mb-8 leading-relaxed font-medium">
+                    Entah kamu ingin menjuarai kompetisi atau menimba ilmu praktis dari para tech leader, langkah pertamamu dimulai di sini. Ambil slotmu sebelum kuota penuh!
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-3.5 mb-8">
+                    <button onclick="openCourseModal('Pendaftaran TechnoVersary Vol. II', 'Umum / Tim')"
+                        class="bg-tvPurple hover:bg-tvMagenta text-white text-xs font-bold uppercase tracking-wider px-8 py-3.5 rounded-full transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5">
+                        DAFTAR SEKARANG (KUOTA TERBATAS)
+                    </button>
+                    <a href="https://instagram.com/technoversary" target="_blank"
+                        class="inline-flex items-center gap-2 bg-tvDark hover:bg-black text-white text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded-full transition-all shadow-md hover:-translate-y-0.5">
+                        <svg class="w-4 h-4 fill-none stroke-current" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" viewBox="0 0 24 24">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                        </svg>
+                        <span>IKUTI DI INSTAGRAM</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Divider Line -->
+            <div class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 my-10 sm:my-14">
+                <div class="w-full h-px bg-gray-200/80"></div>
+            </div>
+
+            <!-- Multi-Column Footer Grid -->
+            <div class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 grid grid-cols-1 md:grid-cols-12 gap-10 text-left">
+                <!-- Col 1: Brand & Identity (5 Cols) -->
+                <div class="md:col-span-5 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img src="/technoversary/assets/logo.svg" alt="TechnoVersary Logo" class="w-9 h-9 object-contain" />
+                        <div>
+                            <span class="font-display font-extrabold text-lg text-tvDark block leading-none">TECHNOVERSARY VOL. II</span>
+                            <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Annual Tech Festival & Summit</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed max-w-sm">
+                        Ajang selebrasi tahunan teknologi, 7 cabang kompetisi digital, dan Seminar Nasional persembahan Himpunan Mahasiswa Teknik Informatika (HIMA-TI) Fakultas Ilmu Komputer, Universitas Kuningan.
+                    </p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-purple-50 rounded-full border border-purple-100 text-[11px] font-bold text-tvPurple">
+                        <span>Official Mascot: ZERO</span>
+                        <span class="text-gray-300">•</span>
+                        <span>Tech Career Preparation</span>
+                    </div>
+                </div>
+
+                <!-- Col 2: Navigation Links (3 Cols) -->
+                <div class="md:col-span-3 space-y-3">
+                    <h4 class="font-display font-bold text-xs uppercase tracking-wider text-tvDark mb-4">Navigasi Acara</h4>
+                    <ul class="space-y-2.5 text-xs text-gray-600">
+                        <li><a href="#tentang" class="hover:text-tvPurple transition-colors flex items-center gap-1.5"><span>Tentang TechnoVersary</span></a></li>
+                        <li><a href="#programs" class="hover:text-tvPurple transition-colors flex items-center gap-1.5"><span>7 Cabang Kompetisi</span></a></li>
+                        <li><a href="#seminar" class="hover:text-tvPurple transition-colors flex items-center gap-1.5"><span>Seminar Nasional 2026</span><span class="text-[9px] bg-orange-100 text-[#FF5500] font-bold px-1.5 py-0.2 rounded-full">Soon</span></a></li>
+                        <li><a href="#dokumentasi" class="hover:text-tvPurple transition-colors flex items-center gap-1.5"><span>Dokumentasi Kegiatan</span></a></li>
+                        <li><a href="#testimoni" class="hover:text-tvPurple transition-colors flex items-center gap-1.5"><span>Testimoni Peserta</span></a></li>
+                        <li><a href="#sponsor" class="hover:text-tvPurple transition-colors flex items-center gap-1.5"><span>Mitra & Sponsor</span></a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Sponsorship & Contacts (4 Cols) -->
+                <div class="md:col-span-4 space-y-3">
+                    <h4 class="font-display font-bold text-xs uppercase tracking-wider text-tvDark mb-4">Kontak & Kemitraan</h4>
+                    <div class="space-y-3">
+                        <!-- Direct Sponsorship Contact Link -->
+                        <a href="https://wa.me/6281461143708?text=Halo%20Tim%20Sponsorship%20TechnoVersary%20Vol.%20II,%20kami%20tertarik%20untuk%20bekerja%20sama%20dan%20mendiskusikan%20proposal%20kemitraan."
+                            target="_blank"
+                            class="group flex items-center gap-3 p-3 rounded-2xl bg-emerald-50/70 border border-emerald-100 hover:bg-emerald-100/80 transition-all">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block">Hotline Sponsorship</span>
+                                <span class="text-xs font-bold text-tvDark group-hover:text-emerald-700 transition-colors block">Chat WhatsApp Panitia</span>
+                            </div>
+                        </a>
+
+                        <!-- Instagram -->
+                        <a href="https://instagram.com/technoversary" target="_blank"
+                            class="group flex items-center gap-3 p-3 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-purple-50 transition-all">
+                            <div class="w-9 h-9 rounded-xl bg-tvDark text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                                <svg class="w-4 h-4 fill-none stroke-current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Instagram Resmi</span>
+                                <span class="text-xs font-bold text-tvDark group-hover:text-tvPurple transition-colors block">@technoversary</span>
+                            </div>
+                        </a>
+
+                        <!-- Address -->
+                        <div class="p-3 rounded-2xl bg-gray-50 border border-gray-100 flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-tvPurple/10 text-tvPurple flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <div class="text-left text-[11px] text-gray-500 leading-relaxed">
+                                <span class="font-bold text-tvDark block mb-0.5">Sekretariat Panitia</span>
+                                Fakultas Ilmu Komputer, Universitas Kuningan. Jl. Pramuka No. 67, Purwawinangun, Kuningan, Jawa Barat.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Meta Info -->
+            <div class="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+                <p class="text-gray-400 text-[11px] text-center sm:text-left leading-relaxed">
+                    © 2026 TECHNOVERSARY VOL. II. Diselenggarakan oleh HIMA-TI FKOM UNIKU • Dibuat oleh Divisi Ilmu Pengetahuan dan Teknologi. All rights reserved.
+                </p>
+                <div class="flex items-center gap-4 text-xs font-semibold text-tvPurple flex-shrink-0">
+                    <a href="#hero" class="hover:underline">Kembali ke Atas ↑</a>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+
+    <!-- ======================== COMPETITION RULES & DETAILS MODAL ======================== -->
+    <div id="comp-modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-tvDark/80 backdrop-blur-md p-3 sm:p-6 overflow-y-auto">
+        <div
+            class="bg-white rounded-[28px] sm:rounded-[36px] max-w-4xl w-full max-h-[94vh] flex flex-col shadow-2xl border-2 sm:border-4 border-tvGold overflow-hidden animate-scaleIn relative my-auto">
+
+            <!-- Modal Header -->
+            <div
+                class="p-5 sm:p-6 pb-3 border-b border-gray-100 flex items-start justify-between gap-4 flex-shrink-0 bg-white z-10">
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                        <span id="comp-modal-category"
+                            class="tv-pill-gradient text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+                            E-Sports 5v5
+                        </span>
+                        <span id="comp-modal-price"
+                            class="bg-tvGold/20 text-tvDark text-[11px] font-bold px-3 py-1 rounded-full">
+                            50K / Tim
+                        </span>
+                    </div>
+                    <h3 id="comp-modal-title"
+                        class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark truncate">
+                        Mobile Legends: Bang Bang (MLBB)
+                    </h3>
+                </div>
+                <button onclick="closeCompModal()" aria-label="Tutup Modal"
+                    class="w-10 h-10 rounded-full bg-gray-100 hover:bg-tvMagenta hover:text-white flex items-center justify-center transition-colors flex-shrink-0">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Tab Buttons Row (Poster Cover | Ketentuan Lomba | Timeline) -->
+            <div
+                class="px-5 sm:px-6 pt-3 pb-3 bg-gray-50/80 border-b border-gray-100 flex items-center justify-between gap-2 flex-wrap flex-shrink-0">
+                <div class="flex items-center gap-2 overflow-x-auto py-1 max-w-full">
+                    <button onclick="selectCompTab(0)" id="comp-tab-btn-0"
+                        class="comp-tab-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-tvDark border border-gray-200 hover:border-tvPurple">
+                        1. Poster Cover
+                    </button>
+                    <button onclick="selectCompTab(1)" id="comp-tab-btn-1"
+                        class="comp-tab-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-tvPurple text-white shadow-sm">
+                        2. Ketentuan Lomba
+                    </button>
+                    <button onclick="selectCompTab(2)" id="comp-tab-btn-2"
+                        class="comp-tab-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-tvDark border border-gray-200 hover:border-tvPurple">
+                        3. Timeline Pelaksanaan
+                    </button>
+                </div>
+                <a id="comp-modal-fullview" href="#" target="_blank"
+                    class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-tvPurple hover:text-tvMagenta transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <span>Buka Ukuran Asli</span>
+                </a>
+            </div>
+
+            <!-- Scrollable Image Display Container -->
+            <div
+                class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-900/5 flex flex-col items-center justify-center relative min-h-[380px] sm:min-h-[480px]">
+
+                <!-- Floating Nav Arrows -->
+                <button onclick="navigateCompImage(-1)" aria-label="Gambar Sebelumnya"
+                    class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white text-tvDark shadow-xl flex items-center justify-center transition-all hover:scale-105 z-20">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <button onclick="navigateCompImage(1)" aria-label="Gambar Selanjutnya"
+                    class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white text-tvDark shadow-xl flex items-center justify-center transition-all hover:scale-105 z-20">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+
+                <!-- Active Image View -->
+                <div class="relative max-w-full flex items-center justify-center">
+                    <img id="comp-modal-image" src="" alt="Ketentuan Lomba TechnoVersary"
+                        class="max-h-[58vh] w-auto max-w-full object-contain rounded-2xl shadow-xl border border-gray-200 transition-all duration-300 select-none">
+                </div>
+            </div>
+
+            <!-- Modal Footer: 3 Thumbnails + Actions -->
+            <div
+                class="p-4 sm:p-5 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 flex-shrink-0 z-10">
+                <!-- 3 Mini Preview Thumbnails -->
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
+                    <div onclick="selectCompTab(0)" class="cursor-pointer group relative text-center">
+                        <img id="comp-thumb-0"
+                            class="w-12 h-16 sm:w-16 sm:h-20 object-cover rounded-xl border-2 transition-all group-hover:scale-105"
+                            src="" alt="Thumbnail Cover">
+                        <span class="block text-[10px] font-bold text-gray-500 mt-1">Cover</span>
+                    </div>
+                    <div onclick="selectCompTab(1)" class="cursor-pointer group relative text-center">
+                        <img id="comp-thumb-1"
+                            class="w-12 h-16 sm:w-16 sm:h-20 object-cover rounded-xl border-2 transition-all group-hover:scale-105"
+                            src="" alt="Thumbnail Ketentuan">
+                        <span class="block text-[10px] font-bold text-gray-500 mt-1">Ketentuan</span>
+                    </div>
+                    <div onclick="selectCompTab(2)" class="cursor-pointer group relative text-center">
+                        <img id="comp-thumb-2"
+                            class="w-12 h-16 sm:w-16 sm:h-20 object-cover rounded-xl border-2 transition-all group-hover:scale-105"
+                            src="" alt="Thumbnail Timeline">
+                        <span class="block text-[10px] font-bold text-gray-500 mt-1">Timeline</span>
+                    </div>
+                </div>
+
+                <!-- Registration / Action Buttons -->
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                    <button onclick="openRegistrationFromComp()"
+                        class="flex-1 sm:flex-initial tv-btn-gradient text-white text-xs font-bold uppercase tracking-wider px-7 py-3.5 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13" />
+                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                        <span>Daftar Sekarang</span>
+                    </button>
+                    <button onclick="closeCompModal()"
+                        class="bg-gray-100 hover:bg-gray-200 text-tvDark text-xs font-bold uppercase tracking-wider px-5 py-3.5 rounded-full transition-colors">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======================== INTERACTIVE REGISTRATION MODAL ======================== -->
+    <div id="course-modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-tvDark/75 backdrop-blur-sm p-4">
+        <div
+            class="bg-white rounded-[32px] max-w-md w-full p-6 sm:p-8 relative shadow-2xl border-4 border-tvGold animate-scaleIn">
+            <button onclick="closeCourseModal()"
+                class="absolute top-5 right-5 w-9 h-9 rounded-full bg-gray-100 hover:bg-tvMagenta hover:text-white flex items-center justify-center transition-colors">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+
+            <div
+                class="inline-flex items-center gap-1.5 tv-pill-gradient text-white text-[10px] font-display font-bold px-3.5 py-1 rounded-full mb-3">
+                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+                </svg>
+                <span>TECHNOVERSARY VOL. II</span>
+            </div>
+
+            <h3 id="modal-course-title" class="quirky-title text-xl sm:text-2xl font-extrabold text-tvDark mb-1">
+                Pendaftaran Lomba
+            </h3>
+            <p id="modal-course-price" class="text-tvMagenta font-display font-bold text-xs sm:text-sm mb-5">
+                Kategori: 50K / Tim
+            </p>
+
+            <form onsubmit="submitEnrollment(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-tvDark/80 mb-1">Nama Lengkap / Nama Tim</label>
+                    <input type="text" required placeholder="Contoh: Tim Cyber TI / Budi Santoso"
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-300 text-sm focus:outline-none focus:border-tvMagenta bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-tvDark/80 mb-1">Asal Instansi / Kampus / Sekolah</label>
+                    <input type="text" required placeholder="Contoh: Teknik Informatika"
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-300 text-sm focus:outline-none focus:border-tvMagenta bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-tvDark/80 mb-1">Nomor WhatsApp / ID Instagram</label>
+                    <input type="text" required placeholder="0812xxxx / @username"
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-300 text-sm focus:outline-none focus:border-tvMagenta bg-white">
+                </div>
+                <button type="submit"
+                    class="w-full tv-btn-gradient text-white font-display font-bold text-xs uppercase py-4 rounded-full shadow-lg transition-all mt-2 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                    <span>Kirim Pendaftaran</span>
+                </button>
+            </form>
+
+            <!-- Confirmation Message Inside Modal -->
+            <div id="modal-success"
+                class="hidden mt-4 p-4 bg-purple-50 border border-tvMagenta/40 text-tvPurpleDark rounded-2xl text-xs font-semibold flex items-center gap-2.5">
+                <svg class="w-5 h-5 text-tvPurple flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <span>Pendaftaran TechnoVersary Vol. II berhasil dikirim! Panitia kami akan segera menghubungi kamu
+                    melalui WhatsApp/DM.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification for Category Pills -->
+    <div id="toast-box"
+        class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden bg-tvDark text-white px-5 py-2.5 rounded-full shadow-2xl border border-tvGold/40 text-xs font-semibold items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-tvOrange animate-ping"></span>
+        <span id="toast-text">Kategori dipilih: Go Tournament</span>
+    </div>
+
+    <!-- ======================== JAVASCRIPT LOGIC ======================== -->
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function filterCompCards(category, btnElement) {
+            // Update active tab buttons style
+            document.querySelectorAll('.comp-filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-tvDark', 'text-white', 'shadow-md');
+                btn.classList.add('bg-white/30', 'text-tvDark');
+            });
+            if (btnElement) {
+                btnElement.classList.add('active', 'bg-tvDark', 'text-white', 'shadow-md');
+                btnElement.classList.remove('bg-white/30');
+            }
+
+            // Filter cards
+            const cards = document.querySelectorAll('.comp-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Clean layout balance: Center 7th card on row 3 when all 7 cards are shown
+            const mcggCard = document.getElementById('card-last');
+            if (mcggCard) {
+                if (category === 'all') {
+                    mcggCard.classList.add('lg:col-start-2');
+                } else {
+                    mcggCard.classList.remove('lg:col-start-2');
+                }
+            }
+        }
+
+        function filterAndScroll(category) {
+            // Find the corresponding filter button
+            const targetBtn = Array.from(document.querySelectorAll('.comp-filter-btn')).find(btn => {
+                const onclickAttr = btn.getAttribute('onclick') || '';
+                return onclickAttr.includes(`'${category}'`);
+            });
+
+            filterCompCards(category, targetBtn);
+
+            // Toast feedback
+            const categoryNames = {
+                'esports': 'E-Sports (4 Lomba: MLBB, Roblox, PES, MCGG)',
+                'desain': 'Desain (Web Design & Poster Design)',
+                'bisnis': 'Bisnis Proposal'
+            };
+            const toast = document.getElementById('toast-box');
+            const toastText = document.getElementById('toast-text');
+            if (toast && toastText) {
+                toastText.textContent = `Kategori dipilih: ${categoryNames[category] || category}`;
+                toast.classList.remove('hidden');
+                toast.classList.add('flex');
+
+                clearTimeout(window.toastTimer);
+                window.toastTimer = setTimeout(() => {
+                    toast.classList.add('hidden');
+                    toast.classList.remove('flex');
+                }, 2600);
+            }
+
+            // Smooth scroll to programs section
+            const progSec = document.getElementById('programs');
+            if (progSec) {
+                progSec.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function selectCategoryBadge(btnElement, categoryName) {
+            // Highlight selected pill
+            document.querySelectorAll('.lang-pill').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-tvGold');
+            });
+            btnElement.classList.add('ring-4', 'ring-tvGold');
+
+            // Show toast feedback
+            const toast = document.getElementById('toast-box');
+            const toastText = document.getElementById('toast-text');
+            toastText.textContent = `Bidang dipilih: ${categoryName}`;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 2600);
+        }
+
+        function openCourseModal(courseName, price) {
+            const modal = document.getElementById('course-modal');
+            document.getElementById('modal-course-title').textContent = courseName;
+            document.getElementById('modal-course-price').textContent = `Tiket / Registrasi: ${price}`;
+            document.getElementById('modal-success').classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCourseModal() {
+            const modal = document.getElementById('course-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function submitEnrollment(e) {
+            e.preventDefault();
+            const successBox = document.getElementById('modal-success');
+            successBox.classList.remove('hidden');
+            setTimeout(() => {
+                closeCourseModal();
+                e.target.reset();
+            }, 2000);
+        }
+
+        // ==================== COMPETITION GUIDELINES DATA & MODAL LOGIC ====================
+        const competitionDetails = {
+            'mlbb': {
+                title: 'Mobile Legends: Bang Bang (MLBB)',
+                category: 'E-Sports 5v5',
+                price: '50K / Tim',
+                images: [
+                    { label: 'Poster Cover', src: '/technoversary/assets/ketentuan/opt/cover mlbb.webp', full: '/technoversary/assets/ketentuan/cover mlbb.png' },
+                    { label: 'Ketentuan Lomba', src: '/technoversary/assets/ketentuan/opt/mlbb.webp', full: '/technoversary/assets/ketentuan/mlbb.png' },
+                    { label: 'Timeline Lomba', src: '/technoversary/assets/ketentuan/opt/TIMELINE Mobile Legend.webp', full: '/technoversary/assets/ketentuan/TIMELINE Mobile Legend.png' }
+                ]
+            },
+            'web': {
+                title: 'Web Design Competition',
+                category: 'Desain Kreatif & Web Dev',
+                price: '60K / Karya',
+                images: [
+                    { label: 'Poster Cover', src: '/technoversary/assets/ketentuan/opt/cover web disen.webp', full: '/technoversary/assets/ketentuan/cover web disen.png' },
+                    { label: 'Ketentuan Lomba', src: '/technoversary/assets/ketentuan/opt/web desain.webp', full: '/technoversary/assets/ketentuan/web desain.png' },
+                    { label: 'Timeline Lomba', src: '/technoversary/assets/ketentuan/opt/TIMELINE Web Desain.webp', full: '/technoversary/assets/ketentuan/TIMELINE Web Desain.png' }
+                ]
+            },
+            'poster': {
+                title: 'Poster Design Competition',
+                category: 'Desain Grafis',
+                price: '35K / Karya',
+                images: [
+                    { label: 'Poster Cover', src: '/technoversary/assets/ketentuan/opt/cover poster.webp', full: '/technoversary/assets/ketentuan/cover poster.png' },
+                    { label: 'Ketentuan Lomba', src: '/technoversary/assets/ketentuan/opt/poster.webp', full: '/technoversary/assets/ketentuan/poster.png' },
+                    { label: 'Timeline Lomba', src: '/technoversary/assets/ketentuan/opt/TIMELINE Poster Design.webp', full: '/technoversary/assets/ketentuan/TIMELINE Poster Design.png' }
+                ]
+            },
+            'probis': {
+                title: 'Business Proposal Competition (ProBis)',
+                category: 'Bisnis & Inovasi IT',
+                price: '50K / Tim',
+                images: [
+                    { label: 'Poster Cover', src: '/technoversary/assets/ketentuan/opt/cover probis.webp', full: '/technoversary/assets/ketentuan/cover probis.png' },
+                    { label: 'Ketentuan Lomba', src: '/technoversary/assets/ketentuan/opt/probis.webp', full: '/technoversary/assets/ketentuan/probis.png' },
+                    { label: 'Timeline Lomba', src: '/technoversary/assets/ketentuan/opt/TIMELINE ProBis.webp', full: '/technoversary/assets/ketentuan/TIMELINE ProBis.png' }
+                ]
+            },
+            'roblox': {
+                title: 'Roblox Championship',
+                category: 'Metaverse Gaming',
+                price: '35K / Peserta',
+                images: [
+                    { label: 'Poster Cover', src: '/technoversary/assets/ketentuan/opt/cover roblox.webp', full: '/technoversary/assets/ketentuan/cover roblox.png' },
+                    { label: 'Ketentuan Lomba', src: '/technoversary/assets/ketentuan/opt/roblox.webp', full: '/technoversary/assets/ketentuan/roblox.png' },
+                    { label: 'Timeline Lomba', src: '/technoversary/assets/ketentuan/opt/TIMELINE Roblox.webp', full: '/technoversary/assets/ketentuan/TIMELINE Roblox.png' }
+                ]
+            },
+            'pes': {
+                title: 'PES (eFootball) Championship',
+                category: 'Console Football',
+                price: '35K / Peserta',
+                images: [
+                    { label: 'Poster Cover', src: '/technoversary/assets/ketentuan/opt/cover pes.webp', full: '/technoversary/assets/ketentuan/cover pes.png' },
+                    { label: 'Ketentuan Lomba', src: '/technoversary/assets/ketentuan/opt/pes.webp', full: '/technoversary/assets/ketentuan/pes.png' },
+                    { label: 'Timeline Lomba', src: '/technoversary/assets/ketentuan/opt/TIMELINE PES.webp', full: '/technoversary/assets/ketentuan/TIMELINE PES.png' }
+                ]
+            },
+            'mcgg': {
+                title: 'Magic Chess Go Go (MCGG)',
+                category: 'Strategy Auto-Battler',
+                price: '30K / Peserta',
+                images: [
+                    { label: 'Poster Cover', src: '/technoversary/assets/ketentuan/opt/cover mcgg.webp', full: '/technoversary/assets/ketentuan/cover mcgg.png' },
+                    { label: 'Ketentuan Lomba', src: '/technoversary/assets/ketentuan/opt/mcgg.webp', full: '/technoversary/assets/ketentuan/mcgg.png' },
+                    { label: 'Timeline Lomba', src: '/technoversary/assets/ketentuan/opt/TIMELINE MCGG.webp', full: '/technoversary/assets/ketentuan/TIMELINE MCGG.png' }
+                ]
+            }
+        };
+
+        let currentCompKey = null;
+        let currentCompImageIndex = 1; // Default to index 1: Ketentuan Lomba
+
+        function openCompetitionModal(compKey) {
+            const comp = competitionDetails[compKey];
+            if (!comp) return;
+
+            currentCompKey = compKey;
+            currentCompImageIndex = 1; // Start on Ketentuan Lomba directly
+
+            document.getElementById('comp-modal-title').textContent = comp.title;
+            document.getElementById('comp-modal-category').textContent = comp.category;
+            document.getElementById('comp-modal-price').textContent = comp.price;
+
+            // Set thumbnails
+            comp.images.forEach((img, idx) => {
+                const thumb = document.getElementById(`comp-thumb-${idx}`);
+                if (thumb) {
+                    thumb.src = img.src;
+                }
+            });
+
+            updateCompImageView();
+
+            const modal = document.getElementById('comp-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCompModal() {
+            const modal = document.getElementById('comp-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        function selectCompTab(index) {
+            currentCompImageIndex = index;
+            updateCompImageView();
+        }
+
+        function navigateCompImage(delta) {
+            if (!currentCompKey) return;
+            const images = competitionDetails[currentCompKey].images;
+            currentCompImageIndex = (currentCompImageIndex + delta + images.length) % images.length;
+            updateCompImageView();
+        }
+
+        function updateCompImageView() {
+            if (!currentCompKey) return;
+            const comp = competitionDetails[currentCompKey];
+            const activeImg = comp.images[currentCompImageIndex];
+
+            const mainImg = document.getElementById('comp-modal-image');
+            mainImg.src = activeImg.src;
+            mainImg.alt = `${comp.title} - ${activeImg.label}`;
+
+            const fullViewBtn = document.getElementById('comp-modal-fullview');
+            if (fullViewBtn) {
+                fullViewBtn.href = activeImg.full;
+            }
+
+            // Update Tab Buttons
+            for (let i = 0; i < 3; i++) {
+                const tabBtn = document.getElementById(`comp-tab-btn-${i}`);
+                const thumb = document.getElementById(`comp-thumb-${i}`);
+                if (i === currentCompImageIndex) {
+                    tabBtn.className = 'comp-tab-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-tvPurple text-white shadow-sm';
+                    if (thumb) {
+                        thumb.classList.add('border-tvPurple', 'scale-105', 'shadow-md');
+                        thumb.classList.remove('border-transparent');
+                    }
+                } else {
+                    tabBtn.className = 'comp-tab-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-tvDark border border-gray-200 hover:border-tvPurple';
+                    if (thumb) {
+                        thumb.classList.remove('border-tvPurple', 'scale-105', 'shadow-md');
+                        thumb.classList.add('border-transparent');
+                    }
+                }
+            }
+        }
+
+        function openRegistrationFromComp() {
+            if (!currentCompKey) return;
+            const comp = competitionDetails[currentCompKey];
+            closeCompModal();
+            openCourseModal(comp.title, comp.price);
+        }
+
+        // Keyboard arrow navigation inside competition modal
+        document.addEventListener('keydown', function (e) {
+            const compModal = document.getElementById('comp-modal');
+            if (compModal && !compModal.classList.contains('hidden')) {
+                if (e.key === 'ArrowLeft') {
+                    navigateCompImage(-1);
+                } else if (e.key === 'ArrowRight') {
+                    navigateCompImage(1);
+                } else if (e.key === 'Escape') {
+                    closeCompModal();
+                }
+            }
+        });
+
+    </script>
+
+    <!-- Testimonial Carousel Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const track = document.getElementById('testi-track');
+            const prevBtn = document.getElementById('testi-prev');
+            const nextBtn = document.getElementById('testi-next');
+            const dotsContainer = document.getElementById('testi-dots');
+
+            if (!track || !prevBtn || !nextBtn || !dotsContainer) return;
+
+            const slides = track.querySelectorAll('.testi-slide');
+            const totalSlides = slides.length;
+            if (totalSlides === 0) return;
+
+            // Generate dots
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+                dot.className = i === 0 ? 'h-2 w-8 rounded-full bg-white transition-all duration-300' : 'h-2 w-2 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300';
+                dot.addEventListener('click', () => {
+                    const slideWidth = slides[0].offsetWidth + 24; // width + gap
+                    track.scrollTo({ left: i * slideWidth, behavior: 'smooth' });
+                });
+                dotsContainer.appendChild(dot);
+            }
+
+            const updateDots = () => {
+                const slideWidth = slides[0].offsetWidth + 24;
+                const activeIndex = Math.round(track.scrollLeft / slideWidth);
+                const dots = dotsContainer.querySelectorAll('button');
+                dots.forEach((dot, idx) => {
+                    if (idx === Math.min(activeIndex, totalSlides - 1)) {
+                        dot.className = 'h-2 w-8 rounded-full bg-white transition-all duration-300';
+                    } else {
+                        dot.className = 'h-2 w-2 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300';
+                    }
+                });
+            };
+
+            track.addEventListener('scroll', updateDots, { passive: true });
+
+            prevBtn.addEventListener('click', () => {
+                const slideWidth = slides[0].offsetWidth + 24;
+                track.scrollBy({ left: -slideWidth, behavior: 'smooth' });
+            });
+
+            nextBtn.addEventListener('click', () => {
+                const slideWidth = slides[0].offsetWidth + 24;
+                track.scrollBy({ left: slideWidth, behavior: 'smooth' });
+            });
+
+            // Optional subtle auto-slide
+            let autoSlideTimer = setInterval(() => {
+                const slideWidth = slides[0].offsetWidth + 24;
+                const maxScroll = track.scrollWidth - track.clientWidth;
+                if (track.scrollLeft >= maxScroll - 10) {
+                    track.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    track.scrollBy({ left: slideWidth, behavior: 'smooth' });
+                }
+            }, 6000);
+
+            // Pause auto-slide on user interaction
+            track.addEventListener('mouseenter', () => clearInterval(autoSlideTimer));
+            track.addEventListener('touchstart', () => clearInterval(autoSlideTimer), { passive: true });
+        });
+    </script>
+
+    <!-- Event Countdown Script (Target: 28 November) -->
+    <script>
+        (function () {
+            function updateCountdown() {
+                // Target: 28 November 2026, 00:00:00 WIB (UTC+7)
+                const targetDate = new Date("2026-11-28T00:00:00+07:00").getTime();
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                const daysEl = document.getElementById("cd-days");
+                const hoursEl = document.getElementById("cd-hours");
+                const minutesEl = document.getElementById("cd-minutes");
+                const secondsEl = document.getElementById("cd-seconds");
+
+                if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+                if (distance <= 0) {
+                    daysEl.textContent = "00";
+                    hoursEl.textContent = "00";
+                    minutesEl.textContent = "00";
+                    secondsEl.textContent = "00";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                daysEl.textContent = String(days).padStart(2, "0");
+                hoursEl.textContent = String(hours).padStart(2, "0");
+                minutesEl.textContent = String(minutes).padStart(2, "0");
+                secondsEl.textContent = String(seconds).padStart(2, "0");
+            }
+
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", () => {
+                    updateCountdown();
+                    setInterval(updateCountdown, 1000);
+                });
+            } else {
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            }
+        })();
+    </script>
+
+    <!-- Splash Screen Dismiss Script -->
+    <script>
+        (function () {
+            const splash = document.getElementById('splash-screen');
+            if (!splash) return;
+
+            let dismissed = false;
+            function dismissSplash() {
+                if (dismissed) return;
+                dismissed = true;
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 700);
+            }
+
+            // Dismiss automatically after page assets load + small pleasant delay
+            window.addEventListener('load', () => {
+                setTimeout(dismissSplash, 800);
+            });
+
+            // Safe fallback timeout
+            setTimeout(dismissSplash, 2200);
+        })();
+    </script>
+
+    <!-- ======================== SMOOTH ON-SCROLL REVEAL OBSERVER ======================== -->
+    <script>
+        (function () {
+            // Respect user preference for reduced motion
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const targets = [
+                '#tentang > div:first-child',
+                '#tentang .grid.grid-cols-1.md\\:grid-cols-3 > div',
+                '#programs > div:first-child',
+                '#programs .flex.flex-wrap.items-center.gap-2',
+                '#programs-grid > div',
+                '#seminar > div',
+                '#dokumentasi > div:first-child',
+                '#dokumentasi .grid > div',
+                '#testimoni > div:first-child',
+                '#testimoni-track-container',
+                '#sponsor > div:first-child',
+                '#sponsor .relative.overflow-hidden',
+                '#contacts .max-w-3xl',
+                '#contacts .grid.grid-cols-1.md\\:grid-cols-12 > div'
+            ];
+
+            function setupScrollReveals() {
+                const elements = document.querySelectorAll(targets.join(', '));
+
+                if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+                    elements.forEach(el => el.classList.add('is-revealed'));
+                    return;
+                }
+
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-revealed');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    root: null,
+                    rootMargin: '0px 0px -40px 0px',
+                    threshold: 0.08
+                });
+
+                elements.forEach(el => {
+                    if (!el.classList.contains('tv-reveal') && !el.classList.contains('tv-reveal-scale')) {
+                        if (el.matches('#seminar > div, #testimoni-track-container, #sponsor .relative.overflow-hidden')) {
+                            el.classList.add('tv-reveal-scale');
+                        } else {
+                            el.classList.add('tv-reveal');
+                        }
+                    }
+
+                    // Stagger siblings in same grid
+                    const parent = el.parentElement;
+                    if (parent && parent.children.length > 1) {
+                        const idx = Array.from(parent.children).indexOf(el);
+                        el.classList.add('tv-delay-' + (Math.min((idx % 4) + 1, 4)));
+                    }
+
+                    observer.observe(el);
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupScrollReveals);
+            } else {
+                setupScrollReveals();
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

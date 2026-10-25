@@ -15,6 +15,7 @@ import './App.css'
 
 import KKN2026 from './components/kkn2026/KKN2026'
 import ShortUrlRedirect from './components/ShortUrlRedirect'
+import TechnoversaryRedirect from './components/technoversary/TechnoversaryRedirect'
 
 const Portal = lazy(() => import('./components/portal/Portal'))
 
@@ -44,6 +45,7 @@ function App() {
       '/kontak': 'Hubungi Kami | HIMA TI Universitas Kuningan',
       '/portal': 'Portal Pengurus | HIMA TI Universitas Kuningan',
       '/kkn-uniku-2026': 'Inventaris IPTEK HIMA-TI | HIMA TI Universitas Kuningan',
+      '/technoversary': 'TECHNOVERSARY VOL. II | HIMA TI Universitas Kuningan',
     };
 
     const title = titles[location.pathname] || 'HIMA TI Universitas Kuningan';
@@ -66,6 +68,7 @@ function App() {
       '/kontak': 'Hubungi kami melalui email resmi, media sosial, WhatsApp, atau langsung kunjungi sekretariat kami di Kampus 2 UNIKU.',
       '/portal': 'Halaman administrasi khusus untuk pengurus HIMA TI Universitas Kuningan.',
       '/kkn-uniku-2026': 'Inventaris IPTEK HIMA-TI — perpustakaan inventaris aplikasi, website, dan AR open-source hasil karya Divisi IPTEK HIMA TI dan kontribusi mahasiswa.',
+      '/technoversary': 'TechnoVersary Vol. II: Tech Career Preparation - From Zero to Hired. 7 cabang kompetisi digital, Seminar Nasional, dan jejaring teknologi se-Jawa Barat.',
     };
 
     metaDescription.setAttribute('content', descriptions[location.pathname] || 'Website Resmi Himpunan Mahasiswa Teknik Informatika (HIMA TI) Universitas Kuningan.');
@@ -87,6 +90,7 @@ function App() {
             <Route path="/aspirasi" element={<Aspirasi />} />
             <Route path="/portal" element={<Portal />} />
             <Route path="/kkn-uniku-2026" element={<KKN2026 />} />
+            <Route path="/technoversary" element={<TechnoversaryRedirect />} />
             <Route path="/s/:code" element={<ShortUrlRedirect />} />
             <Route path="/:code" element={<ShortUrlRedirect />} />
           </Routes>

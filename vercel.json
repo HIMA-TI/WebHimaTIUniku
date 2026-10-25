@@ -5,6 +5,14 @@
       "destination": "https://hima-ti-be.vercel.app/api/$1"
     },
     {
+      "source": "/technoversary",
+      "destination": "/technoversary/index.html"
+    },
+    {
+      "source": "/technoversary/(.*)",
+      "destination": "/technoversary/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
